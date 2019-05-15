@@ -1,0 +1,5 @@
+name: BattleCaps
+version: 1.0
+main: net.timelegacy.tlhub.TLHub
+author: Nyarrth
+depend: [TLCore]
