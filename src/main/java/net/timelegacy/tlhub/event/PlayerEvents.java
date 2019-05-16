@@ -45,7 +45,7 @@ public class PlayerEvents implements Listener {
     p.setHealthScale(20);
 
     Location spawn = lobby.spawn;
-    Location lookloc = new Location(world, 0.5, 117.5, 0.5);
+    Location lookloc = new Location(world, 0.5, 118.5, 13.5);
     Vector dirBetweenLocations = lookloc.toVector().subtract(spawn.toVector());
     spawn.setDirection(dirBetweenLocations);
 

@@ -59,7 +59,7 @@ public class TLHub extends JavaPlugin {
 
         core.serverHandler.setMaxPlayers(core.serverHandler.getServerUID(), 50);
 
-        spawn = new Location(Bukkit.getWorld("world"), 59.5, 70.0, 1005.5);
+        spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
 
         Bukkit.getPluginManager().registerEvents(new MainMenu(), plugin);
 
