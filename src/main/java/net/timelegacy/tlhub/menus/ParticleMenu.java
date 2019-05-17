@@ -126,16 +126,15 @@ public class ParticleMenu implements Listener {
 
           ItemStack itemStack = particles.get(current).getItemStack();
           ItemStack is = itemStack.clone();
-          ItemMeta ism = is.getItemMeta();
 
           if (lobby.core.perkHandler.hasPerk(p, particles.get(current).getPerkPerm())) {
+            ItemMeta ism = is.getItemMeta();
             ism.getLore().add(lobby.core.messageUtils.c("&a&lUNLOCKED"));
+            is.setItemMeta(ism);
           } else {
             is = lobby.core.itemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&c&lLOCKED",
                 "&fUnlock by opening crates.");
           }
-
-          is.setItemMeta(ism);
 
           //todo check if player has one and make it glow to show they have it enabled.
 
