@@ -3,7 +3,6 @@ package net.timelegacy.tlhub.cosmetics.particleeffects;
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -29,7 +28,7 @@ public class BloodHelix {
             Vector v = new Vector();
             v.setX(Math.cos(angle) * radius);
             v.setZ(Math.sin(angle) * radius);
-            TLHub.getInstance().core.particleUtils.display(Particle.REDSTONE, location.add(v));
+            TLHub.getInstance().core.particleUtils.display(255, 0, 0, location.add(v));
             location.subtract(v);
             location.add(0, 0.12d, 0);
             radius -= 0.044f;
@@ -40,7 +39,7 @@ public class BloodHelix {
             Vector v = new Vector();
             v.setX(Math.cos(angle) * radius2);
             v.setZ(Math.sin(angle) * radius2);
-            TLHub.getInstance().core.particleUtils.display(Particle.REDSTONE, location2.add(v));
+            TLHub.getInstance().core.particleUtils.display(255, 0, 0, location.add(v));
             location2.subtract(v);
             location2.add(0, 0.12d, 0);
             radius2 -= 0.044f;

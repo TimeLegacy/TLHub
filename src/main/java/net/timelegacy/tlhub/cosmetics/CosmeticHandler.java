@@ -40,9 +40,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class CosmeticHandler implements Listener {
 
   // Menus
-  public ParticleMenu particleMenu;
-  public CosmeticMenu cosmeticMenu;
-  public PetsMenu petsMenu;
+  public ParticleMenu particleMenu = new ParticleMenu();
+  public CosmeticMenu cosmeticMenu = new CosmeticMenu();
+  public PetsMenu petsMenu = new PetsMenu();
   // Effects
   public BounceEffect bounce;
   public FireworkEffect firework;
@@ -74,10 +74,6 @@ public class CosmeticHandler implements Listener {
    */
 
   public void register() {
-    // Menus
-    particleMenu = new ParticleMenu();
-    cosmeticMenu = new CosmeticMenu();
-    petsMenu = new PetsMenu();
 
     // Effects
     bounce = new BounceEffect();
@@ -100,12 +96,6 @@ public class CosmeticHandler implements Listener {
     snowCloud = new SnowCloud();
     walks = new Walks();
 
-    // Menu Listeners
-    Bukkit.getServer().getPluginManager().registerEvents(new ParticleMenu(), TLHub.getInstance());
-    Bukkit.getServer().getPluginManager().registerEvents(new CosmeticMenu(), TLHub.getInstance());
-    Bukkit.getServer().getPluginManager().registerEvents(new PetsMenu(), TLHub.getInstance());
-    Bukkit.getServer().getPluginManager().registerEvents(this, TLHub.getInstance());
-
     // Particle Runnables
     angleWings.particleRunnable();
     bloodHelix.particleRunnable();
@@ -124,10 +114,6 @@ public class CosmeticHandler implements Listener {
     walks.particleRunnable();
 
     syncPets();
-
-    // Effect Listeners
-    Bukkit.getServer().getPluginManager().registerEvents(new BounceEffect(), TLHub.getInstance());
-    Bukkit.getServer().getPluginManager().registerEvents(new FireworkEffect(), TLHub.getInstance());
   }
 
   @EventHandler

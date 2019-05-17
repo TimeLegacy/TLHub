@@ -1,6 +1,7 @@
 package net.timelegacy.tlhub.cosmetics;
 
 import java.util.regex.Pattern;
+import net.timelegacy.tlcore.utils.SkullCreator;
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -46,11 +47,9 @@ public class Cosmetic {
     ItemStack itemStack;
 
     if (material == null && skullValue != null) {
-      //itemStack = lobby.core.itemUtils.createItem(lobby.core.itemUtils.getCustomSkull(skullValue), 1, lobby.core.messageUtils.SECOND_COLOR + name, lobby.core.messageUtils.MAIN_COLOR + slogan);
-      //TODO fix
-      itemStack = lobby.core.itemUtils
-          .createItem(Material.DIRT, 1, lobby.core.messageUtils.SECOND_COLOR + name,
-              lobby.core.messageUtils.MAIN_COLOR + slogan);
+      itemStack = lobby.core.itemUtils.createItem(
+          SkullCreator.itemFromBase64(skullValue), 1, lobby.core.messageUtils.SECOND_COLOR + name,
+          lobby.core.messageUtils.MAIN_COLOR + slogan);
     } else {
       itemStack = lobby.core.itemUtils
           .createItem(material, 1, lobby.core.messageUtils.SECOND_COLOR + name,

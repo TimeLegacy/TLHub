@@ -2,10 +2,15 @@ package net.timelegacy.tlhub;
 
 import net.timelegacy.tlcore.TLCore;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
+import net.timelegacy.tlhub.cosmetics.other.BounceEffect;
+import net.timelegacy.tlhub.cosmetics.other.FireworkEffect;
 import net.timelegacy.tlhub.event.InteractEvents;
 import net.timelegacy.tlhub.event.PlayerEvents;
 import net.timelegacy.tlhub.handler.ScoreboardHandler;
+import net.timelegacy.tlhub.menus.CosmeticMenu;
 import net.timelegacy.tlhub.menus.MainMenu;
+import net.timelegacy.tlhub.menus.ParticleMenu;
+import net.timelegacy.tlhub.menus.PetsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -65,6 +70,8 @@ public class TLHub extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MainMenu(), plugin);
         registerEvents();
 
+        cosmetics.register();
+
         scoreboardHandler.updateBoard();
         core.serverHandler.setType(core.serverHandler.getServerUID(), "LOBBY");
         core.worldUtils.setupWorld(Bukkit.getWorld("world"), true);
@@ -79,5 +86,13 @@ public class TLHub extends JavaPlugin {
     private void registerEvents() {
         plugin.getServer().getPluginManager().registerEvents(new PlayerEvents(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new InteractEvents(), plugin);
+
+        Bukkit.getServer().getPluginManager().registerEvents(new ParticleMenu(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new CosmeticMenu(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new PetsMenu(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new CosmeticHandler(), plugin);
+
+        Bukkit.getServer().getPluginManager().registerEvents(new BounceEffect(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new FireworkEffect(), plugin);
     }
 }
