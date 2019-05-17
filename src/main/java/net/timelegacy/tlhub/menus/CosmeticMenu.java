@@ -66,7 +66,7 @@ public class CosmeticMenu implements Listener {
 
         if (event.getCurrentItem().getType() == Material.REDSTONE) {
           p.closeInventory();
-          lobby.cosmetics.particleMenu.openMenu(p);
+          lobby.cosmetics.particleMenu.openMenu(p, 1);
         } else if (event.getCurrentItem().getType() == Material.EGG) {
           p.closeInventory();
           lobby.cosmetics.petsMenu.openMenu(p);

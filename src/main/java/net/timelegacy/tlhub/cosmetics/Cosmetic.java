@@ -26,14 +26,14 @@ public class Cosmetic {
   }
 
   public String getCosmeticIdentifier() {
-    // TODO - FIX THIS
+    // TODO - FIX THIS & switch to enums
     String[] perkthing = perkPerm.split(Pattern.quote("."));
     String node = perkthing[2];
     return node;
   }
 
   public String getCosmeticType() {
-    // TODO - FIX THIS
+    // TODO - FIX THIS & switch to enums
     String[] perkthing = perkPerm.split(Pattern.quote("."));
     String node = perkthing[1];
     return node;
