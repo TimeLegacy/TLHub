@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.timelegacy.tlcore.utils.SkullCreator;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.other.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.other.FireworkEffect;
@@ -61,13 +62,11 @@ public class CosmeticHandler implements Listener {
   public SantaHat santaHat;
   public SnowCloud snowCloud;
   public Walks walks;
-  //Lists
-  public List<Cosmetic> cosmeticsList;
 
   private TLHub lobby = TLHub.getInstance();
-  private HashMap<Player, String> cooldown = new HashMap<Player, String>();
-  private HashMap<Player, String> effects = new HashMap<Player, String>();
-  private HashMap<Player, String> pets = new HashMap<Player, String>();
+  private HashMap<Player, String> cooldown = new HashMap<>();
+  private HashMap<Player, String> effects = new HashMap<>();
+  private HashMap<Player, String> pets = new HashMap<>();
   private HashMap<Player, Entity> petEntity = new HashMap<>();
 
   /**
@@ -75,16 +74,10 @@ public class CosmeticHandler implements Listener {
    */
 
   public void register() {
-    //Lists
-    cosmeticsList = new ArrayList<>();
-
     // Menus
     particleMenu = new ParticleMenu();
     cosmeticMenu = new CosmeticMenu();
     petsMenu = new PetsMenu();
-
-    //Load
-    load();
 
     // Effects
     bounce = new BounceEffect();
@@ -203,10 +196,10 @@ public class CosmeticHandler implements Listener {
           ArmorStand armorStand = pe.getKey().getWorld()
               .spawn(pe.getKey().getLocation(), ArmorStand.class);
 
-          for (Cosmetic cosmetic : cosmeticsList) {
+          for (Cosmetic cosmetic : getCosmetics()) {
             if (cosmetic.getCosmeticIdentifier().equalsIgnoreCase(pe.getValue())) {
-              //armorStand.getEquipment().setHelmet(lobby.core.itemUtils.getCustomSkull(cosmetic.getSkullValue()));
-              //TODO fix pets
+              armorStand.getEquipment()
+                  .setHelmet(SkullCreator.itemFromBase64(cosmetic.getSkullValue()));
             }
           }
 
@@ -277,127 +270,147 @@ public class CosmeticHandler implements Listener {
     return cooldown.containsKey(p) && cooldown.get(p).equalsIgnoreCase(cooldownType);
   }
 
-  public void load() {
+  public List<Cosmetic> getCosmetics() {
+
+    List<Cosmetic> cosmeticsList = new ArrayList<>();
+
+
     //Pets
-    lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.FROG", null, "Frog", "Ribit, Ribit!",
+    cosmeticsList.add(new Cosmetic("LOBBY.PET.FROG", null, "Frog", "Ribit, Ribit!",
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTE1NTQxMmZkMTFkY2QwYWJhNzdhMTgzNzg1ODM1MzdlNzYyNWM2ZjcxZmU0NTJmN2E3MTdkYWUzMzI2ZjIyYSJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.PUFFERFISH", null, "Pufferfish", "Don't scare me! I'll hurt you.",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTcwOTAyOTk3MzJjNTFlZGFmNmM1ZGQ2YWUzZWRkNTk0MzNkYTM3YTc4NzhiOWY0YWY1NDI4ZDdlZDI1N2Y0YiJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.PINK_BUNNY", null, "Pink Bunny", "I like to bounce.",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWIzYTdhYTY5Y2RiNDEyN2Q1NWExYjQ3NmRmNzQ1MGYwMzJiYWQ3YzE1OWNjOTdjYzllNjVlMDIzMjQ5NWU0ZCJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.SHARK", null, "Shark", "Woof, Woof. I'm not a dog.",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk0YWU0MzNiMzAxYzdmYjdjNjhjYmE2MjViMGJkMzZiMGIxNDE5MGYyMGUzNGE3YzhlZTBkOWRlMDZkNTNiOSJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.COP_DOGE", null, "Cop Doge", "I'm a cop doge.",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZjMzZjNjc3MzRjMmQ5NzcwYzZiNDRmMDFlZjEzMTNhYzQ4MWFkY2MzZjM2OWIyZDM1MDgyOWVhMmExY2RjZSJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.KING_DOGE", null, "King Doge", "I'm your king!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzI4NTk1MGZkNjc4NThlNzZjNDM5YjBiNWI4N2M2OWE2YzUyYTRkZjkzNmUyMjRkODQzYjE0YzIyNTY1OTQ5ZSJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.CYBORG_PARROT", null, "Cyborg Parrot", "Bee boop, bee bop.",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2IyYjQ0ODIzMTM5YWFlZjgzMTIyOGI0YmJkYmUzYmY3YWM2ZGFhOWJhYWIxMjMwNTY0NmU5ZmYzNjZlMzYwYiJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.BEE", null, "Bee", "Buzz!",
+    cosmeticsList.add(new Cosmetic("LOBBY.PET.BEE", null, "Bee", "Buzz!",
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg2MThmNDFkYmIzMGQ3MWE4MzE1N2Q2OTYxYjAyM2Y4MTIzMDIxMjFkNzEwNTY5YzkwZmJjMWY0NGRjMTEzNyJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.BURGER", null, "Royal w/ Cheese", "This is a tasty burger!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE4NzRjNzJjZmZkM2MyOWE0YjEyZDQzNTkwNjZkNmM4OTUyNTI5NzE3MmFiZjYyNzI3OTI5ZmViNDZmNDEifX19"));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.MELON", null, "Melon", "I'm 99% ish water!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDU4NjcwNTUxZjdmZjEzYWZhYjIzOTMxOGExMGJhZDIzMjdlZTc0MmUxNTc4MzdlYTE3ODVlZjQ0M2QzYTU3NiJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.ARTICUNO", null, "Articuno", "Gotta catch them all!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzRiZDg5ZGM5NTI4Y2UyZDljMjk3MjU0YzMyMDUwNjE5NTFlYjZiMmYwNjNhZTg0ZGFmY2Q0ZWY3OTc4In19fQ=="));
-    lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.BOJACK", null, "Bojack Horseman",
+    cosmeticsList.add(new Cosmetic("LOBBY.PET.BOJACK", null, "Bojack Horseman",
         "'Dead on the inside, dead on the outside.' - Bojack Horseman",
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTg2NjA0MWQzZjBiMGY4YjE3ZjdkMmNjN2Y2MDY3NmFkMDU3ZWZjNzA4ZjE1YmIyMGM0YWI0M2ViODY0ZDhmZCJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.MEESEEKS", null, "Mr. Meeseeks", "I’m Mr. Meeseeks, look at me!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMDIwNmNjOWI4YWJkMzM2YmQ4MzdmYTc3ZjM3M2FhZjY4ZWU3ZDUzOGQ0MmFiMzQ3NWJjZmQwOTU1ODY3MSJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.MORTY", null, "Morty",
+    cosmeticsList.add(new Cosmetic("LOBBY.PET.MORTY", null, "Morty",
         "'Rick, what about the reality we left behind?' - Morty",
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODdkNjdjOTE0MDZmNDJlZjE2OGI0NjQxMTBmMzEwNDk3YWQ1YzEzZDE5NzNhMDk4OGU0MGRiMTY2ZDI0MWNmNyJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.RICK", null, "Rick", "Wubba Lubba Dub Dub!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDA0M2U3ZjliNTYxZDk5ZWY2MmM3NmU1NjliMTczNzQzMThkNDEzZDQ1YzgxYmUwYWE0NTQ3NGQ4ZjY4MzcifX19"));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.STAN_LEE", null, "Stan Lee", "RIP Stan Lee",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjAzNTYwMmIwMDdlOWFiMmRhZDRmZDM5MGI2N2VhNzFkMDMyN2RiMjI3ODkxM2E4YWE1NmRlYmZiZTk3NjA1ZSJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.TURTLE_KING", null, "Turtle King", "Be the king of the sea!",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWI3OGY3Njc0ZDEwNjMyNTUwNzBmZmZiMmVkYzFmMmI5MzE0ZmU2ODEzYTllYWI4NDQ0YzAzNTNhNzIzZDNkMiJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PET.FLY", null, "Fly", "Everyone hates me... :(",
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTM4NzgwOTZjNDJjNWY4NDY0NjE4MDkwOTVmYjkwZjcyZTkxMWIwZTdhMmFhZTIyMmNkMTMyNmE2Y2NiYiJ9fX0="));
-    lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.PUG", null, "Pug", "Woof!",
+    cosmeticsList.add(new Cosmetic("LOBBY.PET.PUG", null, "Pug", "Woof!",
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzVmMjQyZWNlNmRkNzk5YTcyMmRjYmVlNTY1ZGU4ZWM0MWQwMTcyM2VmYWU1Mzg2ZDgxMzY5OWM3ZTM5ZmIifX19"));
-    lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.HARAMBE", null, "Harambe", "RIP",
+    cosmeticsList.add(new Cosmetic("LOBBY.PET.HARAMBE", null, "Harambe", "RIP",
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdjMGVkOTMxY2FjODE1ZDllZTA1M2ExOTgzZTg3MTliMTIyZjJhODUyYjJmYTViZmU1MjVkZThkMWE3In19fQ=="));
 
-    //lobby.cosmetics.cosmeticsList.add(new Cosmetic("LOBBY.PET.", null, "", "", ""));
+    //cosmeticsList.add(new Cosmetic("LOBBY.PET.", null, "", "", ""));
 
     //Particles
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.ANGELWINGS", Material.IRON_CHESTPLATE, "Angel Wings",
             "&fYou're going to heaven.", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.BLOODHELIX", Material.REDSTONE, "Blood Helix",
             "&fYou're going to heaven.", null));
-    lobby.cosmetics.cosmeticsList
+    cosmeticsList
         .add(new Cosmetic("LOBBY.PARTICLE.CONE", Material.HOPPER, "Cone", "&fCone head...?", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.ENCHANTED", Material.ENCHANTING_TABLE, "Enchanted",
             "&fYou're a wizard Harry!", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.ENDERAURA", Material.ENDER_PEARL, "Ender Aura",
             "&fWatch out for the slender man!", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FLAMEFAIRY", Material.FIRE_CHARGE, "Flame Fairy",
             "&fWho said fairies didn't exist?", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FROZENWALK", Material.ICE, "Frozen Walk",
             "&fBrrrr... It's chilly outside.", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.GREENSPARKS", Material.GRASS, "Green Sparks",
             "&fYou are the green lantern.", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.INLOVE", Material.ROSE_RED, "In Love", "&fAre you in love?",
             null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.MUSIC", Material.JUKEBOX, "DJ in the House",
             "&fShots! Shots! Shots! -LilJohn", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.RAINCLOUD", Material.WATER_BUCKET, "Rain Cloud",
             "&fBetter get an umbrella!", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.SANTAHAT", Material.COAL, "Santa Hat", "&fHo Ho Ho!", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.SNOWCLOUD", Material.SNOWBALL, "Snow Cloud",
             "&fIs it really that time of year?", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.SNOWWALK", Material.SNOW_BLOCK, "Snow Walk",
             "&fAre you frosty the snowman?", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.CRITICALWALK", Material.IRON_SWORD, "Critical Walk",
             "&fYou're the G.O.A.T.", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FIREWALK", Material.FIREWORK_STAR, "Fire Walk",
             "&fShark boy & Lava girl?", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.PORTALWALK", Material.NETHER_STAR, "Portal Walk",
             "&fYou're going to the underworld...", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.MAGICWALK", Material.ENCHANTED_BOOK, "Magic Walk",
             "&fMagic Mike?", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.BOUNCE", Material.DIAMOND_BOOTS, "Bounce",
             "&fBouncy Bouncy! (Shift to activate.)", null));
-    lobby.cosmetics.cosmeticsList.add(
+    cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FIREWORK", Material.FIREWORK_ROCKET, "Firework",
             "&fDon't blow things up jimmy... (Shift to activate.)", null));
 
+    return cosmeticsList;
+  }
+
+  public int getTotal(Player player) {
+    int count = 0;
+
+    String perks = lobby.core.perkHandler.getPerks(player);
+    System.out.println(perks);
+    System.out.println(lobby.cosmetics.getCosmetics().size());
+    for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
+      if (perks.contains(cosmetic.getPerkPerm())) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
 }

@@ -37,7 +37,7 @@ public class PetsMenu implements Listener {
           }
         } else {
 
-          for (Cosmetic cosmetic : lobby.cosmetics.cosmeticsList) {
+          for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
             if (cosmetic.getCosmeticType().equalsIgnoreCase("PET")) {
               if (event.getCurrentItem().getItemMeta()
                   .equals(cosmetic.getItemStack().getItemMeta())) {
@@ -73,7 +73,7 @@ public class PetsMenu implements Listener {
 
     int i = 0;
 
-    for (Cosmetic cosmetic : lobby.cosmetics.cosmeticsList) {
+    for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
       if (cosmetic.getCosmeticType().equalsIgnoreCase("PET")) {
         i = CosmeticMenu.getI(p, menu, i, cosmetic, lobby);
 

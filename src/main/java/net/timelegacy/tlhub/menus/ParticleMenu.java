@@ -38,7 +38,7 @@ public class ParticleMenu implements Listener {
           }
         } else {
 
-          for (Cosmetic cosmetic : lobby.cosmetics.cosmeticsList) {
+          for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
             if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
               if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
                 lobby.cosmetics.setParticle(p, cosmetic.getCosmeticIdentifier());
@@ -69,7 +69,7 @@ public class ParticleMenu implements Listener {
 
     int i = 0;
 
-    for (Cosmetic cosmetic : lobby.cosmetics.cosmeticsList) {
+    for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
       if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
         i = CosmeticMenu.getI(p, menu, i, cosmetic, lobby);
 

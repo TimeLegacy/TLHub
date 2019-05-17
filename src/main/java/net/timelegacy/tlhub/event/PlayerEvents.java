@@ -2,6 +2,7 @@ package net.timelegacy.tlhub.event;
 
 import net.timelegacy.tlcore.TLCore;
 import net.timelegacy.tlcore.handler.Rank;
+import net.timelegacy.tlcore.utils.SkullCreator;
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -65,35 +66,28 @@ public class PlayerEvents implements Listener {
 
   }
 
-  public void hotBarItems(Player player) {
+  public void hotBarItems(Player p) {
 
-    player.getInventory().setItem(0, lobby.core.itemUtils.createItem(Material.TROPICAL_FISH, 1,
-        lobby.core.messageUtils.SECOND_COLOR + "Main Menu " + lobby.core.messageUtils.MAIN_COLOR
-            + "&o(Right Click)",
-        lobby.core.messageUtils.MAIN_COLOR + "Right click to show the main menu."));
-    player.getInventory()
-        .setItem(4, lobby.core.itemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1,
-            lobby.core.messageUtils.SECOND_COLOR + "Gadget" + lobby.core.messageUtils.MAIN_COLOR
-                + " &o(Not Activated)",
-            lobby.core.messageUtils.MAIN_COLOR + "Choose your gadget from the cosmetics menu."));
-    player.getInventory().setItem(8, lobby.core.itemUtils.createItem(Material.BLAZE_POWDER, 1,
-        lobby.core.messageUtils.SECOND_COLOR + "Cosmetics " + lobby.core.messageUtils.MAIN_COLOR
-            + "&o(Right Click)",
-        lobby.core.messageUtils.MAIN_COLOR + "Right click to show the cosmetics."));
+    p.getInventory().setItem(0, lobby.core.itemUtils.createItem(Material.ENCHANTING_TABLE, 1,
+        "&eCosmetics &8{&7Right Click&8}",
+        "&7Open Cosmetics to utilize all your",
+        "&7favorite features.",
+        "&aUnlocked&7: &8(&7" + lobby.cosmetics.getTotal(p) + "/" + lobby.cosmetics.getCosmetics()
+            .size() + "&8)"));
+    p.getInventory().setItem(1, lobby.core.itemUtils.createItem(Material.BEACON, 1,
+        "&eLobby Selector &8{&7Right Click&8}", "&7Right click to select", "&7a lobby to join."));
+    p.getInventory().setItem(4, lobby.core.itemUtils.createItem(Material.ENDER_CHEST, 1,
+        "&eServer Selector &8{&7Right Click&8}", "&7Right click to select", "&7a server to join."));
+    p.getInventory()
+        .setItem(7, lobby.core.itemUtils.createItem(SkullCreator.itemFromUuid(p.getUniqueId()), 1,
+            "&eYour Profile &8{&7Right Click&8}", "&7Right click to view your",
+            "&7profile and alter your user", "&7specific settings."));
+    p.getInventory().setItem(8, lobby.core.itemUtils.createItem(Material.BLAZE_ROD, 1,
+        "&ePlayer Visibility &aEnabled &8{&7Right Click&8}", "&7Right click to no longer",
+        "&7view other players."));
+    p.getInventory().setHeldItemSlot(4);
 
-    for (int i = 0; i < player.getInventory().getSize(); i++) {
-      try {
-        if (player.getInventory().getItem(i) == null) {
-          player.getInventory().setItem(i,
-              lobby.core.itemUtils.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, (byte) 3,
-                  "&f", ""));
-        }
-      } catch (NullPointerException e) {
-
-      }
-    }
-
-    player.updateInventory();
+    p.updateInventory();
 
   }
 

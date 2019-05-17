@@ -21,9 +21,9 @@ public class InteractEvents implements Listener {
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-      if (p.getItemInHand() != null) {
-        Material inHand = p.getItemInHand().getType();
-        if (inHand == Material.BLAZE_POWDER) {
+      if (p.getInventory().getItemInMainHand() != null) {
+        Material inHand = p.getInventory().getItemInMainHand().getType();
+        if (inHand == Material.ENCHANTING_TABLE) {
           event.setCancelled(true);
 
           lobby.cosmetics.cosmeticMenu.openMenu(p);
