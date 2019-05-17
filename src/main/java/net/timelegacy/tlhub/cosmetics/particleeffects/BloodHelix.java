@@ -39,7 +39,7 @@ public class BloodHelix {
             Vector v = new Vector();
             v.setX(Math.cos(angle) * radius2);
             v.setZ(Math.sin(angle) * radius2);
-            TLHub.getInstance().core.particleUtils.display(255, 0, 0, location.add(v));
+            TLHub.getInstance().core.particleUtils.display(255, 0, 0, location2.add(v));
             location2.subtract(v);
             location2.add(0, 0.12d, 0);
             radius2 -= 0.044f;
