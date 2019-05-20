@@ -10,9 +10,11 @@ import org.bukkit.util.Vector;
 
 public class BloodHelix {
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   public static void particleRunnable() {
 
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       double i = 0;
 

@@ -14,6 +14,8 @@ public class GreenSparks {
   private static Random random = new Random();
   static int step;
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   public static byte getRandomColor() {
     float f = random.nextFloat();
     if (f > 0.98) {
@@ -26,7 +28,7 @@ public class GreenSparks {
   }
 
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (CosmeticHandler.particleEnabled(p, "GREENSPARKS")) {
