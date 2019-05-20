@@ -1,6 +1,6 @@
 package net.timelegacy.tlhub.cosmetics.other;
 
-import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,9 +9,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class BounceEffect implements Listener {
 
-  private CosmeticHandler cosmeticHandler = TLHub.getInstance().cosmetics;
-
-  public void bounceEffect(Player p) {
+  public static void bounceEffect(Player p) {
         /*final Player player = p;
         new BukkitRunnable() {
             double t = Math.PI / 2;
@@ -67,21 +65,21 @@ public class BounceEffect implements Listener {
     Player p = e.getPlayer();
 
     if (e.isSneaking()) {
-      if (TLHub.getInstance().cosmetics.particleEnabled(p, "BOUNCE")) {
+      if (CosmeticHandler.particleEnabled(p, "BOUNCE")) {
         if (p.isOnGround()) {
-          if (cosmeticHandler.hasCooldown(p, "BOUNCE")) {
-            TLHub.getInstance().core.messageUtils.sendMessage(p,
-                TLHub.getInstance().core.messageUtils.ERROR_COLOR
+          if (CosmeticHandler.hasCooldown(p, "BOUNCE")) {
+            MessageUtils.sendMessage(p,
+                MessageUtils.ERROR_COLOR
                     + "You must wait before doing that again.",
                 true);
 
           } else {
-            cosmeticHandler.addCooldown(p, 10, "BOUNCE");
+            CosmeticHandler.addCooldown(p, 10, "BOUNCE");
             bounceEffect(p);
           }
         } else {
-          TLHub.getInstance().core.messageUtils.sendMessage(p,
-              TLHub.getInstance().core.messageUtils.ERROR_COLOR
+          MessageUtils.sendMessage(p,
+              MessageUtils.ERROR_COLOR
                   + "You must be on the ground to do that.",
               true);
         }

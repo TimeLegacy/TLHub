@@ -1,6 +1,6 @@
 package net.timelegacy.tlhub;
 
-import net.timelegacy.tlcore.TLCore;
+import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import net.timelegacy.tlhub.cosmetics.other.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.other.FireworkEffect;
@@ -21,20 +21,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TLHub extends JavaPlugin {
 
     private static TLHub plugin;
-    public FileConfiguration config;
+    public static FileConfiguration config;
 
-    public boolean playersOnline;
+    public static boolean playersOnline;
+    public static Location spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
 
-    public ScoreboardHandler scoreboardHandler;
-    public CosmeticHandler cosmetics;
-    public MainMenu mainMenu;
-
-    public TLCore core;
-
-    public Location spawn;
-
-
-    public static TLHub getInstance() {
+    public static TLHub getPlugin() {
         return plugin;
     }
 
@@ -58,29 +50,19 @@ public class TLHub extends JavaPlugin {
             }
         }
 
-        core = TLCore.getInstance();
-
-        scoreboardHandler = new ScoreboardHandler();
-        cosmetics = new CosmeticHandler();
-        mainMenu = new MainMenu();
-
-        core.serverHandler.setMaxPlayers(core.serverHandler.getServerUID(), 50);
-        spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
+        ServerHandler.setMaxPlayers(ServerHandler.getServerUID(), 50);
 
         Bukkit.getPluginManager().registerEvents(new MainMenu(), plugin);
         registerEvents();
 
-        cosmetics.register();
+        CosmeticHandler.register();
 
-        scoreboardHandler.updateBoard();
-        core.serverHandler.setType(core.serverHandler.getServerUID(), "LOBBY");
-        core.worldUtils.setupWorld(Bukkit.getWorld("world"), true);
+        ScoreboardHandler.updateBoard();
+        ServerHandler.setType(ServerHandler.getServerUID(), "LOBBY");
     }
 
     public void onDisable() {
         plugin.getServer().getScheduler().cancelTasks(plugin);
-
-        plugin.getServer().getWorld("world").save();
     }
 
     private void registerEvents() {

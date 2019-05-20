@@ -1,7 +1,9 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
 import java.util.Random;
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -10,12 +12,12 @@ import org.bukkit.util.Vector;
 
 public class FlameFairy {
 
-  public static double randomDouble(double min, double max) {
+  private static double randomDouble(double min, double max) {
     return Math.random() < 0.5 ? ((1 - Math.random()) * (max - min) + min)
         : (Math.random() * (max - min) + min);
   }
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       Vector targetDirection = new Vector(1, 0, 0);
@@ -25,7 +27,7 @@ public class FlameFairy {
       Random random = new Random();
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "FLAMEFAIRY")) {
+        if (CosmeticHandler.particleEnabled(p, "FLAMEFAIRY")) {
 
           Location target = p.getEyeLocation().add(Math.random() * 6 - 3, Math.random() * 1.5,
               Math.random() * 6 - 3);
@@ -63,8 +65,8 @@ public class FlameFairy {
             currentLocation.add(targetDirection.clone().multiply(movementSpeed));
           }
 
-          TLHub.getInstance().core.particleUtils.display(Particle.LAVA, currentLocation);
-          TLHub.getInstance().core.particleUtils.display(Particle.FLAME, currentLocation);
+          ParticleUtils.display(Particle.LAVA, currentLocation);
+          ParticleUtils.display(Particle.FLAME, currentLocation);
 
         }
       }

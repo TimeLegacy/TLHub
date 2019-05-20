@@ -1,7 +1,9 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
 import java.util.Random;
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -10,13 +12,13 @@ import org.bukkit.entity.Player;
 public class CandyCane {
 
   private static Random random = new Random();
-  private int step;
+  private static int step;
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "CANDYCANE")) {
+        if (CosmeticHandler.particleEnabled(p, "CANDYCANE")) {
             if (step > 360) {
                 step = 0;
             }
@@ -27,9 +29,9 @@ public class CandyCane {
           double z = Math.sin(angle) * 1.1f;
           center.add(x, 0, z);
             for (int i = 0; i < 15; i++) {
-                TLHub.getInstance().core.particleUtils.display(Particle.REDSTONE, center);
+              ParticleUtils.display(Particle.REDSTONE, center);
             }
-          TLHub.getInstance().core.particleUtils.display(Particle.FIREWORKS_SPARK, center);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, center);
           step++;
         }
       }

@@ -1,8 +1,9 @@
 package net.timelegacy.tlhub.cosmetics;
 
 import java.util.regex.Pattern;
+import net.timelegacy.tlcore.utils.ItemUtils;
+import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.SkullCreator;
-import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,8 +14,6 @@ public class Cosmetic {
   private final Material material;
   private final String slogan;
   private final String skullValue;
-
-  private TLHub lobby = TLHub.getInstance();
 
   public Cosmetic(String perkPerm, Material material, String name, String slogan,
       String skullValue) {
@@ -47,13 +46,13 @@ public class Cosmetic {
     ItemStack itemStack;
 
     if (material == null && skullValue != null) {
-      itemStack = lobby.core.itemUtils.createItem(
-          SkullCreator.itemFromBase64(skullValue), 1, lobby.core.messageUtils.SECOND_COLOR + name,
-          lobby.core.messageUtils.MAIN_COLOR + slogan);
+      itemStack = ItemUtils.createItem(
+          SkullCreator.itemFromBase64(skullValue), 1, MessageUtils.SECOND_COLOR + name,
+          MessageUtils.MAIN_COLOR + slogan);
     } else {
-      itemStack = lobby.core.itemUtils
-          .createItem(material, 1, lobby.core.messageUtils.SECOND_COLOR + name,
-              lobby.core.messageUtils.MAIN_COLOR + slogan);
+      itemStack = ItemUtils
+          .createItem(material, 1, MessageUtils.SECOND_COLOR + name,
+              MessageUtils.MAIN_COLOR + slogan);
     }
 
     return itemStack;

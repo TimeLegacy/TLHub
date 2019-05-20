@@ -1,6 +1,7 @@
 package net.timelegacy.tlhub.cosmetics.other;
 
-import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlcore.utils.FireworkUtils;
+import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,10 +10,8 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class FireworkEffect implements Listener {
 
-  private CosmeticHandler cosmeticHandler = TLHub.getInstance().cosmetics;
-
   public void fireworkEffect(Player p) {
-    TLHub.getInstance().core.fireworkUtils.spawnFirework(p.getLocation(), 1);
+    FireworkUtils.spawnFirework(p.getLocation(), 1);
   }
 
   @EventHandler
@@ -20,21 +19,21 @@ public class FireworkEffect implements Listener {
     Player p = e.getPlayer();
 
     if (e.isSneaking()) {
-      if (TLHub.getInstance().cosmetics.particleEnabled(p, "FIREWORK")) {
+      if (CosmeticHandler.particleEnabled(p, "FIREWORK")) {
         if (p.isOnGround()) {
-          if (cosmeticHandler.hasCooldown(p, "FIREWORK")) {
-            TLHub.getInstance().core.messageUtils.sendMessage(p,
-                TLHub.getInstance().core.messageUtils.ERROR_COLOR
+          if (CosmeticHandler.hasCooldown(p, "FIREWORK")) {
+            MessageUtils.sendMessage(p,
+                MessageUtils.ERROR_COLOR
                     + "You must wait before doing that again.",
                 true);
 
           } else {
-            cosmeticHandler.addCooldown(p, 10, "FIREWORK");
+            CosmeticHandler.addCooldown(p, 10, "FIREWORK");
             fireworkEffect(p);
           }
         } else {
-          TLHub.getInstance().core.messageUtils.sendMessage(p,
-              TLHub.getInstance().core.messageUtils.ERROR_COLOR
+          MessageUtils.sendMessage(p,
+              MessageUtils.ERROR_COLOR
                   + "You must be on the ground to do that.",
               true);
         }

@@ -1,7 +1,9 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
 import java.util.ArrayList;
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -10,11 +12,11 @@ import org.bukkit.entity.Player;
 
 public class EnderAura {
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "ENDERAURA")) {
+        if (CosmeticHandler.particleEnabled(p, "ENDERAURA")) {
           Location center = p.getLocation().add(0, 2, 0);
           World world = center.getWorld();
           double increment = (2 * Math.PI) / 16;
@@ -26,7 +28,7 @@ public class EnderAura {
             locations.add(new Location(world, x, center.getY(), z));
           }
           for (Location l : locations) {
-            TLHub.getInstance().core.particleUtils.display(Particle.SPELL_WITCH, l);
+            ParticleUtils.display(Particle.SPELL_WITCH, l);
           }
         }
       }

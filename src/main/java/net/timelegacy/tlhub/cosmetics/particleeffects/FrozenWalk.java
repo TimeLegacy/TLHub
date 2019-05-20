@@ -1,6 +1,8 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -21,13 +23,13 @@ public class FrozenWalk {
     return new Vector(newX - loc.getX(), 0, newZ - loc.getZ());
   }
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       // swap this with snow walk to and make this one spawn snow then revert it after using packets
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "FROZENWALK")) {
+        if (CosmeticHandler.particleEnabled(p, "FROZENWALK")) {
           Vector vectorLeft = getLeftVector(p.getLocation()).normalize().multiply(0.15);
           Vector vectorRight = getRightVector(p.getLocation()).normalize().multiply(0.15);
           Location locationLeft = p.getLocation().add(vectorLeft);
@@ -35,8 +37,8 @@ public class FrozenWalk {
           locationLeft.setY(p.getLocation().getY());
           locationRight.setY(p.getLocation().getY());
 
-          TLHub.getInstance().core.particleUtils.display(Particle.FIREWORKS_SPARK, locationLeft);
-          TLHub.getInstance().core.particleUtils.display(Particle.FIREWORKS_SPARK, locationRight);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, locationLeft);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, locationRight);
         }
       }
 

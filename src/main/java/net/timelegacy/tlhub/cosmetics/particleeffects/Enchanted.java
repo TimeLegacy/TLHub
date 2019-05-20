@@ -1,18 +1,20 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 public class Enchanted {
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "ENCHANTED")) {
-          TLHub.getInstance().core.particleUtils
+        if (CosmeticHandler.particleEnabled(p, "ENCHANTED")) {
+          ParticleUtils
               .display(Particle.ENCHANTMENT_TABLE, p.getEyeLocation(), 8, 1);
         }
       }

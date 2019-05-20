@@ -1,6 +1,8 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,9 +10,9 @@ import org.bukkit.util.Vector;
 
 public class AngelWings {
 
-  boolean x = true;
-  boolean o;
-  private boolean[][] shape = {
+  static boolean x = true;
+  static boolean o;
+  private static boolean[][] shape = {
       {o, o, o, o, o, o, o, o, o, o, o, o, o, o, o, o, o, o},
       {o, x, x, x, x, o, o, o, o, o, o, o, x, x, x, x, o, o},
       {o, o, x, x, x, x, x, o, o, o, x, x, x, x, x, o, o, o},
@@ -37,11 +39,11 @@ public class AngelWings {
     return new Vector(newX - loc.getX(), 0, newZ - loc.getZ());
   }
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "ANGELWINGS")) {
+        if (CosmeticHandler.particleEnabled(p, "ANGELWINGS")) {
           Location location = p.getLocation();
 
           double space = 0.2;
@@ -67,7 +69,7 @@ public class AngelWings {
                 location.add(v);
                 location.add(v2);
                 for (int k = 0; k < 3; k++) {
-                  TLHub.getInstance().core.particleUtils.display(255, 255, 255, location);
+                  ParticleUtils.display(255, 255, 255, location);
                 }
                 location.subtract(v2);
                 location.subtract(v);

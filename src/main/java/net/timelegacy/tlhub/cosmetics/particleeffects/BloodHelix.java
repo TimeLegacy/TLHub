@@ -1,6 +1,8 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,14 +10,14 @@ import org.bukkit.util.Vector;
 
 public class BloodHelix {
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
 
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       double i = 0;
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "BLOODHELIX")) {
+        if (CosmeticHandler.particleEnabled(p, "BLOODHELIX")) {
           Location location = p.getLocation();
           Location location2 = location.clone();
           double radius = 1.1d;
@@ -28,7 +30,7 @@ public class BloodHelix {
             Vector v = new Vector();
             v.setX(Math.cos(angle) * radius);
             v.setZ(Math.sin(angle) * radius);
-            TLHub.getInstance().core.particleUtils.display(255, 0, 0, location.add(v));
+            ParticleUtils.display(255, 0, 0, location.add(v));
             location.subtract(v);
             location.add(0, 0.12d, 0);
             radius -= 0.044f;
@@ -39,7 +41,7 @@ public class BloodHelix {
             Vector v = new Vector();
             v.setX(Math.cos(angle) * radius2);
             v.setZ(Math.sin(angle) * radius2);
-            TLHub.getInstance().core.particleUtils.display(255, 0, 0, location2.add(v));
+            ParticleUtils.display(255, 0, 0, location2.add(v));
             location2.subtract(v);
             location2.add(0, 0.12d, 0);
             radius2 -= 0.044f;

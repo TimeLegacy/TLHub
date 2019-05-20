@@ -1,5 +1,7 @@
 package net.timelegacy.tlhub.handler;
 
+import net.timelegacy.tlcore.handler.CoinHandler;
+import net.timelegacy.tlcore.handler.CrateKeyHandler;
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
@@ -7,14 +9,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 
 public class ScoreboardHandler {
 
-  TLHub lobby = TLHub.getInstance();
+  private static TLHub plugin = TLHub.getPlugin();
 
-  public void updateBoard() {
+  public static void updateBoard() {
       new BukkitRunnable() {
       public void run() {
           if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
@@ -23,56 +29,53 @@ public class ScoreboardHandler {
           }
         }
       }
-      }.runTaskTimerAsynchronously(lobby, 0, 20);
+      }.runTaskTimerAsynchronously(plugin, 0, 20);
   }
 
-  public Scoreboard scoreBoard(Player player) {
+  public static Scoreboard scoreBoard(Player player) {
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard board = manager.getNewScoreboard();
     Objective stats = board.registerNewObjective("stats", "dummy");
-      //TODO Remove this shit once you make static methods
-      MessageUtils messageUtils = new MessageUtils();
-      ServerHandler serverHandler = new ServerHandler();
-    // Objective coins = board.registerNewObjective("coins",
-    // "dummy");
 
     stats.setDisplaySlot(DisplaySlot.SIDEBAR);
-      stats.setDisplayName(lobby.core.messageUtils.c(ChatColor.DARK_RED + "" + ChatColor.BOLD + "TIME LEGACY"));
+    stats.setDisplayName(
+        MessageUtils.colorize(ChatColor.DARK_RED + "" + ChatColor.BOLD + "TIME LEGACY"));
 
-      Score spacer1 = stats.getScore(lobby.core.messageUtils.c(""));
+    Score spacer1 = stats.getScore(MessageUtils.colorize("&f"));
       spacer1.setScore(9); // Integer only!
 
       Score server = stats
-              .getScore(lobby.core.messageUtils.c(ChatColor.WHITE + "Server: " + ChatColor.GRAY + messageUtils.friendlyify(serverHandler.getType(lobby.core.serverHandler.getServerUID()))));
+          .getScore(ChatColor.WHITE + "Server: " + ChatColor.GRAY + MessageUtils
+              .friendlyify(ServerHandler.getType(ServerHandler.getServerUID())));
       server.setScore(8); // Integer only!
       //TODO Fix status once API is setup
-      Score status = stats.getScore(lobby.core.messageUtils
-              .c(ChatColor.WHITE + "Status: " + ChatColor.GRAY + "?"));
+    Score status = stats.getScore(ChatColor.WHITE + "Status: " + ChatColor.GRAY + "?");
       status.setScore(7); // Integer only!
 
-      Score spacer2 = stats.getScore(lobby.core.messageUtils.c(""));
+    Score spacer2 = stats.getScore(MessageUtils.colorize("&7"));
       spacer2.setScore(6); // Integer only!
 
-      Score tokens = stats.getScore(lobby.core.messageUtils
-              .c(ChatColor.WHITE + "Tokens: " + ChatColor.AQUA + lobby.core.coinHandler
-            .getBalance(player.getName())));
+    Score tokens = stats.getScore(ChatColor.WHITE + "Tokens: " + ChatColor.AQUA + CoinHandler
+        .getBalance(player.getName()));
       tokens.setScore(5); // Integer only!
 
 
       Score discoveries = stats
-              .getScore(lobby.core.messageUtils.c(lobby.core.messageUtils.MAIN_COLOR + "Discoveries: " + ChatColor.DARK_PURPLE + "?"/*TODO Replace this with the api for it*/ + ChatColor.GRAY + "/" + ChatColor.DARK_PURPLE + "23" /*TODO Replace this with the API once its done*/));
+          .getScore(ChatColor.WHITE + "Discoveries: " + ChatColor.LIGHT_PURPLE
+              + "?"/*TODO Replace this with the api for it*/ + ChatColor.GRAY + "/"
+              + ChatColor.LIGHT_PURPLE + "23" /*TODO Replace this with the API once its done*/);
       discoveries.setScore(4); // Integer only!
 
 
       Score keys = stats
-              .getScore(lobby.core.messageUtils.c(ChatColor.WHITE + "Crates: " + ChatColor.GOLD + lobby.core.crateKeyHandler.getKeys(player)));
+          .getScore(ChatColor.WHITE + "Crates: " + ChatColor.GOLD + CrateKeyHandler
+              .getBalance(player.getName()));
       keys.setScore(3); // Integer only!
 
-      Score spacer3 = stats.getScore(lobby.core.messageUtils.c(""));
+    Score spacer3 = stats.getScore(MessageUtils.colorize("&8"));
     spacer3.setScore(2); // Integer only!
 
-    Score ip = stats.getScore(
-            lobby.core.messageUtils.c(ChatColor.YELLOW + "" + ChatColor.BOLD + "play.timelegacy.net"));
+    Score ip = stats.getScore(ChatColor.YELLOW + "" + ChatColor.BOLD + "play.timelegacy.net");
     ip.setScore(1); // Integer only!
 
     return board;

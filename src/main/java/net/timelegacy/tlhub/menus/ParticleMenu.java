@@ -2,8 +2,12 @@ package net.timelegacy.tlhub.menus;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.timelegacy.tlcore.handler.PerkHandler;
+import net.timelegacy.tlcore.utils.ItemUtils;
+import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cosmetic;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,56 +21,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ParticleMenu implements Listener {
 
-  TLHub lobby = TLHub.getInstance();
-
-  @EventHandler
-  public void onInventoryClick(InventoryClickEvent event) {
-    Player p = (Player) event.getWhoClicked();
-
-    if (event.getCurrentItem() != null) {
-
-      if (event.getInventory().getTitle().equals("Particle Menu")) {
-        event.setCancelled(true);
-
-        int i = 0;
-
-        if (event.getCurrentItem().getType() == Material.BARRIER) {
-          if (lobby.cosmetics.hasParticle(p)) {
-            lobby.cosmetics.removeParticle(p);
-            lobby.core.messageUtils.sendMessage(p,
-                lobby.core.messageUtils.ERROR_COLOR + "You have removed your current cosmetic.",
-                true);
-          } else {
-            lobby.core.messageUtils.sendMessage(p,
-                lobby.core.messageUtils.ERROR_COLOR + "You do not have a cosmetic enabled.",
-                true);
-          }
-        } else {
-
-          for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
-              if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
-                lobby.cosmetics.setParticle(p, cosmetic.getCosmeticIdentifier());
-
-                p.closeInventory();
-
-                lobby.core.messageUtils.sendMessage(p,
-                    lobby.core.messageUtils.MAIN_COLOR + "You have set your cosmetic as "
-                        + lobby.core.messageUtils.SECOND_COLOR + lobby.core.messageUtils
-                        .friendlyify(cosmetic.getCosmeticIdentifier()), true);
-
-                break;
-              }
-            }
-          }
-
-        }
-      }
-    }
-  }
+  private static TLHub plugin = TLHub.getPlugin();
 
   @SuppressWarnings("deprecation")
-  public void openMenu(Player p, int page) {
+  public static void openMenu(Player p, int page) {
 
     Inventory menu = Bukkit.createInventory(p, 54, "Particle Menu");
 
@@ -82,7 +40,7 @@ public class ParticleMenu implements Listener {
       int current = ((i - 10) + start) - forgotten;
 
       ItemStack is;
-      is = lobby.core.itemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&cLoading...");
+      is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&cLoading...");
       menu.setItem(i, is);
     }
 
@@ -112,7 +70,7 @@ public class ParticleMenu implements Listener {
           }
 
           List<Cosmetic> particles = new ArrayList<>();
-          for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
+          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
             if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
               particles.add(cosmetic);
             }
@@ -127,12 +85,12 @@ public class ParticleMenu implements Listener {
           ItemStack itemStack = particles.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (lobby.core.perkHandler.hasPerk(p, particles.get(current).getPerkPerm())) {
+          if (PerkHandler.hasPerk(p.getName(), particles.get(current).getPerkPerm())) {
             ItemMeta ism = is.getItemMeta();
-            ism.getLore().add(lobby.core.messageUtils.c("&a&lUNLOCKED"));
+            ism.getLore().add(MessageUtils.colorize("&a&lUNLOCKED"));
             is.setItemMeta(ism);
           } else {
-            is = lobby.core.itemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&c&lLOCKED",
+            is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&c&lLOCKED",
                 "&fUnlock by opening crates.");
           }
 
@@ -142,9 +100,55 @@ public class ParticleMenu implements Listener {
           p.updateInventory();
         }
       }
-    }.runTaskAsynchronously(TLHub.getInstance());
+    }.runTaskAsynchronously(plugin);
 
 
+  }
+
+  @EventHandler
+  public void onInventoryClick(InventoryClickEvent event) {
+    Player p = (Player) event.getWhoClicked();
+
+    if (event.getCurrentItem() != null) {
+
+      if (event.getInventory().getTitle().equals("Particle Menu")) {
+        event.setCancelled(true);
+
+        int i = 0;
+
+        if (event.getCurrentItem().getType() == Material.BARRIER) {
+          if (CosmeticHandler.hasParticle(p)) {
+            CosmeticHandler.removeParticle(p);
+            MessageUtils.sendMessage(p,
+                MessageUtils.ERROR_COLOR + "You have removed your current cosmetic.",
+                true);
+          } else {
+            MessageUtils.sendMessage(p,
+                MessageUtils.ERROR_COLOR + "You do not have a cosmetic enabled.",
+                true);
+          }
+        } else {
+
+          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
+            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
+              if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
+                CosmeticHandler.setParticle(p, cosmetic.getCosmeticIdentifier());
+
+                p.closeInventory();
+
+                MessageUtils.sendMessage(p,
+                    MessageUtils.MAIN_COLOR + "You have set your cosmetic as "
+                        + MessageUtils.SECOND_COLOR + MessageUtils
+                        .friendlyify(cosmetic.getCosmeticIdentifier()), true);
+
+                break;
+              }
+            }
+          }
+
+        }
+      }
+    }
   }
 
 

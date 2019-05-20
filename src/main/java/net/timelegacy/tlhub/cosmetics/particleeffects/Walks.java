@@ -1,47 +1,49 @@
 package net.timelegacy.tlhub.cosmetics.particleeffects;
 
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 public class Walks {
 
-  public void particleRunnable() {
+  public static void particleRunnable() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "SNOWWALK")) {
+        if (CosmeticHandler.particleEnabled(p, "SNOWWALK")) {
 
-          TLHub.getInstance().core.particleUtils
+          ParticleUtils
               .display(Particle.CLOUD, p.getEyeLocation().add(0, -1.5, 0), 10, 0);
 
 
         }
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "FIREWALK")) {
+        if (CosmeticHandler.particleEnabled(p, "FIREWALK")) {
 
-          TLHub.getInstance().core.particleUtils
+          ParticleUtils
               .display(Particle.FLAME, p.getEyeLocation().add(0, -1.5, 0), 100, 0);
 
 
         }
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "PORTALWALK")) {
+        if (CosmeticHandler.particleEnabled(p, "PORTALWALK")) {
 
-          TLHub.getInstance().core.particleUtils
+          ParticleUtils
               .display(Particle.PORTAL, p.getEyeLocation().add(0, -1.5, 0), 1000, 0);
 
 
         }
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "CRITICALWALK")) {
+        if (CosmeticHandler.particleEnabled(p, "CRITICALWALK")) {
 
-          TLHub.getInstance().core.particleUtils
+          ParticleUtils
               .display(Particle.CRIT, p.getEyeLocation().add(0, -1.5, 0), 100, 0);
 
 
         }
-        if (TLHub.getInstance().cosmetics.particleEnabled(p, "MAGICWALK")) {
+        if (CosmeticHandler.particleEnabled(p, "MAGICWALK")) {
 
-          TLHub.getInstance().core.particleUtils
+          ParticleUtils
               .display(Particle.SPELL_WITCH, p.getEyeLocation().add(0, -1.5, 0), 100, 0);
 
 

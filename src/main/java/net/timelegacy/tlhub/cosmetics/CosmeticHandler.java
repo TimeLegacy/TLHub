@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.timelegacy.tlcore.handler.PerkHandler;
+import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlcore.utils.SkullCreator;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.other.BounceEffect;
-import net.timelegacy.tlhub.cosmetics.other.FireworkEffect;
 import net.timelegacy.tlhub.cosmetics.particleeffects.AngelWings;
 import net.timelegacy.tlhub.cosmetics.particleeffects.BloodHelix;
 import net.timelegacy.tlhub.cosmetics.particleeffects.CandyCane;
@@ -23,9 +23,6 @@ import net.timelegacy.tlhub.cosmetics.particleeffects.RainCloud;
 import net.timelegacy.tlhub.cosmetics.particleeffects.SantaHat;
 import net.timelegacy.tlhub.cosmetics.particleeffects.SnowCloud;
 import net.timelegacy.tlhub.cosmetics.particleeffects.Walks;
-import net.timelegacy.tlhub.menus.CosmeticMenu;
-import net.timelegacy.tlhub.menus.ParticleMenu;
-import net.timelegacy.tlhub.menus.PetsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,79 +36,35 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CosmeticHandler implements Listener {
 
-  // Menus
-  public ParticleMenu particleMenu = new ParticleMenu();
-  public CosmeticMenu cosmeticMenu = new CosmeticMenu();
-  public PetsMenu petsMenu = new PetsMenu();
-  // Effects
-  public BounceEffect bounce;
-  public FireworkEffect firework;
-  // Particles
-  public AngelWings angleWings;
-  public BloodHelix bloodHelix;
-  public CandyCane candyCane;
-  public Cone cone;
-  public Enchanted enchanted;
-  public EnderAura enderAura;
-  public FlameFairy flameFairy;
-  public FrozenWalk frozenWalk;
-  public GreenSparks greenSparks;
-  public InLove inLove;
-  public Music music;
-  public RainCloud rainCloud;
-  public SantaHat santaHat;
-  public SnowCloud snowCloud;
-  public Walks walks;
+  private static HashMap<Player, String> cooldown = new HashMap<>();
+  private static HashMap<Player, String> effects = new HashMap<>();
+  private static HashMap<Player, String> pets = new HashMap<>();
+  private static HashMap<Player, Entity> petEntity = new HashMap<>();
 
-  private TLHub lobby = TLHub.getInstance();
-  private HashMap<Player, String> cooldown = new HashMap<>();
-  private HashMap<Player, String> effects = new HashMap<>();
-  private HashMap<Player, String> pets = new HashMap<>();
-  private HashMap<Player, Entity> petEntity = new HashMap<>();
+  private static TLHub plugin = TLHub.getPlugin();
 
   /**
    * TODO - MAKE THE COSMETIC MENUS & PETS MENUS DYNAMIC & HATS DYNAMIC
    */
 
-  public void register() {
-
-    // Effects
-    bounce = new BounceEffect();
-    firework = new FireworkEffect();
-
-    // Particles
-    angleWings = new AngelWings();
-    bloodHelix = new BloodHelix();
-    candyCane = new CandyCane();
-    cone = new Cone();
-    enchanted = new Enchanted();
-    enderAura = new EnderAura();
-    flameFairy = new FlameFairy();
-    frozenWalk = new FrozenWalk();
-    greenSparks = new GreenSparks();
-    inLove = new InLove();
-    music = new Music();
-    rainCloud = new RainCloud();
-    santaHat = new SantaHat();
-    snowCloud = new SnowCloud();
-    walks = new Walks();
+  public static void register() {
 
     // Particle Runnables
-    angleWings.particleRunnable();
-    bloodHelix.particleRunnable();
-    candyCane.particleRunnable();
-    cone.particleRunnable();
-    enchanted.particleRunnable();
-    enderAura.particleRunnable();
-    flameFairy.particleRunnable();
-    frozenWalk.particleRunnable();
-    greenSparks.particleRunnable();
-    inLove.particleRunnable();
-    music.particleRunnable();
-    rainCloud.particleRunnable();
-    santaHat.particleRunnable();
-    snowCloud.particleRunnable();
-    walks.particleRunnable();
+    AngelWings.particleRunnable();
+    BloodHelix.particleRunnable();
+    CandyCane.particleRunnable();
+    Cone.particleRunnable();
+    Enchanted.particleRunnable();
+    EnderAura.particleRunnable();
+    FlameFairy.particleRunnable();
+    FrozenWalk.particleRunnable();
+    GreenSparks.particleRunnable();
+    InLove.particleRunnable();
+    Music.particleRunnable();
+    RainCloud.particleRunnable();
+    SantaHat.particleRunnable();
+    SnowCloud.particleRunnable();
+    Walks.particleRunnable();
 
     syncPets();
   }
@@ -130,7 +83,7 @@ public class CosmeticHandler implements Listener {
 
   }
 
-  public void setParticle(Player p, String cosmetic) {
+  public static void setParticle(Player p, String cosmetic) {
     if (effects.containsKey(p)) {
       effects.remove(p);
       effects.put(p, cosmetic.toUpperCase());
@@ -140,19 +93,19 @@ public class CosmeticHandler implements Listener {
     }
   }
 
-  public boolean particleEnabled(Player p, String cosmetic) {
+  public static boolean particleEnabled(Player p, String cosmetic) {
     return effects.containsKey(p) && effects.get(p).equalsIgnoreCase(cosmetic);
   }
 
-  public boolean hasParticle(Player p) {
+  public static boolean hasParticle(Player p) {
     return effects.containsKey(p);
   }
 
-  public void removeParticle(Player p) {
+  public static void removeParticle(Player p) {
     effects.remove(p);
   }
 
-  public void setPet(Player p, String cosmetic) {
+  public static void setPet(Player p, String cosmetic) {
     if (pets.containsKey(p)) {
       removePet(p);
 
@@ -162,11 +115,11 @@ public class CosmeticHandler implements Listener {
     }
   }
 
-  public boolean hasPet(Player p) {
+  public static boolean hasPet(Player p) {
     return pets.containsKey(p);
   }
 
-  public void removePet(Player p) {
+  public static void removePet(Player p) {
     pets.remove(p);
     if (petEntity.containsKey(p)) {
       petEntity.get(p).remove();
@@ -174,8 +127,8 @@ public class CosmeticHandler implements Listener {
     }
   }
 
-  public void syncPets() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(lobby, () -> {
+  public static void syncPets() {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
       for (Map.Entry<Player, String> pe : pets.entrySet()) {
 
         if (pets.containsKey(pe.getKey()) && !petEntity.containsKey(pe.getKey())) {
@@ -207,7 +160,7 @@ public class CosmeticHandler implements Listener {
     }, 0, 1);
   }
 
-  private void follow(Player target, Entity follower) {
+  private static void follow(Player target, Entity follower) {
     int direction = getDirection(target);
     if (target.isOnGround()) {
       Location location = target.getLocation()
@@ -215,15 +168,15 @@ public class CosmeticHandler implements Listener {
               direction == 2 ? -1.25 : (direction == 3) ? 1.25 : 0);
       follower.teleport(location);
 
-      Bukkit.getScheduler().scheduleSyncDelayedTask(lobby,
-          () -> lobby.core.particleUtils.display(Particle.FIREWORKS_SPARK, location.add(0, 1, 0)),
+      Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+          () -> ParticleUtils.display(Particle.FIREWORKS_SPARK, location.add(0, 1, 0)),
           2L);
 
     }
 
   }
 
-  private int getDirection(Player player) {
+  private static int getDirection(Player player) {
     // 1 = north, 2 = east, 3 = west, 4 = south
 
     float yaw = player.getLocation().getYaw();
@@ -242,21 +195,21 @@ public class CosmeticHandler implements Listener {
     return 1;
   }
 
-  public void addCooldown(Player p, long seconds, String type) {
+  public static void addCooldown(Player p, long seconds, String type) {
     String cooldownType = type.toUpperCase();
     cooldown.put(p, cooldownType);
 
     Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(
-        TLHub.getInstance(), () -> cooldown.remove(p, cooldownType), 20L * seconds);
+        plugin, () -> cooldown.remove(p, cooldownType), 20L * seconds);
   }
 
-  public boolean hasCooldown(Player p, String type) {
+  public static boolean hasCooldown(Player p, String type) {
     String cooldownType = type.toUpperCase();
 
     return cooldown.containsKey(p) && cooldown.get(p).equalsIgnoreCase(cooldownType);
   }
 
-  public List<Cosmetic> getCosmetics() {
+  public static List<Cosmetic> getCosmetics() {
 
     List<Cosmetic> cosmeticsList = new ArrayList<>();
 
@@ -384,13 +337,13 @@ public class CosmeticHandler implements Listener {
     return cosmeticsList;
   }
 
-  public int getTotal(Player player) {
+  public static int getTotal(Player player) {
     int count = 0;
 
-    String perks = lobby.core.perkHandler.getPerks(player);
+    String perks = PerkHandler.getPerks(player.getName());
     System.out.println(perks);
-    System.out.println(lobby.cosmetics.getCosmetics().size());
-    for (Cosmetic cosmetic : lobby.cosmetics.getCosmetics()) {
+    System.out.println(getCosmetics().size());
+    for (Cosmetic cosmetic : getCosmetics()) {
       if (perks.contains(cosmetic.getPerkPerm())) {
         count++;
       }
