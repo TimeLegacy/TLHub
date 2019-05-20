@@ -11,6 +11,8 @@ import org.bukkit.util.Vector;
 
 public class FrozenWalk {
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   public static Vector getLeftVector(Location loc) {
     final float newX = (float) (loc.getX() + (1 * Math.cos(Math.toRadians(loc.getYaw() + 0))));
     final float newZ = (float) (loc.getZ() + (1 * Math.sin(Math.toRadians(loc.getYaw() + 0))));
@@ -24,7 +26,7 @@ public class FrozenWalk {
   }
 
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       // swap this with snow walk to and make this one spawn snow then revert it after using packets
 

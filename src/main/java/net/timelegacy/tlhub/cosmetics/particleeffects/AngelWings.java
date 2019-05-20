@@ -10,6 +10,8 @@ import org.bukkit.util.Vector;
 
 public class AngelWings {
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   static boolean x = true;
   static boolean o;
   private static boolean[][] shape = {
@@ -40,7 +42,7 @@ public class AngelWings {
   }
 
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (CosmeticHandler.particleEnabled(p, "ANGELWINGS")) {

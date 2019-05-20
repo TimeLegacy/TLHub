@@ -12,13 +12,15 @@ import org.bukkit.util.Vector;
 
 public class FlameFairy {
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   private static double randomDouble(double min, double max) {
     return Math.random() < 0.5 ? ((1 - Math.random()) * (max - min) + min)
         : (Math.random() * (max - min) + min);
   }
 
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       Vector targetDirection = new Vector(1, 0, 0);
 

@@ -53,7 +53,7 @@ public class BounceEffect implements Listener {
                 }
             }
 
-        }.runTaskTimer(TLHub.getInstance(), 0, 1);
+        }.runTaskTimer(plugin, 0, 1);
 
         p.setVelocity(new Vector(0, 1, 0));*/
 

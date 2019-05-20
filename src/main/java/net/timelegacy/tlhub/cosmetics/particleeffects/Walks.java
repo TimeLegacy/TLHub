@@ -9,8 +9,10 @@ import org.bukkit.entity.Player;
 
 public class Walks {
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (CosmeticHandler.particleEnabled(p, "SNOWWALK")) {

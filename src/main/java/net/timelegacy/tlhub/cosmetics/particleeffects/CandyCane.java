@@ -14,8 +14,10 @@ public class CandyCane {
   private static Random random = new Random();
   private static int step;
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(TLHub.getInstance(), () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (CosmeticHandler.particleEnabled(p, "CANDYCANE")) {
