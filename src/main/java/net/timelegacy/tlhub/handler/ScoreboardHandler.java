@@ -29,7 +29,7 @@ public class ScoreboardHandler {
           }
         }
       }
-      }.runTaskTimerAsynchronously(plugin, 0, 20);
+      }.runTaskTimer(plugin, 0, 20);
   }
 
   public static Scoreboard scoreBoard(Player player) {
