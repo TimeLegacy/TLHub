@@ -1,61 +1,58 @@
 package net.timelegacy.tlhub.cosmetics.other;
 
 import net.timelegacy.tlcore.utils.MessageUtils;
+import net.timelegacy.tlcore.utils.ParticleUtils;
+import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class BounceEffect implements Listener {
 
+  private static TLHub plugin = TLHub.getPlugin();
+
   public static void bounceEffect(Player p) {
-        /*final Player player = p;
-        new BukkitRunnable() {
-            double t = Math.PI / 2;
-            Location loc = player.getLocation();
+    final Player player = p;
+    new BukkitRunnable() {
+      double t = Math.PI / 2;
+      Location loc = player.getLocation();
 
-            public void run() {
-                t = t + 0.1 * Math.PI;
-                for (double theta = 0; theta <= 2 * Math.PI; theta = theta + Math.PI / 32) {
-                    double x = t * Math.cos(theta);
-                    double y = 2 * Math.exp(-0.1 * t) * Math.sin(t) + 0.5;
-                    double z = t * Math.sin(theta);
-                    loc.add(x, y, z);
+      public void run() {
+        t = t + 0.1 * Math.PI;
+        for (double theta = 0; theta <= 2 * Math.PI; theta = theta + Math.PI / 32) {
+          double x = t * Math.cos(theta);
+          double y = 2 * Math.exp(-0.1 * t) * Math.sin(t) + 0.5;
+          double z = t * Math.sin(theta);
+          loc.add(x, y, z);
 
-                    PacketPlayOutWorldParticles packet2 = new PacketPlayOutWorldParticles(Particle.FIREWORKS_SPARK,
-                            false, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), 0, 0, 0, 1, 0, null);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, loc);
 
-                    for (Player online : Bukkit.getOnlinePlayers()) {
-                        ((CraftPlayer) online).getHandle().playerConnection.sendPacket(packet2);
-                    }
+          loc.subtract(x, y, z);
 
-                    loc.subtract(x, y, z);
+          theta = theta + Math.PI / 32;
 
-                    theta = theta + Math.PI / 32;
+          x = t * Math.cos(theta);
+          y = 2 * Math.exp(-0.1 * t) * Math.sin(t) + 0.5;
+          z = t * Math.sin(theta);
+          loc.add(x, y, z);
 
-                    x = t * Math.cos(theta);
-                    y = 2 * Math.exp(-0.1 * t) * Math.sin(t) + 0.5;
-                    z = t * Math.sin(theta);
-                    loc.add(x, y, z);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, loc);
 
-                    PacketPlayOutWorldParticles packet1 = new PacketPlayOutWorldParticles(Particle.SPELL_WITCH,
-                            false, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), 0, 0, 0, 1, 0, null);
+          loc.subtract(x, y, z);
+        }
+        if (t > 5) {
+          this.cancel();
+        }
+      }
+    }.runTaskTimer(plugin, 0, 1);
 
-                    for (Player online : Bukkit.getOnlinePlayers()) {
-                        ((CraftPlayer) online).getHandle().playerConnection.sendPacket(packet1);
-                    }
-
-                    loc.subtract(x, y, z);
-                }
-                if (t > 5) {
-                    this.cancel();
-                }
-            }
-
-        }.runTaskTimer(plugin, 0, 1);
-
-        p.setVelocity(new Vector(0, 1, 0));*/
+    p.setVelocity(new Vector(0, 1, 0));
 
     //TODO fix
   }

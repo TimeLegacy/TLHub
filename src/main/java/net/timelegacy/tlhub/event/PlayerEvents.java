@@ -75,7 +75,8 @@ public class PlayerEvents implements Listener {
         "&eCosmetics &8{&7Right Click&8}",
         "&7Open Cosmetics to utilize all your",
         "&7favorite features.",
-        "&aUnlocked&7: &8(&7" + CosmeticHandler.getTotal(p) + "/" + CosmeticHandler.getCosmetics()
+        "&aUnlocked&7: &8(&7" + CosmeticHandler.getTotals(p).get("player") + "/" + CosmeticHandler
+            .getCosmetics()
             .size() + "&8)"));
     p.getInventory().setItem(1, ItemUtils.createItem(Material.BEACON, 1,
         "&eLobby Selector &8{&7Right Click&8}", "&7Right click to select", "&7a lobby to join."));

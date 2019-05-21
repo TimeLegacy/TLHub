@@ -22,6 +22,10 @@
       <id>snapshots</id>
       <url>http://116.203.125.47:8091/nexus/content/repositories/snapshots/</url>
     </repository>
+    <repository>
+      <id>tta-repo</id>
+      <url>http://releases.herbystar.eu/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -37,6 +41,12 @@
       <groupId>net.timelegacy</groupId>
       <artifactId>TLCore</artifactId>
       <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <!-- TTA 3.6 -->
+    <dependency>
+      <groupId>de.Herbystar</groupId>
+      <artifactId>TTA</artifactId>
+      <version>4.8</version>
     </dependency>
   </dependencies>
 

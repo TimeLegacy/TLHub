@@ -2,5 +2,5 @@ name: TLHub
 version: 1.0
 main: net.timelegacy.tlhub.TLHub
 author: Nyarrth
-depend: [TLCore]
+depend: [TLCore, TTA]
 api-version: 1.13

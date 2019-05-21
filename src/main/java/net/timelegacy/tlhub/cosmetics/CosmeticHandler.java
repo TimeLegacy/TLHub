@@ -337,19 +337,85 @@ public class CosmeticHandler implements Listener {
     return cosmeticsList;
   }
 
-  public static int getTotal(Player player) {
-    int count = 0;
+  public static HashMap<String, Integer> getTotals(Player player) {
+    HashMap<String, Integer> totals = new HashMap<>();
 
-    String perks = PerkHandler.getPerks(player.getName());
-    System.out.println(perks);
-    System.out.println(getCosmetics().size());
-    for (Cosmetic cosmetic : getCosmetics()) {
-      if (perks.contains(cosmetic.getPerkPerm())) {
-        count++;
-      }
+    String perks = "";
+    if (player != null) {
+      perks = PerkHandler.getPerks(player.getName());
     }
 
-    return count;
+    int hatsInt = 0;
+    int gadgetsInt = 0;
+    int particlesInt = 0;
+    int outfitsInt = 0;
+    int petsInt = 0;
+
+    int totalInt = hatsInt + gadgetsInt + particlesInt + outfitsInt + petsInt;
+
+    int playerInt = 0;
+    int playerHats = 0;
+    int playerGadgets = 0;
+    int playerParticles = 0;
+    int playerOutfits = 0;
+    int playerPets = 0;
+
+    for (Cosmetic cosmetic : getCosmetics()) {
+      switch (cosmetic.getCosmeticType()) {
+        case "PARTICLE":
+          if (perks.contains(cosmetic.getPerkPerm())) {
+            playerInt++;
+            playerParticles++;
+          }
+          particlesInt++;
+          break;
+        case "PET":
+          if (perks.contains(cosmetic.getPerkPerm())) {
+            playerInt++;
+            playerPets++;
+          }
+          petsInt++;
+          break;
+        case "HAT":
+          if (perks.contains(cosmetic.getPerkPerm())) {
+            playerInt++;
+            playerHats++;
+          }
+          hatsInt++;
+          break;
+        case "GADGET":
+          if (perks.contains(cosmetic.getPerkPerm())) {
+            playerInt++;
+            playerGadgets++;
+          }
+          gadgetsInt++;
+          break;
+        case "OUTFIT":
+          if (perks.contains(cosmetic.getPerkPerm())) {
+            playerInt++;
+            playerOutfits++;
+          }
+          outfitsInt++;
+          break;
+      }
+
+      totals.put("player", playerInt);
+      totals.put("playerHats", playerHats);
+      totals.put("playerGadgets", playerGadgets);
+      totals.put("playerParticles", playerParticles);
+      totals.put("playerOutfits", playerOutfits);
+      totals.put("playerPets", playerOutfits);
+    }
+
+    totals.put("hats", hatsInt);
+    totals.put("gadgets", gadgetsInt);
+    totals.put("total", totalInt);
+    totals.put("particles", particlesInt);
+    totals.put("outfits", outfitsInt);
+    totals.put("pets", petsInt);
+
+    return totals;
   }
+
 
 }

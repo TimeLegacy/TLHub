@@ -3,13 +3,16 @@ package net.timelegacy.tlhub.menus;
 import java.util.ArrayList;
 import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
+import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cosmetic;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,33 +29,18 @@ public class ParticleMenu implements Listener {
   @SuppressWarnings("deprecation")
   public static void openMenu(Player p, int page) {
 
-    Inventory menu = Bukkit.createInventory(p, 54, "Particle Menu");
-
-    int start = (page * 21) - 21;
-    int forgotten = 0;
-
-    for (int i = 10; i <= 34; i++) {
-      if (i == 17 || i == 18 || i == 26 || i == 27) {
-        forgotten++;
-        continue;
-      }
-
-      int current = ((i - 10) + start) - forgotten;
-
-      ItemStack is;
-      is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&cLoading...");
-      menu.setItem(i, is);
-    }
+    Inventory menu = Bukkit
+        .createInventory(p, 54, MessageUtils.colorize("&8&lParticles >> &8&nPage " + page));
 
     //TODO fix
 
     // Row 5
-    /*menu.setItem(39, ItemUtils.createItem(Material.ARROW, Utils.color("&aPrevious Page")));
-    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, Utils.color("&cReset Trail")));
-    menu.setItem(41, ItemUtils.createItem(Material.ARROW, Utils.color("&aNext Page")));*/
+    menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
+    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Particle"));
+    menu.setItem(41, ItemUtils.createItem(Material.ARROW, 1, "&aNext Page"));
 
     // Row 6
-    //menu.setItem(49, ItemUtils.createItem(Material.ENCHANTING_TABLE, Utils.color("&eReturn to Cosmetics")));
+    menu.setItem(49, ItemUtils.createItem(Material.ENCHANTING_TABLE, 1, "&eReturn to Cosmetics"));
 
     p.openInventory(menu);
 
@@ -85,24 +73,33 @@ public class ParticleMenu implements Listener {
           ItemStack itemStack = particles.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getName(), particles.get(current).getPerkPerm())) {
+          if (PerkHandler.hasPerk(p.getName(), particles.get(current).getPerkPerm())
+              || RankHandler.getRank(p.getName()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
-            ism.getLore().add(MessageUtils.colorize("&a&lUNLOCKED"));
+            List<String> lore = ism.getLore();
+            if (CosmeticHandler.particleEnabled(
+                p, particles.get(current).getCosmeticIdentifier())) {
+              ism.addEnchant(Enchantment.DURABILITY, 1, true);
+              lore.add(MessageUtils.colorize("&a&lENABLED!"));
+            } else {
+              lore.add(MessageUtils.colorize("&a&lUNLOCKED"));
+            }
+            ism.setLore(lore);
             is.setItemMeta(ism);
           } else {
-            is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&c&lLOCKED",
-                "&fUnlock by opening crates.");
+            is =
+                ItemUtils.createItem(
+                    Material.RED_STAINED_GLASS_PANE,
+                    1,
+                    "&c&lLOCKED",
+                    "&fUnlock by opening crates.");
           }
-
-          //todo check if player has one and make it glow to show they have it enabled.
 
           menu.setItem(i, is);
           p.updateInventory();
         }
       }
     }.runTaskAsynchronously(plugin);
-
-
   }
 
   @EventHandler
@@ -111,21 +108,61 @@ public class ParticleMenu implements Listener {
 
     if (event.getCurrentItem() != null) {
 
-      if (event.getInventory().getTitle().equals("Particle Menu")) {
+      String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
+
+      if (title.startsWith("Particles>>Page")) {
         event.setCancelled(true);
 
         int i = 0;
 
-        if (event.getCurrentItem().getType() == Material.BARRIER) {
+        if (event.getCurrentItem().getItemMeta().getDisplayName()
+            .equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
+          CosmeticMenu.openMenu(p);
+          return;
+        }
+
+        int pageNumber = Integer.parseInt(title.split("Page")[1]);
+
+        if (event.getCurrentItem().getItemMeta().getDisplayName()
+            .equals(MessageUtils.colorize("&cReset Particle"))) {
           if (CosmeticHandler.hasParticle(p)) {
             CosmeticHandler.removeParticle(p);
             MessageUtils.sendMessage(p,
-                MessageUtils.ERROR_COLOR + "You have removed your current cosmetic.",
+                MessageUtils.ERROR_COLOR + "You have removed your particle cosmetic.",
                 true);
           } else {
             MessageUtils.sendMessage(p,
-                MessageUtils.ERROR_COLOR + "You do not have a cosmetic enabled.",
+                MessageUtils.ERROR_COLOR + "You do not have a particle enabled.",
                 true);
+          }
+          return;
+        }
+
+        if (event.getCurrentItem().getItemMeta().getDisplayName()
+            .equals(MessageUtils.colorize("&aPrevious Page"))) {
+          if (pageNumber == 1) {
+            MenuUtils.displayGUIError(
+                event.getInventory(), event.getSlot(), event.getCurrentItem(),
+                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"), 3);
+            return;
+          } else {
+            openMenu(p, pageNumber - 1);
+            return;
+          }
+        }
+
+        if (event.getCurrentItem().getItemMeta().getDisplayName()
+            .equals(MessageUtils.colorize("&aNext Page"))) {
+          double pages = (double) CosmeticHandler.getTotals(p).get("particles") / 21;
+
+          if (pageNumber == MenuUtils.roundUp(pages)) {
+            MenuUtils.displayGUIError(
+                event.getInventory(), event.getSlot(), event.getCurrentItem(),
+                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"), 3);
+            return;
+          } else {
+            openMenu(p, pageNumber + 1);
+            return;
           }
         } else {
 
