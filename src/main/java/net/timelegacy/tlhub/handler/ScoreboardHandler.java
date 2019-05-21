@@ -39,7 +39,7 @@ public class ScoreboardHandler {
 
     stats.setDisplaySlot(DisplaySlot.SIDEBAR);
     stats.setDisplayName(
-        MessageUtils.colorize(ChatColor.DARK_RED + "" + ChatColor.BOLD + "TIME LEGACY"));
+        MessageUtils.colorize(ChatColor.RED + "" + ChatColor.BOLD + "TIME LEGACY"));
 
     Score spacer1 = stats.getScore(MessageUtils.colorize("&f"));
       spacer1.setScore(9); // Integer only!
@@ -75,7 +75,7 @@ public class ScoreboardHandler {
     Score spacer3 = stats.getScore(MessageUtils.colorize("&8"));
     spacer3.setScore(2); // Integer only!
 
-    Score ip = stats.getScore(ChatColor.YELLOW + "" + ChatColor.BOLD + "play.timelegacy.net");
+    Score ip = stats.getScore(ChatColor.YELLOW + "play.timelegacy.net");
     ip.setScore(1); // Integer only!
 
     return board;
