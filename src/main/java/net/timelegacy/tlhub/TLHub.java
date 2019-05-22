@@ -2,7 +2,20 @@ package net.timelegacy.tlhub;
 
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
-import net.timelegacy.tlhub.cosmetics.GadgetsListener;
+import net.timelegacy.tlhub.cosmetics.gadgets.AnimalCannon;
+import net.timelegacy.tlhub.cosmetics.gadgets.BatLauncher;
+import net.timelegacy.tlhub.cosmetics.gadgets.DiscoBall;
+import net.timelegacy.tlhub.cosmetics.gadgets.Evolution;
+import net.timelegacy.tlhub.cosmetics.gadgets.ExplosiveSnowball;
+import net.timelegacy.tlhub.cosmetics.gadgets.Firecracker;
+import net.timelegacy.tlhub.cosmetics.gadgets.HeadRider;
+import net.timelegacy.tlhub.cosmetics.gadgets.PaintballGun;
+import net.timelegacy.tlhub.cosmetics.gadgets.Partner;
+import net.timelegacy.tlhub.cosmetics.gadgets.PartyPopper;
+import net.timelegacy.tlhub.cosmetics.gadgets.SheepBomb;
+import net.timelegacy.tlhub.cosmetics.gadgets.SuperPunch;
+import net.timelegacy.tlhub.cosmetics.gadgets.TNTFountain;
+import net.timelegacy.tlhub.cosmetics.gadgets.ThorsHammer;
 import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
 import net.timelegacy.tlhub.cosmetics.menu.GadgetsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.HatsMenu;
@@ -77,8 +90,24 @@ public class TLHub extends JavaPlugin {
     Bukkit.getServer().getPluginManager().registerEvents(new PetsMenu(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new HatsMenu(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new GadgetsMenu(), plugin);
-    Bukkit.getServer().getPluginManager().registerEvents(new GadgetsListener(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new CosmeticHandler(), plugin);
+
+    Bukkit.getServer().getPluginManager().registerEvents(new AnimalCannon(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new BatLauncher(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new DiscoBall(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new Evolution(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new ExplosiveSnowball(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new Firecracker(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new HeadRider(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new PaintballGun(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new Partner(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new PartyPopper(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new SheepBomb(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new SuperPunch(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new SheepBomb(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new SuperPunch(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new ThorsHammer(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new TNTFountain(), plugin);
 
     Bukkit.getServer().getPluginManager().registerEvents(new BounceEffect(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new FireworkEffect(), plugin);
