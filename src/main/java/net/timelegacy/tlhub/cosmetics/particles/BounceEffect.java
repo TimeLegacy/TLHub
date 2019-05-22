@@ -3,6 +3,7 @@ package net.timelegacy.tlhub.cosmetics.particles;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -62,12 +63,15 @@ public class BounceEffect implements Listener {
     if (e.isSneaking()) {
       if (CosmeticHandler.particleEnabled(p, "BOUNCE")) {
         if (p.isOnGround()) {
-          if (CosmeticHandler.hasCooldown(p, "BOUNCE")) {
+          if (Cooldown.hasCooldown(p.getUniqueId(), "BOUNCE")) {
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You must wait before doing that again.", true);
+                p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+                    .getTimeLeft(p.getUniqueId(), "BOUNCE")
+                    + (Cooldown.getTimeLeft(p.getUniqueId(), "BOUNCE") > 1 ? "seconds" : "second") +
+                    " before doing that again.", true);
 
           } else {
-            CosmeticHandler.addCooldown(p, 3, "BOUNCE");
+            new Cooldown(p.getUniqueId(), "BOUNCE", 3).start();
             bounceEffect(p);
           }
         } else {

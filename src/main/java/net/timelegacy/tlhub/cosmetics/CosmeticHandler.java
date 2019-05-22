@@ -37,7 +37,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CosmeticHandler implements Listener {
 
-  private static HashMap<Player, String> cooldown = new HashMap<>();
   private static HashMap<Player, String> effects = new HashMap<>();
   private static HashMap<Player, String> pets = new HashMap<>();
   private static HashMap<Player, Entity> petEntity = new HashMap<>();
@@ -195,21 +194,6 @@ public class CosmeticHandler implements Listener {
       return 2;
     }
     return 1;
-  }
-
-  public static void addCooldown(Player p, long seconds, String type) {
-    String cooldownType = type.toUpperCase();
-    cooldown.put(p, cooldownType);
-
-    Bukkit.getServer()
-        .getScheduler()
-        .scheduleAsyncDelayedTask(plugin, () -> cooldown.remove(p, cooldownType), 20L * seconds);
-  }
-
-  public static boolean hasCooldown(Player p, String type) {
-    String cooldownType = type.toUpperCase();
-
-    return cooldown.containsKey(p) && cooldown.get(p).equalsIgnoreCase(cooldownType);
   }
 
   public static List<Cosmetic> getCosmetics() {
