@@ -26,6 +26,10 @@
       <id>tta-repo</id>
       <url>http://releases.herbystar.eu/</url>
     </repository>
+    <repository>
+      <id>dre-repo</id>
+      <url>https://erethon.de/repo/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -48,7 +52,39 @@
       <artifactId>TTA</artifactId>
       <version>4.8</version>
     </dependency>
+    <!-- HeadLib 3.0.1 -->
+    <dependency>
+      <groupId>de.erethon</groupId>
+      <artifactId>headlib</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>de.erethon:headlib</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <distributionManagement>
     <snapshotRepository>

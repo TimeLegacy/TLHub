@@ -1,9 +1,10 @@
 package net.timelegacy.tlhub.cosmetics;
 
+import de.erethon.headlib.HeadLib;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
-import net.timelegacy.tlcore.utils.SkullCreator;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,9 +47,10 @@ public class Cosmetic {
     ItemStack itemStack;
 
     if (material == null && skullValue != null) {
-      itemStack = ItemUtils.createItem(
-          SkullCreator.itemFromBase64(skullValue), 1, MessageUtils.SECOND_COLOR + name,
+      ItemStack itemStack1 = ItemUtils
+          .createItem(Material.PLAYER_HEAD, 1, MessageUtils.SECOND_COLOR + name,
           MessageUtils.MAIN_COLOR + slogan);
+      itemStack = HeadLib.setSkullOwner(itemStack1, UUID.randomUUID(), skullValue);
     } else {
       itemStack = ItemUtils
           .createItem(material, 1, MessageUtils.SECOND_COLOR + name,

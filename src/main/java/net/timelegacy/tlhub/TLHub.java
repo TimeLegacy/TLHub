@@ -24,7 +24,7 @@ public class TLHub extends JavaPlugin {
     public static FileConfiguration config;
 
     public static boolean playersOnline;
-    public static Location spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
+    public static Location spawn;
 
     public static TLHub getPlugin() {
         return plugin;
@@ -36,6 +36,8 @@ public class TLHub extends JavaPlugin {
 
         plugin = this;
         config = plugin.getConfig();
+
+        spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
 
         plugin.saveDefaultConfig();
         plugin.getConfig().options().copyDefaults(true);

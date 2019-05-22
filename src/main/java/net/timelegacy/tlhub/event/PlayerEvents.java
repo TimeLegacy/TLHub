@@ -5,7 +5,6 @@ import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
-import net.timelegacy.tlcore.utils.SkullCreator;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import net.timelegacy.tlhub.handler.ScoreboardHandler;
@@ -83,7 +82,7 @@ public class PlayerEvents implements Listener {
     p.getInventory().setItem(4, ItemUtils.createItem(Material.ENDER_CHEST, 1,
         "&eServer Selector &8{&7Right Click&8}", "&7Right click to select", "&7a server to join."));
     p.getInventory()
-        .setItem(7, ItemUtils.createItem(SkullCreator.itemFromUuid(p.getUniqueId()), 1,
+        .setItem(7, ItemUtils.createItem(ItemUtils.playerSkull(p.getUniqueId()), 1,
             "&eYour Profile &8{&7Right Click&8}", "&7Right click to view your",
             "&7profile and alter your user", "&7specific settings."));
     p.getInventory().setItem(8, ItemUtils.createItem(Material.BLAZE_ROD, 1,

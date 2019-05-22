@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.utils.ParticleUtils;
-import net.timelegacy.tlcore.utils.SkullCreator;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.particleeffects.AngelWings;
 import net.timelegacy.tlhub.cosmetics.particleeffects.BloodHelix;
@@ -97,6 +96,14 @@ public class CosmeticHandler implements Listener {
     return effects.containsKey(p) && effects.get(p).equalsIgnoreCase(cosmetic);
   }
 
+  public static String getPet(Player player) {
+    if (hasPet(player)) {
+      return pets.get(player);
+    } else {
+      return "";
+    }
+  }
+
   public static boolean hasParticle(Player p) {
     return effects.containsKey(p);
   }
@@ -105,13 +112,13 @@ public class CosmeticHandler implements Listener {
     effects.remove(p);
   }
 
-  public static void setPet(Player p, String cosmetic) {
-    if (pets.containsKey(p)) {
-      removePet(p);
+  public static void setPet(Player player, String cosmetic) {
+    if (pets.containsKey(player)) {
+      removePet(player);
 
-      pets.put(p, cosmetic.toUpperCase());
+      pets.put(player, cosmetic.toUpperCase());
     } else {
-      pets.put(p, cosmetic);
+      pets.put(player, cosmetic);
     }
   }
 
@@ -138,7 +145,7 @@ public class CosmeticHandler implements Listener {
           for (Cosmetic cosmetic : getCosmetics()) {
             if (cosmetic.getCosmeticIdentifier().equalsIgnoreCase(pe.getValue())) {
               armorStand.getEquipment()
-                  .setHelmet(SkullCreator.itemFromBase64(cosmetic.getSkullValue()));
+                  .setHelmet(cosmetic.getItemStack());
             }
           }
 
@@ -277,62 +284,62 @@ public class CosmeticHandler implements Listener {
     //Particles
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.ANGELWINGS", Material.IRON_CHESTPLATE, "Angel Wings",
-            "&fYou're going to heaven.", null));
+            "You're going to heaven.", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.BLOODHELIX", Material.REDSTONE, "Blood Helix",
-            "&fYou're going to heaven.", null));
+            "You're going to heaven.", null));
     cosmeticsList
-        .add(new Cosmetic("LOBBY.PARTICLE.CONE", Material.HOPPER, "Cone", "&fCone head...?", null));
+        .add(new Cosmetic("LOBBY.PARTICLE.CONE", Material.HOPPER, "Cone", "Cone head...?", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.ENCHANTED", Material.ENCHANTING_TABLE, "Enchanted",
-            "&fYou're a wizard Harry!", null));
+            "You're a wizard Harry!", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.ENDERAURA", Material.ENDER_PEARL, "Ender Aura",
-            "&fWatch out for the slender man!", null));
+            "Watch out for the slender man!", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FLAMEFAIRY", Material.FIRE_CHARGE, "Flame Fairy",
-            "&fWho said fairies didn't exist?", null));
+            "Who said fairies didn't exist?", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FROZENWALK", Material.ICE, "Frozen Walk",
-            "&fBrrrr... It's chilly outside.", null));
+            "Brrrr... It's chilly outside.", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.GREENSPARKS", Material.GRASS, "Green Sparks",
-            "&fYou are the green lantern.", null));
+            "You are the green lantern.", null));
     cosmeticsList.add(
-        new Cosmetic("LOBBY.PARTICLE.INLOVE", Material.ROSE_RED, "In Love", "&fAre you in love?",
+        new Cosmetic("LOBBY.PARTICLE.INLOVE", Material.ROSE_RED, "In Love", "Are you in love?",
             null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.MUSIC", Material.JUKEBOX, "DJ in the House",
-            "&fShots! Shots! Shots! -LilJohn", null));
+            "Shots! Shots! Shots! -LilJohn", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.RAINCLOUD", Material.WATER_BUCKET, "Rain Cloud",
-            "&fBetter get an umbrella!", null));
+            "Better get an umbrella!", null));
     cosmeticsList.add(
-        new Cosmetic("LOBBY.PARTICLE.SANTAHAT", Material.COAL, "Santa Hat", "&fHo Ho Ho!", null));
+        new Cosmetic("LOBBY.PARTICLE.SANTAHAT", Material.COAL, "Santa Hat", "Ho Ho Ho!", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.SNOWCLOUD", Material.SNOWBALL, "Snow Cloud",
-            "&fIs it really that time of year?", null));
+            "Is it really that time of year?", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.SNOWWALK", Material.SNOW_BLOCK, "Snow Walk",
-            "&fAre you frosty the snowman?", null));
+            "Are you frosty the snowman?", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.CRITICALWALK", Material.IRON_SWORD, "Critical Walk",
-            "&fYou're the G.O.A.T.", null));
+            "You're the G.O.A.T.", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FIREWALK", Material.FIREWORK_STAR, "Fire Walk",
-            "&fShark boy & Lava girl?", null));
+            "Shark boy & Lava girl?", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.PORTALWALK", Material.NETHER_STAR, "Portal Walk",
-            "&fYou're going to the underworld...", null));
+            "You're going to the underworld...", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.MAGICWALK", Material.ENCHANTED_BOOK, "Magic Walk",
-            "&fMagic Mike?", null));
+            "Magic Mike?", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.BOUNCE", Material.DIAMOND_BOOTS, "Bounce",
-            "&fBouncy Bouncy! (Shift to activate.)", null));
+            "Bouncy Bouncy! (Shift to activate.)", null));
     cosmeticsList.add(
         new Cosmetic("LOBBY.PARTICLE.FIREWORK", Material.FIREWORK_ROCKET, "Firework",
-            "&fDon't blow things up jimmy... (Shift to activate.)", null));
+            "Don't blow things up jimmy... (Shift to activate.)", null));
 
     return cosmeticsList;
   }

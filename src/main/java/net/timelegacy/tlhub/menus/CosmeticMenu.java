@@ -120,7 +120,7 @@ public class CosmeticMenu implements Listener {
           p.playSound(p.getLocation(), Sound.ENTITY_CAT_HISS, 1, 1);
         } else if (event.getCurrentItem().getType() == Material.BONE) {
           p.closeInventory();
-          PetsMenu.openMenu(p);
+          PetsMenu.openMenu(p, 1);
         } else if (event.getCurrentItem().getType() == Material.STRUCTURE_VOID) {
           p.closeInventory();
         }
