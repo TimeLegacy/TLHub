@@ -16,8 +16,8 @@ public class Cosmetic {
   private final String slogan;
   private final String skullValue;
 
-  public Cosmetic(String perkPerm, Material material, String name, String slogan,
-      String skullValue) {
+  public Cosmetic(
+      String perkPerm, Material material, String name, String slogan, String skullValue) {
     this.perkPerm = perkPerm;
     this.name = name;
     this.material = material;
@@ -47,14 +47,17 @@ public class Cosmetic {
     ItemStack itemStack;
 
     if (material == null && skullValue != null) {
-      ItemStack itemStack1 = ItemUtils
-          .createItem(Material.PLAYER_HEAD, 1, MessageUtils.SECOND_COLOR + name,
-          MessageUtils.MAIN_COLOR + slogan);
+      ItemStack itemStack1 =
+          ItemUtils.createItem(
+              Material.PLAYER_HEAD,
+              1,
+              MessageUtils.SECOND_COLOR + name,
+              MessageUtils.MAIN_COLOR + slogan);
       itemStack = HeadLib.setSkullOwner(itemStack1, UUID.randomUUID(), skullValue);
     } else {
-      itemStack = ItemUtils
-          .createItem(material, 1, MessageUtils.SECOND_COLOR + name,
-              MessageUtils.MAIN_COLOR + slogan);
+      itemStack =
+          ItemUtils.createItem(
+              material, 1, MessageUtils.SECOND_COLOR + name, MessageUtils.MAIN_COLOR + slogan);
     }
 
     return itemStack;
@@ -63,5 +66,4 @@ public class Cosmetic {
   public String getSkullValue() {
     return skullValue;
   }
-
 }

@@ -9,6 +9,12 @@ import org.bukkit.inventory.Inventory;
 
 public class MainMenu implements Listener {
 
+  public static void openMenu(Player p) {
+    Inventory mainMenu = Bukkit.createInventory(null, 54, "Main Menu");
+
+    p.openInventory(mainMenu);
+  }
+
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
     Player p = (Player) event.getWhoClicked();
@@ -18,15 +24,8 @@ public class MainMenu implements Listener {
       if (event.getInventory().getTitle().equals("Main Menu")) {
         event.setCancelled(true);
 
-        //todo
+        // todo
       }
     }
   }
-
-  public static void openMenu(Player p) {
-    Inventory mainMenu = Bukkit.createInventory(null, 54, "Main Menu");
-
-    p.openInventory(mainMenu);
-  }
-
 }

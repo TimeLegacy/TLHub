@@ -1,4 +1,4 @@
-package net.timelegacy.tlhub.cosmetics.other;
+package net.timelegacy.tlhub.cosmetics.particles;
 
 import net.timelegacy.tlcore.utils.FireworkUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
@@ -22,23 +22,18 @@ public class FireworkEffect implements Listener {
       if (CosmeticHandler.particleEnabled(p, "FIREWORK")) {
         if (p.isOnGround()) {
           if (CosmeticHandler.hasCooldown(p, "FIREWORK")) {
-            MessageUtils.sendMessage(p,
-                MessageUtils.ERROR_COLOR
-                    + "You must wait before doing that again.",
-                true);
+            MessageUtils.sendMessage(
+                p, MessageUtils.ERROR_COLOR + "You must wait before doing that again.", true);
 
           } else {
             CosmeticHandler.addCooldown(p, 10, "FIREWORK");
             fireworkEffect(p);
           }
         } else {
-          MessageUtils.sendMessage(p,
-              MessageUtils.ERROR_COLOR
-                  + "You must be on the ground to do that.",
-              true);
+          MessageUtils.sendMessage(
+              p, MessageUtils.ERROR_COLOR + "You must be on the ground to do that.", true);
         }
       }
     }
   }
-
 }

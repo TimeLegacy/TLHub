@@ -1,6 +1,6 @@
 package net.timelegacy.tlhub.event;
 
-import net.timelegacy.tlhub.menus.CosmeticMenu;
+import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
 import net.timelegacy.tlhub.menus.MainMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class InteractEvents implements Listener {
           MainMenu.openMenu(p);
         }
 
-        //TODO - Make gadgets hook into this part.
+        // TODO - Make gadgets hook into this part.
       }
     }
   }
@@ -46,5 +46,4 @@ public class InteractEvents implements Listener {
   public void catchFire(EntityCombustEvent e) {
     e.setCancelled(true);
   }
-
 }

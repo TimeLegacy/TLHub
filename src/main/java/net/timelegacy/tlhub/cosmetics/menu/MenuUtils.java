@@ -1,4 +1,4 @@
-package net.timelegacy.tlhub.menus;
+package net.timelegacy.tlhub.cosmetics.menu;
 
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Bukkit;
@@ -13,10 +13,9 @@ public class MenuUtils {
     return (d > (int) d) ? (int) d + 1 : (int) d;
   }
 
-  public static void displayGUIError(Inventory inv, int slot, ItemStack is, ItemStack errorIs,
-      int seconds) {
+  public static void displayGUIError(
+      Inventory inv, int slot, ItemStack is, ItemStack errorIs, int seconds) {
     inv.setItem(slot, errorIs);
     Bukkit.getScheduler().runTaskLater(plugin, () -> inv.setItem(slot, is), seconds * 20);
   }
-
 }

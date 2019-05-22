@@ -1,4 +1,4 @@
-package net.timelegacy.tlhub.menus;
+package net.timelegacy.tlhub.cosmetics.menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +22,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ParticleMenu implements Listener {
+public class HatsMenu implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
   @SuppressWarnings("deprecation")
   public static void openMenu(Player p, int page) {
 
-    Inventory menu = Bukkit
-        .createInventory(p, 54, MessageUtils.colorize("&8&lParticles >> &8&nPage " + page));
-
-    //TODO fix
+    Inventory menu =
+        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lHats >> &8&nPage " + page));
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
-    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Particle"));
+    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Pet"));
     menu.setItem(41, ItemUtils.createItem(Material.ARROW, 1, "&aNext Page"));
 
     // Row 6
@@ -57,28 +55,28 @@ public class ParticleMenu implements Listener {
             continue;
           }
 
-          List<Cosmetic> particles = new ArrayList<>();
+          List<Cosmetic> hats = new ArrayList<>();
           for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
-              particles.add(cosmetic);
+            if (cosmetic.getCosmeticType().equalsIgnoreCase("HAT")) {
+              hats.add(cosmetic);
             }
           }
 
           int current = ((i - 10) + start) - forgotten;
 
-          if (current >= particles.size()) {
+          if (current >= hats.size()) {
             continue;
           }
 
-          ItemStack itemStack = particles.get(current).getItemStack();
+          ItemStack itemStack = hats.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getName(), particles.get(current).getPerkPerm())
+          if (PerkHandler.hasPerk(p.getName(), hats.get(current).getPerkPerm())
               || RankHandler.getRank(p.getName()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
-            List<String> lore = ism.getLore();
-            if (CosmeticHandler.particleEnabled(
-                p, particles.get(current).getCosmeticIdentifier())) {
+            List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
+            if (CosmeticHandler.getPet(p)
+                .equalsIgnoreCase(hats.get(current).getCosmeticIdentifier())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -110,12 +108,15 @@ public class ParticleMenu implements Listener {
 
       String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
 
-      if (title.startsWith("Particles>>Page")) {
+      if (title.startsWith("Hats>>Page")) {
         event.setCancelled(true);
 
         int i = 0;
 
-        if (event.getCurrentItem().getItemMeta().getDisplayName()
+        if (event
+            .getCurrentItem()
+            .getItemMeta()
+            .getDisplayName()
             .equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
           CosmeticMenu.openMenu(p);
           return;
@@ -123,27 +124,34 @@ public class ParticleMenu implements Listener {
 
         int pageNumber = Integer.parseInt(title.split("Page")[1]);
 
-        if (event.getCurrentItem().getItemMeta().getDisplayName()
-            .equals(MessageUtils.colorize("&cReset Particle"))) {
-          if (CosmeticHandler.hasParticle(p)) {
-            CosmeticHandler.removeParticle(p);
-            MessageUtils.sendMessage(p,
-                MessageUtils.ERROR_COLOR + "You have removed your particle cosmetic.",
-                true);
+        if (event
+            .getCurrentItem()
+            .getItemMeta()
+            .getDisplayName()
+            .equals(MessageUtils.colorize("&cReset Hat"))) {
+          if (CosmeticHandler.hasPet(p)) {
+            CosmeticHandler.removePet(p);
+            MessageUtils.sendMessage(
+                p, MessageUtils.ERROR_COLOR + "You have removed your hat cosmetic.", true);
           } else {
-            MessageUtils.sendMessage(p,
-                MessageUtils.ERROR_COLOR + "You do not have a particle enabled.",
-                true);
+            MessageUtils.sendMessage(
+                p, MessageUtils.ERROR_COLOR + "You do not have a hat enabled.", true);
           }
           return;
         }
 
-        if (event.getCurrentItem().getItemMeta().getDisplayName()
+        if (event
+            .getCurrentItem()
+            .getItemMeta()
+            .getDisplayName()
             .equals(MessageUtils.colorize("&aPrevious Page"))) {
           if (pageNumber == 1) {
             MenuUtils.displayGUIError(
-                event.getInventory(), event.getSlot(), event.getCurrentItem(),
-                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"), 3);
+                event.getInventory(),
+                event.getSlot(),
+                event.getCurrentItem(),
+                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"),
+                3);
             return;
           } else {
             openMenu(p, pageNumber - 1);
@@ -151,14 +159,20 @@ public class ParticleMenu implements Listener {
           }
         }
 
-        if (event.getCurrentItem().getItemMeta().getDisplayName()
+        if (event
+            .getCurrentItem()
+            .getItemMeta()
+            .getDisplayName()
             .equals(MessageUtils.colorize("&aNext Page"))) {
-          double pages = (double) CosmeticHandler.getTotals(p).get("particles") / 21;
+          double pages = (double) CosmeticHandler.getTotals(p).get("hats") / 21;
 
           if (pageNumber == MenuUtils.roundUp(pages)) {
             MenuUtils.displayGUIError(
-                event.getInventory(), event.getSlot(), event.getCurrentItem(),
-                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"), 3);
+                event.getInventory(),
+                event.getSlot(),
+                event.getCurrentItem(),
+                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"),
+                3);
             return;
           } else {
             openMenu(p, pageNumber + 1);
@@ -167,26 +181,29 @@ public class ParticleMenu implements Listener {
         } else {
 
           for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
-              if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
-                CosmeticHandler.setParticle(p, cosmetic.getCosmeticIdentifier());
+            if (cosmetic.getCosmeticType().equalsIgnoreCase("HAT")) {
+              if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())
+                  .equalsIgnoreCase(
+                      ChatColor.stripColor(
+                          cosmetic.getItemStack().getItemMeta().getDisplayName()))) {
+                CosmeticHandler.setPet(p, cosmetic.getCosmeticIdentifier());
 
                 p.closeInventory();
 
-                MessageUtils.sendMessage(p,
-                    MessageUtils.MAIN_COLOR + "You have set your cosmetic as "
-                        + MessageUtils.SECOND_COLOR + MessageUtils
-                        .friendlyify(cosmetic.getCosmeticIdentifier()), true);
+                MessageUtils.sendMessage(
+                    p,
+                    MessageUtils.MAIN_COLOR
+                        + "You have set your hat as "
+                        + MessageUtils.SECOND_COLOR
+                        + MessageUtils.friendlyify(cosmetic.getCosmeticIdentifier()),
+                    true);
 
                 break;
               }
             }
           }
-
         }
       }
     }
   }
-
-
 }

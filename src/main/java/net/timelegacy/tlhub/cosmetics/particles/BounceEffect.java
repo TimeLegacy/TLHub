@@ -1,4 +1,4 @@
-package net.timelegacy.tlhub.cosmetics.other;
+package net.timelegacy.tlhub.cosmetics.particles;
 
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
@@ -54,7 +54,7 @@ public class BounceEffect implements Listener {
 
     p.setVelocity(new Vector(0, 1, 0));
 
-    //TODO fix
+    // TODO fix
   }
 
   @EventHandler
@@ -65,23 +65,18 @@ public class BounceEffect implements Listener {
       if (CosmeticHandler.particleEnabled(p, "BOUNCE")) {
         if (p.isOnGround()) {
           if (CosmeticHandler.hasCooldown(p, "BOUNCE")) {
-            MessageUtils.sendMessage(p,
-                MessageUtils.ERROR_COLOR
-                    + "You must wait before doing that again.",
-                true);
+            MessageUtils.sendMessage(
+                p, MessageUtils.ERROR_COLOR + "You must wait before doing that again.", true);
 
           } else {
             CosmeticHandler.addCooldown(p, 10, "BOUNCE");
             bounceEffect(p);
           }
         } else {
-          MessageUtils.sendMessage(p,
-              MessageUtils.ERROR_COLOR
-                  + "You must be on the ground to do that.",
-              true);
+          MessageUtils.sendMessage(
+              p, MessageUtils.ERROR_COLOR + "You must be on the ground to do that.", true);
         }
       }
     }
   }
-
 }

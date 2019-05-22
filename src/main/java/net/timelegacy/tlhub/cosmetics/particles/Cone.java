@@ -1,4 +1,4 @@
-package net.timelegacy.tlhub.cosmetics.particleeffects;
+package net.timelegacy.tlhub.cosmetics.particles;
 
 import net.timelegacy.tlcore.utils.MathUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
@@ -15,23 +15,26 @@ public class Cone {
   private static TLHub plugin = TLHub.getPlugin();
 
   public static void particleRunnable() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-
-      for (Player p : Bukkit.getOnlinePlayers()) {
-        if (CosmeticHandler.particleEnabled(p, "CONE")) {
-          Location location = p.getEyeLocation().add(0, 0.3, 0);
-          float radius = 0.25f;
-          drawCircle(radius + 0.1f, -0.05f, location);
-          for (float f = 0; f <= 0.4f; f += 0.1f) {
-            if (radius >= 0) {
-              drawCircle(radius, f, location);
-              radius -= 0.09f;
-            }
-          }
-        }
-      }
-
-    }, 0, 2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
+    Bukkit.getScheduler()
+        .scheduleSyncRepeatingTask(
+            plugin,
+            () -> {
+              for (Player p : Bukkit.getOnlinePlayers()) {
+                if (CosmeticHandler.particleEnabled(p, "CONE")) {
+                  Location location = p.getEyeLocation().add(0, 0.3, 0);
+                  float radius = 0.25f;
+                  drawCircle(radius + 0.1f, -0.05f, location);
+                  for (float f = 0; f <= 0.4f; f += 0.1f) {
+                    if (radius >= 0) {
+                      drawCircle(radius, f, location);
+                      radius -= 0.09f;
+                    }
+                  }
+                }
+              }
+            },
+            0,
+            2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
   }
 
   private static void drawCircle(float radius, float height, Location location) {
@@ -45,5 +48,4 @@ public class Cone {
       location.subtract(x, height, z);
     }
   }
-
 }
