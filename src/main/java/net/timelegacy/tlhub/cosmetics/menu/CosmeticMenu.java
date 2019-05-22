@@ -124,8 +124,8 @@ public class CosmeticMenu implements Listener {
         event.setCancelled(true);
 
         if (event.getCurrentItem().getType() == Material.PISTON) {
-          // todo gadgets
-          p.playSound(p.getLocation(), Sound.ENTITY_CAT_HISS, 1, 1);
+          p.closeInventory();
+          GadgetsMenu.openMenu(p, 1);
         } else if (event.getCurrentItem().getType() == Material.ELYTRA) {
           p.closeInventory();
           ParticleMenu.openMenu(p, 1);

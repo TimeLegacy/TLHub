@@ -42,7 +42,7 @@ public class BounceEffect implements Listener {
           z = t * Math.sin(theta);
           loc.add(x, y, z);
 
-          ParticleUtils.display(Particle.FIREWORKS_SPARK, loc);
+          ParticleUtils.display(Particle.SPELL_WITCH, loc);
 
           loc.subtract(x, y, z);
         }
@@ -53,8 +53,6 @@ public class BounceEffect implements Listener {
     }.runTaskTimer(plugin, 0, 1);
 
     p.setVelocity(new Vector(0, 1, 0));
-
-    // TODO fix
   }
 
   @EventHandler
@@ -69,7 +67,7 @@ public class BounceEffect implements Listener {
                 p, MessageUtils.ERROR_COLOR + "You must wait before doing that again.", true);
 
           } else {
-            CosmeticHandler.addCooldown(p, 10, "BOUNCE");
+            CosmeticHandler.addCooldown(p, 3, "BOUNCE");
             bounceEffect(p);
           }
         } else {

@@ -194,7 +194,8 @@ public class ParticleMenu implements Listener {
                     MessageUtils.MAIN_COLOR
                         + "You have set your cosmetic as "
                         + MessageUtils.SECOND_COLOR
-                        + MessageUtils.friendlyify(cosmetic.getCosmeticIdentifier()),
+                        + MessageUtils
+                        .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
                     true);
 
                 break;

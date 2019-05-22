@@ -3,6 +3,7 @@ package net.timelegacy.tlhub;
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
+import net.timelegacy.tlhub.cosmetics.menu.GadgetsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.HatsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.ParticleMenu;
 import net.timelegacy.tlhub.cosmetics.menu.PetsMenu;
@@ -74,6 +75,7 @@ public class TLHub extends JavaPlugin {
     Bukkit.getServer().getPluginManager().registerEvents(new CosmeticMenu(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new PetsMenu(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new HatsMenu(), plugin);
+    Bukkit.getServer().getPluginManager().registerEvents(new GadgetsMenu(), plugin);
     Bukkit.getServer().getPluginManager().registerEvents(new CosmeticHandler(), plugin);
 
     Bukkit.getServer().getPluginManager().registerEvents(new BounceEffect(), plugin);

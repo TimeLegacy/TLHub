@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class PetsMenu implements Listener {
+public class GadgetsMenu implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
@@ -30,11 +30,11 @@ public class PetsMenu implements Listener {
   public static void openMenu(Player p, int page) {
 
     Inventory menu =
-        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lPets >> &8&nPage " + page));
+        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lGadgets >> &8&nPage " + page));
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
-    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Pet"));
+    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Gadget"));
     menu.setItem(41, ItemUtils.createItem(Material.ARROW, 1, "&aNext Page"));
 
     // Row 6
@@ -55,28 +55,30 @@ public class PetsMenu implements Listener {
             continue;
           }
 
-          List<Cosmetic> pets = new ArrayList<>();
+          List<Cosmetic> gadgets = new ArrayList<>();
           for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PET")) {
-              pets.add(cosmetic);
+            if (cosmetic.getCosmeticType().equalsIgnoreCase("GADGET")) {
+              gadgets.add(cosmetic);
             }
           }
 
           int current = ((i - 10) + start) - forgotten;
 
-          if (current >= pets.size()) {
+          if (current >= gadgets.size()) {
             continue;
           }
 
-          ItemStack itemStack = pets.get(current).getItemStack();
+          ItemStack itemStack = gadgets.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getName(), pets.get(current).getPerkPerm())
+          if (PerkHandler.hasPerk(p.getName(), gadgets.get(current).getPerkPerm())
               || RankHandler.getRank(p.getName()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
-            if (CosmeticHandler.getPet(p)
-                .equalsIgnoreCase(pets.get(current).getCosmeticIdentifier())) {
+            if (p.getInventory().getItem(5) != null &&
+                ChatColor.stripColor(p.getInventory().getItem(5).getItemMeta().getDisplayName())
+                    == ChatColor.stripColor(
+                    gadgets.get(current).getItemStack().getItemMeta().getDisplayName())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -108,7 +110,7 @@ public class PetsMenu implements Listener {
 
       String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
 
-      if (title.startsWith("Pets>>Page")) {
+      if (title.startsWith("Gadgets>>Page")) {
         event.setCancelled(true);
 
         int i = 0;
@@ -128,14 +130,17 @@ public class PetsMenu implements Listener {
             .getCurrentItem()
             .getItemMeta()
             .getDisplayName()
-            .equals(MessageUtils.colorize("&cReset Pet"))) {
-          if (CosmeticHandler.hasPet(p)) {
-            CosmeticHandler.removePet(p);
+            .equals(MessageUtils.colorize("&cReset Gadget"))) {
+          if (p.getInventory().getItem(5) != null) {
+
+            p.getInventory().setItem(5, new ItemStack(Material.AIR, 1));
+            p.updateInventory();
+
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You have removed your pet cosmetic.", true);
+                p, MessageUtils.ERROR_COLOR + "You have removed your gadget cosmetic.", true);
           } else {
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You do not have a pet enabled.", true);
+                p, MessageUtils.ERROR_COLOR + "You do not have a gadget enabled.", true);
           }
           return;
         }
@@ -164,7 +169,7 @@ public class PetsMenu implements Listener {
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&aNext Page"))) {
-          double pages = (double) CosmeticHandler.getTotals(p).get("pets") / 21;
+          double pages = (double) CosmeticHandler.getTotals(p).get("gadgets") / 21;
 
           if (pageNumber == MenuUtils.roundUp(pages)) {
             MenuUtils.displayGUIError(
@@ -181,19 +186,25 @@ public class PetsMenu implements Listener {
         } else {
 
           for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PET")) {
+            if (cosmetic.getCosmeticType().equalsIgnoreCase("GADGET")) {
               if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())
                   .equalsIgnoreCase(
                       ChatColor.stripColor(
                           cosmetic.getItemStack().getItemMeta().getDisplayName()))) {
-                CosmeticHandler.setPet(p, cosmetic.getCosmeticIdentifier());
+                ItemStack item = ItemUtils.createItem(cosmetic.getItemStack().getType(),
+                    1, "&e" + ChatColor
+                        .stripColor(cosmetic.getItemStack().getItemMeta().getDisplayName())
+                        + " &8{&7Right Click&8}");
+
+                p.getInventory().setItem(5, item);
+                p.updateInventory();
 
                 p.closeInventory();
 
                 MessageUtils.sendMessage(
                     p,
                     MessageUtils.MAIN_COLOR
-                        + "You have set your pet as "
+                        + "You have set your gadget as "
                         + MessageUtils.SECOND_COLOR
                         + MessageUtils
                         .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
@@ -207,4 +218,5 @@ public class PetsMenu implements Listener {
       }
     }
   }
+
 }

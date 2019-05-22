@@ -47,6 +47,7 @@ public class PlayerEvents implements Listener {
 
     p.setHealthScale(20);
     p.setExp(0);
+    p.setLevel(0);
 
     Location spawn = TLHub.spawn;
     Location lookloc = new Location(world, 0.5, 118.5, 13.5);
@@ -59,6 +60,8 @@ public class PlayerEvents implements Listener {
 
     p.setScoreboard(ScoreboardHandler.scoreBoard(p));
 
+    p.getInventory().clear();
+    p.updateInventory();
     hotBarItems(p);
 
     if (Bukkit.getOnlinePlayers().size() >= 1) {

@@ -26,7 +26,7 @@ public class FireworkEffect implements Listener {
                 p, MessageUtils.ERROR_COLOR + "You must wait before doing that again.", true);
 
           } else {
-            CosmeticHandler.addCooldown(p, 10, "FIREWORK");
+            CosmeticHandler.addCooldown(p, 3, "FIREWORK");
             fireworkEffect(p);
           }
         } else {

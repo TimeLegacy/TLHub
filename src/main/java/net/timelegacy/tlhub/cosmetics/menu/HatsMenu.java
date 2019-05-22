@@ -1,5 +1,6 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
+import de.erethon.headlib.HeadLib;
 import java.util.ArrayList;
 import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
@@ -34,7 +35,7 @@ public class HatsMenu implements Listener {
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
-    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Pet"));
+    menu.setItem(40, ItemUtils.createItem(Material.RED_STAINED_GLASS, 1, "&cReset Hat"));
     menu.setItem(41, ItemUtils.createItem(Material.ARROW, 1, "&aNext Page"));
 
     // Row 6
@@ -75,8 +76,8 @@ public class HatsMenu implements Listener {
               || RankHandler.getRank(p.getName()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
-            if (CosmeticHandler.getPet(p)
-                .equalsIgnoreCase(hats.get(current).getCosmeticIdentifier())) {
+            if (HeadLib.getTextureValue(itemStack)
+                .equalsIgnoreCase(hats.get(current).getSkullValue())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -129,8 +130,8 @@ public class HatsMenu implements Listener {
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&cReset Hat"))) {
-          if (CosmeticHandler.hasPet(p)) {
-            CosmeticHandler.removePet(p);
+          if (p.getInventory().getHelmet() != null) {
+            p.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
             MessageUtils.sendMessage(
                 p, MessageUtils.ERROR_COLOR + "You have removed your hat cosmetic.", true);
           } else {
@@ -186,16 +187,18 @@ public class HatsMenu implements Listener {
                   .equalsIgnoreCase(
                       ChatColor.stripColor(
                           cosmetic.getItemStack().getItemMeta().getDisplayName()))) {
-                CosmeticHandler.setPet(p, cosmetic.getCosmeticIdentifier());
 
                 p.closeInventory();
+
+                p.getInventory().setHelmet(cosmetic.getItemStack());
 
                 MessageUtils.sendMessage(
                     p,
                     MessageUtils.MAIN_COLOR
                         + "You have set your hat as "
                         + MessageUtils.SECOND_COLOR
-                        + MessageUtils.friendlyify(cosmetic.getCosmeticIdentifier()),
+                        + MessageUtils
+                        .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
                     true);
 
                 break;

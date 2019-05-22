@@ -488,15 +488,53 @@ public class CosmeticHandler implements Listener {
             "Don't blow things up jimmy... (Shift to activate.)",
             null));
 
+    // Hats
     for (HeadLib head : HeadLib.values()) {
       cosmeticsList.add(
           new Cosmetic(
               "LOBBY.HAT." + head.name().toUpperCase(),
               null,
-              MessageUtils.friendlyify(head.name()),
+              MessageUtils.friendlyify(head.name().replace("_", " ")),
               "",
               HeadLib.getTextureValue(head.toItemStack())));
     }
+
+    // Gadgets
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.SUPER_PUNCH", Material.SLIME_BALL, "Super Punch",
+        "FALCON PUUUUNNNCH!", ""));
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.HEAD_RIDER", Material.SADDLE, "Head Rider",
+        "Ride players for the fun of it.", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.EVOLUTION", Material.BONE, "Evolution", "Evolve your Pokemon!",
+            ""));
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.PARTNER", Material.PLAYER_HEAD, "Partner",
+        "Never be alone again.", ""));
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.THOR_HAMMER", Material.IRON_AXE, "Thor's Hammer",
+        "Summon the power of the god of thunder!", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.ANIMAL_CANNON", Material.SHEEP_SPAWN_EGG, "Animal Cannon",
+            "Be careful! PETA is watching!", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.PAINTBALL_GUN", Material.DIAMOND_HORSE_ARMOR, "Paintball Gun",
+            "Pew pew pew!", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.FIRECRACKER", Material.FIREWORK_ROCKET, "Firecracker",
+            "Does what it says... It goes BOOM!", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.DISCO_BALL", Material.PURPLE_STAINED_GLASS, "Disco Ball",
+            "It's party time!", ""));
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.BAT_LAUNCHER", Material.STICK, "Bat Launcher",
+        "Launch a wave of bats!", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.PARTY_POPPER", Material.FIRE_CHARGE, "Party Popper",
+            "Want to impress your friends?", ""));
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.SHEEP_BOMB", Material.WHITE_WOOL, "Sheep Bomb",
+        "Is it supposed to be flashing? Uhhh... Yes?", ""));
+    cosmeticsList.add(
+        new Cosmetic("LOBBY.GADGET.EXPLOSIVE_SNOWBALL", Material.SNOWBALL, "Explosive Snowball",
+            "They aren't ordinary snowballs.", ""));
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.TNT_FOUNTAIN", Material.TNT, "TNT Fountain",
+        "Do you have the proper training to use this?", ""));
 
     return cosmeticsList;
   }
