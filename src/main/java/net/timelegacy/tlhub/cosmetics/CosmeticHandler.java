@@ -493,7 +493,7 @@ public class CosmeticHandler implements Listener {
             ""));
     cosmeticsList.add(new Cosmetic("LOBBY.GADGET.PARTNER", Material.PLAYER_HEAD, "Partner",
         "Never be alone again.", ""));
-    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.THOR_HAMMER", Material.IRON_AXE, "Thor's Hammer",
+    cosmeticsList.add(new Cosmetic("LOBBY.GADGET.THOR_HAMMER", Material.IRON_AXE, "Thor Hammer",
         "Summon the power of the god of thunder!", ""));
     cosmeticsList.add(
         new Cosmetic("LOBBY.GADGET.ANIMAL_CANNON", Material.SHEEP_SPAWN_EGG, "Animal Cannon",

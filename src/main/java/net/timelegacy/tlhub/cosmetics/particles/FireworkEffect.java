@@ -2,6 +2,7 @@ package net.timelegacy.tlhub.cosmetics.particles;
 
 import net.timelegacy.tlcore.utils.FireworkUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,12 +22,16 @@ public class FireworkEffect implements Listener {
     if (e.isSneaking()) {
       if (CosmeticHandler.particleEnabled(p, "FIREWORK")) {
         if (p.isOnGround()) {
-          if (CosmeticHandler.hasCooldown(p, "FIREWORK")) {
+          if (Cooldown.hasCooldown(p.getUniqueId(), "FIREWORK")) {
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You must wait before doing that again.", true);
+                p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+                    .getTimeLeft(p.getUniqueId(), "FIREWORK")
+                    + (Cooldown.getTimeLeft(p.getUniqueId(), "FIREWORK") > 1 ? "seconds" : "second")
+                    +
+                    " before doing that again.", true);
 
           } else {
-            CosmeticHandler.addCooldown(p, 3, "FIREWORK");
+            new Cooldown(p.getUniqueId(), "FIREWORK", 3).start();
             fireworkEffect(p);
           }
         } else {
