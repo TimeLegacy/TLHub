@@ -2,30 +2,13 @@ package net.timelegacy.tlhub;
 
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
-import net.timelegacy.tlhub.cosmetics.gadgets.AnimalCannon;
-import net.timelegacy.tlhub.cosmetics.gadgets.BatLauncher;
-import net.timelegacy.tlhub.cosmetics.gadgets.DiscoBall;
-import net.timelegacy.tlhub.cosmetics.gadgets.Evolution;
-import net.timelegacy.tlhub.cosmetics.gadgets.ExplosiveSnowball;
-import net.timelegacy.tlhub.cosmetics.gadgets.Firecracker;
-import net.timelegacy.tlhub.cosmetics.gadgets.HeadRider;
-import net.timelegacy.tlhub.cosmetics.gadgets.PaintballGun;
-import net.timelegacy.tlhub.cosmetics.gadgets.Partner;
-import net.timelegacy.tlhub.cosmetics.gadgets.PartyPopper;
-import net.timelegacy.tlhub.cosmetics.gadgets.SheepBomb;
-import net.timelegacy.tlhub.cosmetics.gadgets.SuperPunch;
-import net.timelegacy.tlhub.cosmetics.gadgets.TNTFountain;
-import net.timelegacy.tlhub.cosmetics.gadgets.ThorsHammer;
-import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
-import net.timelegacy.tlhub.cosmetics.menu.GadgetsMenu;
-import net.timelegacy.tlhub.cosmetics.menu.HatsMenu;
-import net.timelegacy.tlhub.cosmetics.menu.ParticleMenu;
-import net.timelegacy.tlhub.cosmetics.menu.PetsMenu;
+import net.timelegacy.tlhub.cosmetics.gadgets.*;
+import net.timelegacy.tlhub.cosmetics.menu.*;
 import net.timelegacy.tlhub.cosmetics.particles.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.particles.FireworkEffect;
 import net.timelegacy.tlhub.event.InteractEvents;
 import net.timelegacy.tlhub.event.PlayerEvents;
-import net.timelegacy.tlhub.handler.ScoreboardHandler;
+import net.timelegacy.tlhub.handler.DiscoveriesHandler;
 import net.timelegacy.tlhub.menus.MainMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -52,7 +35,7 @@ public class TLHub extends JavaPlugin {
     plugin = this;
     config = plugin.getConfig();
 
-    spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
+    spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.062501, 0.5);
 
     plugin.saveDefaultConfig();
     plugin.getConfig().options().copyDefaults(true);
@@ -66,14 +49,14 @@ public class TLHub extends JavaPlugin {
       }
     }
 
+    DiscoveriesHandler.setupDiscoveries();
+
     ServerHandler.setMaxPlayers(ServerHandler.getServerUID(), 50);
 
     Bukkit.getPluginManager().registerEvents(new MainMenu(), plugin);
     registerEvents();
 
     CosmeticHandler.register();
-
-    ScoreboardHandler.updateBoard();
     ServerHandler.setType(ServerHandler.getServerUID(), "LOBBY");
   }
 

@@ -1,33 +1,27 @@
 package net.timelegacy.tlhub.event;
 
-import net.timelegacy.tlcore.handler.Rank;
+import net.timelegacy.tlcore.datatype.Rank;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
+import net.timelegacy.tlhub.handler.DiscoveriesHandler;
 import net.timelegacy.tlhub.handler.ScoreboardHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.util.Vector;
 
 public class PlayerEvents implements Listener {
@@ -58,14 +52,21 @@ public class PlayerEvents implements Listener {
 
     p.setGameMode(GameMode.ADVENTURE);
 
-    p.setScoreboard(ScoreboardHandler.scoreBoard(p));
+      DiscoveriesHandler.loadPlayerData(p);
+
+      p.setScoreboard(ScoreboardHandler.setupScoreBoard());
+      ScoreboardHandler.updateEverything(p);
 
     p.getInventory().clear();
     p.updateInventory();
     hotBarItems(p);
 
+      for (Player player : Bukkit.getOnlinePlayers()) {
+          player.sendMessage("§7§l(§a+§7§l) " + RankHandler.chatColors(p.getName()).replace("%username% &8%arrows%", "").replace("&", "§") + p.getName()); //TODO Cleanup
+      }
+
     if (Bukkit.getOnlinePlayers().size() >= 1) {
-      plugin.playersOnline = true;
+        TLHub.playersOnline = true;
     }
     ServerHandler.setOnlinePlayers(ServerHandler.getServerUID(), Bukkit.getOnlinePlayers().size());
   }
@@ -131,7 +132,7 @@ public class PlayerEvents implements Listener {
   @EventHandler
   public void onMove(PlayerMoveEvent e) {
     if (e.getPlayer().getLocation().getY() <= 10) {
-      Location spawn = plugin.spawn;
+        Location spawn = TLHub.spawn;
       Location lookloc = new Location(e.getPlayer().getWorld(), 41.5, 62.0, 1005.5);
       Vector dirBetweenLocations = lookloc.toVector().subtract(spawn.toVector());
       spawn.setDirection(dirBetweenLocations);
@@ -153,8 +154,12 @@ public class PlayerEvents implements Listener {
         ServerHandler.getServerUID(), Bukkit.getOnlinePlayers().size() - 1);
 
     if (Bukkit.getOnlinePlayers().size() < 1) {
-      plugin.playersOnline = false;
+        TLHub.playersOnline = false;
     }
+
+      for (Player player : Bukkit.getOnlinePlayers()) {
+          player.sendMessage("§7§l(§c-§7§l) " + RankHandler.chatColors(p.getName()).replace("%username% &8%arrows%", "").replace("&", "§") + p.getName()); //TODO Cleanup
+      }
   }
 
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
@@ -220,4 +225,13 @@ public class PlayerEvents implements Listener {
   public void onFoodLevelChange(FoodLevelChangeEvent event) {
     event.setFoodLevel(20);
   }
+
+    @EventHandler
+    public void onButtonPress(PlayerInteractEvent ev) {
+        if (ev.getAction().equals(Action.PHYSICAL)) {
+            if (ev.getClickedBlock().getType() == Material.OAK_PRESSURE_PLATE) {
+                ev.setCancelled(true);
+            }
+        }
+    }
 }
