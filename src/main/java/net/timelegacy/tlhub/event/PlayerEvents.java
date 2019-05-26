@@ -62,7 +62,11 @@ public class PlayerEvents implements Listener {
     hotBarItems(p);
 
       for (Player player : Bukkit.getOnlinePlayers()) {
-          player.sendMessage("§7§l(§a+§7§l) " + RankHandler.chatColors(p.getName()).replace("%username% &8%arrows%", "").replace("&", "§") + p.getName()); //TODO Cleanup
+          player.sendMessage(
+                  "§7§l(§a+§7§l) "
+                          + RankHandler.chatColors(p.getName())
+                          .replace("%username% &8%arrows%", p.getName())
+                          .replace("&", "§")); // TODO Cleanup
       }
 
     if (Bukkit.getOnlinePlayers().size() >= 1) {
@@ -158,7 +162,11 @@ public class PlayerEvents implements Listener {
     }
 
       for (Player player : Bukkit.getOnlinePlayers()) {
-          player.sendMessage("§7§l(§c-§7§l) " + RankHandler.chatColors(p.getName()).replace("%username% &8%arrows%", "").replace("&", "§") + p.getName()); //TODO Cleanup
+          player.sendMessage(
+                  "§7§l(§c-§7§l) "
+                          + RankHandler.chatColors(p.getName())
+                          .replace("%username% &8%arrows%", p.getName())
+                          .replace("&", "§")); // TODO Cleanup
       }
   }
 
