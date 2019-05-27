@@ -83,7 +83,7 @@ public class ScoreboardHandler {
             .getTeam("discoveries")
             .setSuffix(
                     ChatColor.LIGHT_PURPLE.toString()
-                            + DiscoveriesHandler.getDiscoveries(player)
+                            + DiscoveriesHandler.getExploredDiscoveries(player)
                             + ChatColor.GRAY
                             + "/"
                             + ChatColor.LIGHT_PURPLE
