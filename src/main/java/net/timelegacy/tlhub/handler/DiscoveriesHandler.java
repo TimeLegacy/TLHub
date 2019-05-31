@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -15,7 +14,6 @@ import org.json.JSONTokener;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class DiscoveriesHandler {
@@ -34,38 +32,27 @@ public class DiscoveriesHandler {
         JSONObject object = new JSONObject(tokener);
 
         JSONArray discovery = object.getJSONArray("discoveries");
-
-
         for (int i = 0; i < discovery.length(); i++) {
+            JSONObject discoveryObject = discovery.getJSONObject(i);
 
-            String name = "Unknown";
-            String properName = "Unknown";
-            List<Vector> vec = new ArrayList<>();
-            List<AABB3D> aabb3DList = new ArrayList<>();
+            System.out.println(discoveryObject.getString("formalname"));
+            System.out.println(discoveryObject.getString("shortname"));
 
-            JSONObject boundingBoxes = discovery.getJSONObject(i);
-            for (int b = 0; b < boundingBoxes.length(); i++) {
+            JSONArray boundingBoxes = discoveryObject.getJSONArray("boundingboxes");
+            for (int b = 0; b < boundingBoxes.length(); b++) {
+                JSONArray boundingBoxesJSONArray = boundingBoxes.getJSONArray(b);
 
-                /*JSONObject names = boundingBoxes.getString(b);
-                name = names.getString("formalname");
-                properName = names.getString("shortname");*/
+                for (int bb = 0; bb < boundingBoxesJSONArray.length(); bb++) {
+                    JSONArray locations = boundingBoxesJSONArray.getJSONArray(bb);
 
-                System.out.println(name + " - " + properName);
-
-                List<Double> makeVec = new ArrayList<>();
-                JSONArray boxesTwo = discovery.getJSONArray(b);
-                for (int bb = 0; bb < boundingBoxes.length(); i++) {
-                    JSONObject vecter = boxesTwo.getJSONObject(b);
-                    JSONArray vectors = vecter.getJSONArray("boundingBoxes");
-                    for (int v = 0; v < vectors.length(); i++) {
-                        makeVec.add(vectors.getDouble(v));
+                    for (int loc = 0; loc < locations.length(); loc++) {
+                        //get the 3 location coords
+                        double locz = locations.getDouble(loc);
+                        System.out.println(locz);
                     }
                 }
-                vec.add(new Vector(makeVec.get(0), makeVec.get(1), makeVec.get(0)));
-
             }
         }
-
 
         //discoveries.put(new Polygon(new AABB3D[]{new AABB3D(new Vector(94, 153.5, -125.5), new Vector(24, 29, 53))}), );
 
