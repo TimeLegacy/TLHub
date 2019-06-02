@@ -1,16 +1,11 @@
 package net.timelegacy.tlhub.handler;
 
-import de.Herbystar.TTA.TTA_Methods;
 import net.timelegacy.tlcore.datatype.AABB3D;
 import net.timelegacy.tlcore.datatype.Polygon;
 import net.timelegacy.tlcore.datatype.Zone;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -103,12 +98,12 @@ public class DiscoveriesHandler {
                 if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
                     playersCurrentArea.remove(player.getUniqueId());
                     playersCurrentArea.put(player.getUniqueId(), z.getShortName());
-                    TTA_Methods.createBossBar(player, ChatColor.DARK_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), 1.0, BarStyle.SOLID, BarColor.PURPLE, null, true);
+//                    TTA_Methods.createBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), 1.0, BarStyle.SOLID, BarColor.PURPLE, null, true);
                     if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
                         playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
                         PerkHandler.addPerk(player.getName(), "LOBBY.DISCOVERY." + z.getShortName());
                         ScoreboardHandler.updateDiscoveries(player);
-                        TTA_Methods.sendTitle(player, ChatColor.DARK_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
+//                        TTA_Methods.sendTitle(player, ChatColor.LIGHT_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
                     }
                     break;
                 }
@@ -116,7 +111,7 @@ public class DiscoveriesHandler {
                 if (!Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
                     playersCurrentArea.remove(player.getUniqueId());
                     playersCurrentArea.put(player.getUniqueId(), "");
-                    TTA_Methods.removeBossBar(player);
+//                    TTA_Methods.removeBossBar(player);
                     discoveryMagic(player);
                 }
             }
