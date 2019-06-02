@@ -1,10 +1,16 @@
 package net.timelegacy.tlhub.handler;
 
+import de.Herbystar.TTA.TTA_Methods;
 import net.timelegacy.tlcore.datatype.AABB3D;
 import net.timelegacy.tlcore.datatype.Polygon;
 import net.timelegacy.tlcore.datatype.Zone;
+import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -18,6 +24,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class DiscoveriesHandler {
+    private static HashMap<UUID, String> playersCurrentArea = new HashMap<>();
     private static HashMap<UUID, ArrayList<String>> playersDiscoveries = new HashMap<>();
     private static Zone[] discoveries;
 
@@ -48,7 +55,7 @@ public class DiscoveriesHandler {
             }
             AABB3D[] polyArray = new AABB3D[poly.size()];
             polyArray = poly.toArray(polyArray);
-            discoveriesList.add(new Zone(d.getString("formalname"), d.getString("formalname"), new Polygon(polyArray)));
+            discoveriesList.add(new Zone(d.getString("shortname"), d.getString("formalname"), new Polygon(polyArray)));
         }
         discoveries = new Zone[discoveriesList.size()];
         discoveries = (discoveriesList.toArray(discoveries));
@@ -59,6 +66,14 @@ public class DiscoveriesHandler {
         if (!playersDiscoveries.containsKey(player.getUniqueId())) {
             playersDiscoveries.put(player.getUniqueId(), new ArrayList<>());
         }
+        String[] perks = PerkHandler.getPerks(player.getName()).split(",");
+
+        for (String perk : perks) {
+            if (perk.startsWith("LOBBY.DISCOVERY.")) {
+                playersDiscoveries.get(player.getUniqueId()).add(perk.replace("LOBBY.DISCOVERY.", "").toLowerCase());
+            }
+        }
+        playersCurrentArea.put(player.getUniqueId(), "");
 
         new BukkitRunnable() {
             @Override
@@ -84,12 +99,26 @@ public class DiscoveriesHandler {
 
     private static void discoveryMagic(Player player) {
         for (Zone z : discoveries) {
-            if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-                player.sendMessage(z.getFormalname());
-                if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
-                    playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
+            if (playersCurrentArea.get(player.getUniqueId()).equals("")) {
+                if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+                    playersCurrentArea.remove(player.getUniqueId());
+                    playersCurrentArea.put(player.getUniqueId(), z.getShortName());
+                    TTA_Methods.createBossBar(player, ChatColor.DARK_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), 1.0, BarStyle.SOLID, BarColor.PURPLE, null, true);
+                    if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
+                        playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
+                        PerkHandler.addPerk(player.getName(), "LOBBY.DISCOVERY." + z.getShortName());
+                        ScoreboardHandler.updateDiscoveries(player);
+                        TTA_Methods.sendTitle(player, ChatColor.DARK_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
+                    }
+                    break;
                 }
-                break;
+            } else if (z.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
+                if (!Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+                    playersCurrentArea.remove(player.getUniqueId());
+                    playersCurrentArea.put(player.getUniqueId(), "");
+                    TTA_Methods.removeBossBar(player);
+                    discoveryMagic(player);
+                }
             }
         }
     }
