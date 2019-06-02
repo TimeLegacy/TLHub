@@ -27,7 +27,7 @@ public class ScoreboardHandler {
             ChatColor.WHITE
                     + "Server: "
                     + ChatColor.GRAY
-                    + MessageUtils.friendlyify(ServerHandler.getType(ServerHandler.getServerUID()));
+                    + MessageUtils.friendlyify(ServerHandler.getType(ServerHandler.getServerUUID()));
     Team server = board.registerNewTeam("server");
     server.addEntry(serverString);
     stats.getScore(serverString).setScore(8);
@@ -94,14 +94,14 @@ public class ScoreboardHandler {
     player
             .getScoreboard()
             .getTeam("tokens")
-            .setSuffix(ChatColor.AQUA.toString() + CoinHandler.getBalance(player.getName()));
+            .setSuffix(ChatColor.AQUA.toString() + CoinHandler.getBalance(player.getUniqueId()));
   }
 
   public static void updateCrates(Player player) {
     player
             .getScoreboard()
             .getTeam("crates")
-            .setSuffix(ChatColor.GOLD.toString() + CrateKeyHandler.getBalance(player.getName()));
+            .setSuffix(ChatColor.GOLD.toString() + CrateKeyHandler.getBalance(player.getUniqueId()));
   }
 
   public static void updateStatus(Player player) {// TODO Fix status once API is setup

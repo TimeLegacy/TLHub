@@ -1,29 +1,11 @@
 package net.timelegacy.tlhub.cosmetics;
 
 import de.erethon.headlib.HeadLib;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.particles.AngelWings;
-import net.timelegacy.tlhub.cosmetics.particles.BloodHelix;
-import net.timelegacy.tlhub.cosmetics.particles.CandyCane;
-import net.timelegacy.tlhub.cosmetics.particles.Cone;
-import net.timelegacy.tlhub.cosmetics.particles.Enchanted;
-import net.timelegacy.tlhub.cosmetics.particles.EnderAura;
-import net.timelegacy.tlhub.cosmetics.particles.FlameFairy;
-import net.timelegacy.tlhub.cosmetics.particles.FrozenWalk;
-import net.timelegacy.tlhub.cosmetics.particles.GreenSparks;
-import net.timelegacy.tlhub.cosmetics.particles.InLove;
-import net.timelegacy.tlhub.cosmetics.particles.Music;
-import net.timelegacy.tlhub.cosmetics.particles.RainCloud;
-import net.timelegacy.tlhub.cosmetics.particles.SantaHat;
-import net.timelegacy.tlhub.cosmetics.particles.SnowCloud;
-import net.timelegacy.tlhub.cosmetics.particles.Walks;
+import net.timelegacy.tlhub.cosmetics.particles.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,6 +16,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CosmeticHandler implements Listener {
 
@@ -526,10 +513,7 @@ public class CosmeticHandler implements Listener {
   public static HashMap<String, Integer> getTotals(Player player) {
     HashMap<String, Integer> totals = new HashMap<>();
 
-    String perks = "";
-    if (player != null) {
-      perks = PerkHandler.getPerks(player.getName());
-    }
+    List<String> perks = PerkHandler.getPerks(player.getUniqueId());
 
     int hatsInt = 0;
     int gadgetsInt = 0;

@@ -1,7 +1,5 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
@@ -21,6 +19,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParticleMenu implements Listener {
 
@@ -73,8 +74,8 @@ public class ParticleMenu implements Listener {
           ItemStack itemStack = particles.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getName(), particles.get(current).getPerkPerm())
-              || RankHandler.getRank(p.getName()).getPriority() >= 9) {
+          if (PerkHandler.hasPerk(p.getUniqueId(), particles.get(current).getPerkPerm())
+                  || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore();
             if (CosmeticHandler.particleEnabled(

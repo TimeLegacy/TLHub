@@ -1,11 +1,15 @@
 package net.timelegacy.tlhub.handler;
 
+import net.md_5.bungee.api.ChatColor;
 import net.timelegacy.tlcore.datatype.AABB3D;
 import net.timelegacy.tlcore.datatype.Polygon;
 import net.timelegacy.tlcore.datatype.Zone;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlhub.TLHub;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -16,9 +20,11 @@ import org.json.JSONTokener;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class DiscoveriesHandler {
+    private static HashMap<UUID, BossBar> playersBossBar = new HashMap<>();
     private static HashMap<UUID, String> playersCurrentArea = new HashMap<>();
     private static HashMap<UUID, ArrayList<String>> playersDiscoveries = new HashMap<>();
     private static Zone[] discoveries;
@@ -61,7 +67,7 @@ public class DiscoveriesHandler {
         if (!playersDiscoveries.containsKey(player.getUniqueId())) {
             playersDiscoveries.put(player.getUniqueId(), new ArrayList<>());
         }
-        String[] perks = PerkHandler.getPerks(player.getName()).split(",");
+        List<String> perks = PerkHandler.getPerks(player.getUniqueId());
 
         for (String perk : perks) {
             if (perk.startsWith("LOBBY.DISCOVERY.")) {
@@ -98,10 +104,11 @@ public class DiscoveriesHandler {
                 if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
                     playersCurrentArea.remove(player.getUniqueId());
                     playersCurrentArea.put(player.getUniqueId(), z.getShortName());
+                    playersBossBar.put(player.getUniqueId(), Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), BarColor.PURPLE, BarStyle.SOLID));
 //                    TTA_Methods.createBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), 1.0, BarStyle.SOLID, BarColor.PURPLE, null, true);
                     if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
                         playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
-                        PerkHandler.addPerk(player.getName(), "LOBBY.DISCOVERY." + z.getShortName());
+                        PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + z.getShortName());
                         ScoreboardHandler.updateDiscoveries(player);
 //                        TTA_Methods.sendTitle(player, ChatColor.LIGHT_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
                     }
