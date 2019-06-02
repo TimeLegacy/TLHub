@@ -1,6 +1,5 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
-import de.Herbystar.TTA.TTA_Methods;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
@@ -44,7 +43,7 @@ public class ThorsHammer implements Listener {
             return;
           }
 
-          TTA_Methods.sendTitle(p, "&eSUMMONING THE GODS...", 20, 20, 20, "", 20, 20, 20);
+//          TTA_Methods.sendTitle(p, "&eSUMMONING THE GODS...", 20, 20, 20, "", 20, 20, 20);
 
           new BukkitRunnable() {
 
