@@ -507,7 +507,7 @@
           ]
         ]
       ],
-      "formalname": "Ira Guard Town",
+      "formalname": "Ira Guard Tower",
       "shortname": "iraguardtower"
     },
     {
@@ -635,7 +635,8 @@
         [
           [
             -18,
-            117.5
+            117.5,
+            -6
           ],
           [
             8,
