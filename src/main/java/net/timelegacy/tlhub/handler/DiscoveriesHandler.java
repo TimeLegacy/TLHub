@@ -91,6 +91,14 @@ public class DiscoveriesHandler {
         return playersDiscoveries.get(player.getUniqueId()).size();
     }
 
+    private static String repeatNTimes(String s, int n) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            builder.append(s);
+        }
+        return builder.toString();
+    }
+
     public static void discoveryMagic(Player player) {
         for (Zone z : discoveries) {
             if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
@@ -104,23 +112,25 @@ public class DiscoveriesHandler {
 //                        player.sendTitle(ChatColor.LIGHT_PURPLE + z.getFormalname(), ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered");
 //                        TTA_Methods.sendTitle(player, ChatColor.LIGHT_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
                         new BukkitRunnable() {
-
-                            int i = 55;
+                            int spaceCount = 9;
 
                             @Override
                             public void run() {
                                 String title = z.getFormalname();
                                 String subtitle = "Discovered";
-                                if (i <= 1) {
+                                if (spaceCount < 1) {
                                     cancel();
                                 }
-                                String spaces = "";
-                                for (int ii = i - 45; ii <= 0; ii--) {
-                                    spaces = spaces + " ";
+
+                                String titlez = "";
+
+                                char[] titleChars = title.toCharArray();
+                                for (char titleChar : titleChars) {
+                                    titlez = titlez + repeatNTimes(" ", spaceCount) + titleChar;
                                 }
-                                player.sendTitle(ChatColor.LIGHT_PURPLE + title.replace("", spaces).trim(), ChatColor.YELLOW + ChatColor.ITALIC.toString() +
-                                        subtitle.replace("", spaces).trim(), 0, 3, 0);
-                                i--;
+                                player.sendTitle(titlez, subtitle, 1, 30, 20);
+
+                                spaceCount--;
                             }
                         }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 1);
                     }
