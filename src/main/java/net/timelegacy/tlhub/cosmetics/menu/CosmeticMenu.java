@@ -1,8 +1,6 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
 import com.google.common.base.Strings;
-import java.util.ArrayList;
-import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
@@ -20,12 +18,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CosmeticMenu implements Listener {
 
   static int getI(Player p, Inventory menu, int i, Cosmetic cosmetic, TLHub lobby) {
     if (menu.getItem(i) == null) {
-      if (PerkHandler.hasPerk(p.getName(), cosmetic.getPerkPerm())
-          || RankHandler.getRank(p.getName()).getPriority() >= 9) {
+        if (PerkHandler.hasPerk(p.getUniqueId(), cosmetic.getPerkPerm())
+                || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
         menu.setItem(i, cosmetic.getItemStack());
       } else {
         menu.setItem(

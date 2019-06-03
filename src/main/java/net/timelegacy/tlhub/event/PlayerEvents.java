@@ -33,7 +33,7 @@ public class PlayerEvents implements Listener {
     Player p = event.getPlayer();
 
     World world = p.getWorld();
-    Rank r = RankHandler.getRank(p.getName());
+    Rank r = RankHandler.getRank(p.getUniqueId());
     if (r.getPriority() >= 7) {
       p.setAllowFlight(true);
       p.setFlying(true);
@@ -64,7 +64,7 @@ public class PlayerEvents implements Listener {
       for (Player player : Bukkit.getOnlinePlayers()) {
           player.sendMessage(
                   "§7§l(§a+§7§l) "
-                          + RankHandler.chatColors(p.getName())
+                          + RankHandler.chatColors(p.getUniqueId())
                           .replace("%username% &8%arrows%", p.getName())
                           .replace("&", "§")); // TODO Cleanup
       }
@@ -72,7 +72,7 @@ public class PlayerEvents implements Listener {
     if (Bukkit.getOnlinePlayers().size() >= 1) {
         TLHub.playersOnline = true;
     }
-    ServerHandler.setOnlinePlayers(ServerHandler.getServerUID(), Bukkit.getOnlinePlayers().size());
+    ServerHandler.setOnlinePlayers(ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size());
   }
 
   public void hotBarItems(Player p) {
@@ -148,6 +148,8 @@ public class PlayerEvents implements Listener {
           MessageUtils.MAIN_COLOR + "You have been saved from the depths of the world!",
           true);
     }
+
+    DiscoveriesHandler.discoveryMagic(e.getPlayer()); // Discovery system logic
   }
 
   @EventHandler
@@ -155,7 +157,7 @@ public class PlayerEvents implements Listener {
     Player p = event.getPlayer();
 
     ServerHandler.setOnlinePlayers(
-        ServerHandler.getServerUID(), Bukkit.getOnlinePlayers().size() - 1);
+            ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size() - 1);
 
     if (Bukkit.getOnlinePlayers().size() < 1) {
         TLHub.playersOnline = false;
@@ -164,16 +166,17 @@ public class PlayerEvents implements Listener {
       for (Player player : Bukkit.getOnlinePlayers()) {
           player.sendMessage(
                   "§7§l(§c-§7§l) "
-                          + RankHandler.chatColors(p.getName())
+                          + RankHandler.chatColors(p.getUniqueId())
                           .replace("%username% &8%arrows%", p.getName())
                           .replace("&", "§")); // TODO Cleanup
       }
+    DiscoveriesHandler.playerLeave(p);
   }
 
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
   public void onBlockPlace(BlockPlaceEvent event) {
     Player p = event.getPlayer();
-    Rank r = RankHandler.getRank(p.getName());
+    Rank r = RankHandler.getRank(p.getUniqueId());
 
     if (r.getPriority() >= 9) {
       event.setCancelled(false);
@@ -185,7 +188,7 @@ public class PlayerEvents implements Listener {
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
   public void onBlockBreak(BlockBreakEvent event) {
     Player p = event.getPlayer();
-    Rank r = RankHandler.getRank(p.getName());
+    Rank r = RankHandler.getRank(p.getUniqueId());
 
     if (r.getPriority() >= 9) {
       event.setCancelled(false);

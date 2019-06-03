@@ -51,13 +51,13 @@ public class TLHub extends JavaPlugin {
 
     DiscoveriesHandler.setupDiscoveries();
 
-    ServerHandler.setMaxPlayers(ServerHandler.getServerUID(), 50);
+    ServerHandler.setMaxPlayers(ServerHandler.getServerUUID(), 50);
 
     Bukkit.getPluginManager().registerEvents(new MainMenu(), plugin);
     registerEvents();
 
     CosmeticHandler.register();
-    ServerHandler.setType(ServerHandler.getServerUID(), "LOBBY");
+    ServerHandler.setType(ServerHandler.getServerUUID(), "LOBBY");
   }
 
   public void onDisable() {
