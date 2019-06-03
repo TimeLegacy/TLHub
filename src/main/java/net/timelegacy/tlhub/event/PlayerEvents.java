@@ -148,6 +148,8 @@ public class PlayerEvents implements Listener {
           MessageUtils.MAIN_COLOR + "You have been saved from the depths of the world!",
           true);
     }
+
+    DiscoveriesHandler.discoveryMagic(e.getPlayer()); // Discovery system logic
   }
 
   @EventHandler
@@ -168,6 +170,7 @@ public class PlayerEvents implements Listener {
                           .replace("%username% &8%arrows%", p.getName())
                           .replace("&", "§")); // TODO Cleanup
       }
+    DiscoveriesHandler.playerLeave(p);
   }
 
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)

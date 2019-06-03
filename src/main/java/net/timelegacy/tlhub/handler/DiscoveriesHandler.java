@@ -74,20 +74,13 @@ public class DiscoveriesHandler {
                 playersDiscoveries.get(player.getUniqueId()).add(perk.replace("LOBBY.DISCOVERY.", "").toLowerCase());
             }
         }
-        playersCurrentArea.put(player.getUniqueId(), "");
+        playersCurrentArea.put(player.getUniqueId(), "wild");
+    }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (Bukkit.getOnlinePlayers().contains(player)) {
-                    discoveryMagic(player);
-                } else {
-                    playersDiscoveries.remove(player.getUniqueId());
-                    cancel();
-                }
-            }
-        }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 5);
-
+    public static void playerLeave(Player player) {
+        playersDiscoveries.remove(player.getUniqueId());
+        playersCurrentArea.remove(player.getUniqueId());
+        playersBossBar.remove(player.getUniqueId());
     }
 
     public static int getTotalAvailableDiscoveries() {
@@ -98,31 +91,61 @@ public class DiscoveriesHandler {
         return playersDiscoveries.get(player.getUniqueId()).size();
     }
 
-    private static void discoveryMagic(Player player) {
+    public static void discoveryMagic(Player player) {
         for (Zone z : discoveries) {
-            if (playersCurrentArea.get(player.getUniqueId()).equals("")) {
+            if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
                 if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-                    playersCurrentArea.remove(player.getUniqueId());
-                    playersCurrentArea.put(player.getUniqueId(), z.getShortName());
-                    playersBossBar.put(player.getUniqueId(), Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), BarColor.PURPLE, BarStyle.SOLID));
+                    setBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname());
 //                    TTA_Methods.createBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), 1.0, BarStyle.SOLID, BarColor.PURPLE, null, true);
                     if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
                         playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
                         PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + z.getShortName());
                         ScoreboardHandler.updateDiscoveries(player);
+//                        player.sendTitle(ChatColor.LIGHT_PURPLE + z.getFormalname(), ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered");
 //                        TTA_Methods.sendTitle(player, ChatColor.LIGHT_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
+                        new BukkitRunnable() {
+
+                            int i = 55;
+
+                            @Override
+                            public void run() {
+                                String title = z.getFormalname();
+                                String subtitle = "Discovered";
+                                if (i <= 1) {
+                                    cancel();
+                                }
+                                String spaces = "";
+                                for (int ii = i - 45; ii <= 0; ii--) {
+                                    spaces = spaces + " ";
+                                }
+                                player.sendTitle(ChatColor.LIGHT_PURPLE + title.replace("", spaces).trim(), ChatColor.YELLOW + ChatColor.ITALIC.toString() +
+                                        subtitle.replace("", spaces).trim(), 0, 3, 0);
+                                i--;
+                            }
+                        }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 1);
                     }
-                    break;
+                    return;
                 }
             } else if (z.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
                 if (!Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-                    playersCurrentArea.remove(player.getUniqueId());
-                    playersCurrentArea.put(player.getUniqueId(), "");
-//                    TTA_Methods.removeBossBar(player);
+                    playersCurrentArea.put(player.getUniqueId(), "wild");
+                    setBossBar(player, ChatColor.YELLOW + "Wilderness");
                     discoveryMagic(player);
+                    return;
                 }
             }
         }
+    }
+
+    private static void setBossBar(Player player, String display) {
+        if (playersBossBar.get(player.getUniqueId()) != null) {
+            playersBossBar.get(player.getUniqueId()).removePlayer(player);
+        }
+        if (display.equals("")) {
+            return;
+        }
+        playersBossBar.put(player.getUniqueId(), Bukkit.createBossBar(display, BarColor.PURPLE, BarStyle.SOLID));
+        playersBossBar.get(player.getUniqueId()).addPlayer(player);
     }
 }
 
