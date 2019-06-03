@@ -28,6 +28,7 @@ public class DiscoveriesHandler {
     private static HashMap<UUID, String> playersCurrentArea = new HashMap<>();
     private static HashMap<UUID, ArrayList<String>> playersDiscoveries = new HashMap<>();
     private static Zone[] discoveries;
+    private static Zone spawnArea = new Zone("spawn", "spawn", new Polygon(new AABB3D(new Vector(0.5, 122, 12.5), new Vector(23, 20, 45))));
 
     public static void setupDiscoveries() {
         //TODO load discoveries from config
@@ -74,7 +75,7 @@ public class DiscoveriesHandler {
                 playersDiscoveries.get(player.getUniqueId()).add(perk.replace("LOBBY.DISCOVERY.", "").toLowerCase());
             }
         }
-        playersCurrentArea.put(player.getUniqueId(), "wild");
+        playersCurrentArea.put(player.getUniqueId(), "spawn");
     }
 
     public static void playerLeave(Player player) {
@@ -100,62 +101,72 @@ public class DiscoveriesHandler {
     }
 
     public static void discoveryMagic(Player player) {
-        for (Zone z : discoveries) {
-            if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
-                if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-                    setBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname());
-//                    TTA_Methods.createBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), 1.0, BarStyle.SOLID, BarColor.PURPLE, null, true);
-                    if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
-                        playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
-                        PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + z.getShortName());
-                        ScoreboardHandler.updateDiscoveries(player);
-//                        player.sendTitle(ChatColor.LIGHT_PURPLE + z.getFormalname(), ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered");
-//                        TTA_Methods.sendTitle(player, ChatColor.LIGHT_PURPLE + z.getFormalname(), 0, 40, 10, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Discovered", 0, 40, 10);
-                        new BukkitRunnable() {
-                            int spaceCount = 9;
+        if (Polygon.isInside(spawnArea.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+            setBossBar(player, "", "spawn");
+            playersCurrentArea.put(player.getUniqueId(), "spawn");
+            return;
+        } else {
+            for (Zone z : discoveries) {
+                if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
+                    if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+                        setBossBar(player, ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | " + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), z.getShortName());
+                        if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
+                            playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
+                            PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + z.getShortName());
+                            ScoreboardHandler.updateDiscoveries(player);
+                            new BukkitRunnable() {
+                                int spaceCount = 10;
 
-                            @Override
-                            public void run() {
-                                String title = z.getFormalname();
-                                String subtitle = "Discovered";
-                                if (spaceCount < 1) {
-                                    cancel();
+                                @Override
+                                public void run() {
+                                    spaceCount--;
+                                    String title = "";
+                                    String subTitle = "";
+
+                                    char[] titleChars = z.getFormalname().toCharArray();
+                                    for (char titleChar : titleChars) {
+                                        title = title + repeatNTimes(" ", spaceCount) + titleChar;
+                                    }
+                                    char[] subTitleChars = ("Discovered").toCharArray();
+                                    for (char subTitleChar : subTitleChars) {
+                                        subTitle = subTitle + repeatNTimes(" ", spaceCount) + subTitleChar;
+                                    }
+                                    player.sendTitle(ChatColor.LIGHT_PURPLE + title, ChatColor.YELLOW + ChatColor.ITALIC.toString() + subTitle, 1, 45, 20);
+
+
+                                    if (spaceCount == 0) {
+                                        cancel();
+                                    }
                                 }
-
-                                String titlez = "";
-
-                                char[] titleChars = title.toCharArray();
-                                for (char titleChar : titleChars) {
-                                    titlez = titlez + repeatNTimes(" ", spaceCount) + titleChar;
-                                }
-                                player.sendTitle(titlez, subtitle, 1, 30, 20);
-
-                                spaceCount--;
-                            }
-                        }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 1);
+                            }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 1);
+                        }
+                        return;
                     }
-                    return;
-                }
-            } else if (z.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
-                if (!Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-                    playersCurrentArea.put(player.getUniqueId(), "wild");
-                    setBossBar(player, ChatColor.YELLOW + "Wilderness");
-                    discoveryMagic(player);
+                } else if (z.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
+                    if (!Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+                        setBossBar(player, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Wilderness", "wild");
+                        discoveryMagic(player);
+                        return;
+                    }
                     return;
                 }
             }
         }
+        setBossBar(player, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Wilderness", "wild");
     }
 
-    private static void setBossBar(Player player, String display) {
+    private static void setBossBar(Player player, String display, String shortName) {
         if (playersBossBar.get(player.getUniqueId()) != null) {
             playersBossBar.get(player.getUniqueId()).removePlayer(player);
         }
+
         if (display.equals("")) {
             return;
         }
+
         playersBossBar.put(player.getUniqueId(), Bukkit.createBossBar(display, BarColor.PURPLE, BarStyle.SOLID));
         playersBossBar.get(player.getUniqueId()).addPlayer(player);
+        playersCurrentArea.put(player.getUniqueId(), shortName);
     }
 }
 
