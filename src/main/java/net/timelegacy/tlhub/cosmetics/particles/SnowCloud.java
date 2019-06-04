@@ -12,19 +12,14 @@ public class SnowCloud {
   private static TLHub plugin = TLHub.getPlugin();
 
   public static void particleRunnable() {
-    Bukkit.getScheduler()
-        .scheduleSyncRepeatingTask(
-            plugin,
-            () -> {
-              for (Player p : Bukkit.getOnlinePlayers()) {
-                if (CosmeticHandler.particleEnabled(p, "SNOWCLOUD")) {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        if (CosmeticHandler.particleEnabled(p, "SNOWCLOUD")) {
 
-                  ParticleUtils.display(Particle.CLOUD, p.getEyeLocation().add(0, 1, 0), 10, 0);
-                  ParticleUtils.display(Particle.FIREWORKS_SPARK, p.getEyeLocation().add(0, 1, 0));
-                }
-              }
-            },
-            0,
-            2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
+          ParticleUtils.display(Particle.CLOUD, p.getEyeLocation().add(0, 1, 0), 10, 0);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, p.getEyeLocation().add(0, 1, 0));
+        }
+      }
+    }, 0, 2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
   }
 }

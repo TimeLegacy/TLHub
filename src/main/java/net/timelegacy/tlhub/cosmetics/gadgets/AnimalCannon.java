@@ -1,9 +1,16 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
+import java.util.ArrayList;
+import java.util.Random;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -16,75 +23,71 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 public class AnimalCannon implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
   @EventHandler
   public void gadgetUse(PlayerInteractEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
     String gadgetName = "ANIMAL_CANNON";
+    ItemStack is = event.getItem();
 
-      ItemStack is = event.getItem();
-
-      if (is == null) {
-          return;
-      }
-
-      if (is.getType() == Material.AIR) {
-          return;
-      }
-
-      if (!is.hasItemMeta()) {
-          return;
-      }
-
-      if (!is.getItemMeta().hasDisplayName()) {
-          return;
-      }
-    if (event.getAction() == Action.RIGHT_CLICK_AIR
-        || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-      if (p.getInventory().getItemInMainHand() != null) {
-        ItemStack inHand = p.getInventory().getItemInMainHand();
-
-        if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-            .contains(gadgetName.replace("_", " ").toLowerCase())) {
-          event.setCancelled(true);
-
-          if (Cooldown.hasCooldown(p.getUniqueId(), gadgetName)) {
-            MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                    .getTimeLeft(p.getUniqueId(), gadgetName)
-                    + (Cooldown.getTimeLeft(p.getUniqueId(), gadgetName) > 1 ? " seconds"
-                    : " second") +
-                    " before doing that again.", true);
-            return;
-          }
-
-          ItemStack is2 = inHand.clone();
-          is2.setAmount(1);
-          Item i = p.getWorld().dropItem(p.getLocation(), is2);
-          i.setVelocity(p.getLocation().clone().add(0.0D, 1.5D, 0.0D).getDirection().normalize());
-          i.setPickupDelay(5000);
-
-          Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            i.remove();
-            spawnAnimals(i.getLocation());
-          }, 20);
-
-          new Cooldown(
-              p.getUniqueId(),
-              gadgetName,
-              5)
-              .start();
-        }
-      }
+    if (is == null) {
+      return;
     }
+
+    if (is.getType() == Material.AIR) {
+      return;
+    }
+
+    if (!is.hasItemMeta()) {
+      return;
+    }
+
+    if (!is.getItemMeta().hasDisplayName()) {
+      return;
+    }
+
+    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+      return;
+    }
+
+    if (player.getInventory().getItemInMainHand() == null) {
+      return;
+    }
+
+    ItemStack inHand = player.getInventory().getItemInMainHand();
+
+    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+      event.setCancelled(true);
+
+      if (Cooldown.hasCooldown(player.getUniqueId(), gadgetName)) {
+        MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You must wait " +
+            Cooldown.getTimeLeft(player.getUniqueId(), gadgetName)
+            + (Cooldown.getTimeLeft(player.getUniqueId(), gadgetName) > 1 ? " seconds"
+            : " second") +
+            " before doing that again.", true);
+        return;
+      }
+
+      ItemStack is2 = inHand.clone();
+      is2.setAmount(1);
+      Item i = player.getWorld().dropItem(player.getLocation(), is2);
+      i.setVelocity(player.getLocation().clone().add(0.0D, 1.5D, 0.0D).getDirection().normalize());
+      i.setPickupDelay(5000);
+
+      Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+        i.remove();
+        spawnAnimals(i.getLocation());
+      }, 20);
+
+      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+    }
+
+
   }
 
   private void spawnAnimals(Location location) {
@@ -104,10 +107,8 @@ public class AnimalCannon implements Listener {
     ArrayList<Entity> spawned = new ArrayList<>();
 
     for (int i = 0; i < 4; i++) {
-      Location newLocation =
-          location.add(new Vector(Math.random() - 0.5, 0, Math.random() - 0.5).multiply(diameter));
-      spawned
-          .add(location.getWorld().spawnEntity(newLocation, animals.get(new Random().nextInt(10))));
+      Location newLocation = location.add(new Vector(Math.random() - 0.5, 0, Math.random() - 0.5).multiply(diameter));
+      spawned.add(location.getWorld().spawnEntity(newLocation, animals.get(new Random().nextInt(10))));
     }
 
     location.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, location, 1);

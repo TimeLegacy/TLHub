@@ -1,11 +1,29 @@
 package net.timelegacy.tlhub.cosmetics;
 
 import de.erethon.headlib.HeadLib;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.particles.*;
+import net.timelegacy.tlhub.cosmetics.particles.AngelWings;
+import net.timelegacy.tlhub.cosmetics.particles.BloodHelix;
+import net.timelegacy.tlhub.cosmetics.particles.CandyCane;
+import net.timelegacy.tlhub.cosmetics.particles.Cone;
+import net.timelegacy.tlhub.cosmetics.particles.Enchanted;
+import net.timelegacy.tlhub.cosmetics.particles.EnderAura;
+import net.timelegacy.tlhub.cosmetics.particles.FlameFairy;
+import net.timelegacy.tlhub.cosmetics.particles.FrozenWalk;
+import net.timelegacy.tlhub.cosmetics.particles.GreenSparks;
+import net.timelegacy.tlhub.cosmetics.particles.InLove;
+import net.timelegacy.tlhub.cosmetics.particles.Music;
+import net.timelegacy.tlhub.cosmetics.particles.RainCloud;
+import net.timelegacy.tlhub.cosmetics.particles.SantaHat;
+import net.timelegacy.tlhub.cosmetics.particles.SnowCloud;
+import net.timelegacy.tlhub.cosmetics.particles.Walks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,11 +34,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CosmeticHandler implements Listener {
 
@@ -34,7 +47,6 @@ public class CosmeticHandler implements Listener {
    * TODO - MAKE THE COSMETIC MENUS & PETS MENUS DYNAMIC & HATS DYNAMIC
    */
   public static void register() {
-
     // Particle Runnables
     AngelWings.particleRunnable();
     BloodHelix.particleRunnable();
@@ -55,18 +67,18 @@ public class CosmeticHandler implements Listener {
     syncPets();
   }
 
-  public static void setParticle(Player p, String cosmetic) {
-    if (effects.containsKey(p)) {
-      effects.remove(p);
-      effects.put(p, cosmetic.toUpperCase());
+  public static void setParticle(Player player, String cosmetic) {
+    if (effects.containsKey(player)) {
+      effects.remove(player);
+      effects.put(player, cosmetic.toUpperCase());
 
     } else {
-      effects.put(p, cosmetic);
+      effects.put(player, cosmetic);
     }
   }
 
-  public static boolean particleEnabled(Player p, String cosmetic) {
-    return effects.containsKey(p) && effects.get(p).equalsIgnoreCase(cosmetic);
+  public static boolean particleEnabled(Player player, String cosmetic) {
+    return effects.containsKey(player) && effects.get(player).equalsIgnoreCase(cosmetic);
   }
 
   public static String getPet(Player player) {
@@ -77,12 +89,12 @@ public class CosmeticHandler implements Listener {
     }
   }
 
-  public static boolean hasParticle(Player p) {
-    return effects.containsKey(p);
+  public static boolean hasParticle(Player player) {
+    return effects.containsKey(player);
   }
 
-  public static void removeParticle(Player p) {
-    effects.remove(p);
+  public static void removeParticle(Player player) {
+    effects.remove(player);
   }
 
   public static void setPet(Player player, String cosmetic) {
@@ -95,72 +107,61 @@ public class CosmeticHandler implements Listener {
     }
   }
 
-  public static boolean hasPet(Player p) {
-    return pets.containsKey(p);
+  public static boolean hasPet(Player player) {
+    return pets.containsKey(player);
   }
 
-  public static void removePet(Player p) {
-    pets.remove(p);
-    if (petEntity.containsKey(p)) {
-      petEntity.get(p).remove();
-      petEntity.remove(p);
+  public static void removePet(Player player) {
+    pets.remove(player);
+    if (petEntity.containsKey(player)) {
+      petEntity.get(player).remove();
+      petEntity.remove(player);
     }
   }
 
   public static void syncPets() {
-    Bukkit.getScheduler()
-        .scheduleSyncRepeatingTask(
-            plugin,
-            () -> {
-              for (Map.Entry<Player, String> pe : pets.entrySet()) {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+      for (Map.Entry<Player, String> pe : pets.entrySet()) {
 
-                if (pets.containsKey(pe.getKey()) && !petEntity.containsKey(pe.getKey())) {
-                  ArmorStand armorStand =
-                      pe.getKey().getWorld().spawn(pe.getKey().getLocation(), ArmorStand.class);
+        if (pets.containsKey(pe.getKey()) && !petEntity.containsKey(pe.getKey())) {
+          ArmorStand armorStand =
+              pe.getKey().getWorld().spawn(pe.getKey().getLocation(), ArmorStand.class);
 
-                  for (Cosmetic cosmetic : getCosmetics()) {
-                    if (cosmetic.getCosmeticIdentifier().equalsIgnoreCase(pe.getValue())) {
-                      armorStand.getEquipment().setHelmet(cosmetic.getItemStack());
-                    }
-                  }
+          for (Cosmetic cosmetic : getCosmetics()) {
+            if (cosmetic.getCosmeticIdentifier().equalsIgnoreCase(pe.getValue())) {
+              armorStand.getEquipment().setHelmet(cosmetic.getItemStack());
+            }
+          }
 
-                  // rabbit.setBaby(true);
-                  armorStand.setSmall(true);
+          // rabbit.setBaby(true);
+          armorStand.setSmall(true);
 
-                  // rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999,
-                  // 1));
-                  armorStand.setVisible(false);
+          // rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999,
+          // 1));
+          armorStand.setVisible(false);
 
-                  armorStand.setCustomName(pe.getKey().getUniqueId().toString());
-                  armorStand.setCustomNameVisible(false);
+          armorStand.setCustomName(pe.getKey().getUniqueId().toString());
+          armorStand.setCustomNameVisible(false);
 
-                  petEntity.put(pe.getKey(), armorStand);
-                }
+          petEntity.put(pe.getKey(), armorStand);
+        }
 
-                follow(pe.getKey(), petEntity.get(pe.getKey()));
-              }
-            },
-            0,
-            1);
+        follow(pe.getKey(), petEntity.get(pe.getKey()));
+      }
+    }, 0, 1);
   }
 
   private static void follow(Player target, Entity follower) {
     int direction = getDirection(target);
     if (target.isOnGround()) {
-      Location location =
-          target
-              .getLocation()
-              .subtract(
-                  direction == 1 ? -1.25 : (direction == 4) ? 1.25 : 0,
-                  0,
-                  direction == 2 ? -1.25 : (direction == 3) ? 1.25 : 0);
+      Location location = target.getLocation().subtract(
+          direction == 1 ? -1.25 : (direction == 4) ? 1.25 : 0,
+          0,
+          direction == 2 ? -1.25 : (direction == 3) ? 1.25 : 0);
       follower.teleport(location);
 
-      Bukkit.getScheduler()
-          .scheduleSyncDelayedTask(
-              plugin,
-              () -> ParticleUtils.display(Particle.FIREWORKS_SPARK, location.add(0, 1, 0)),
-              2L);
+      Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+          () -> ParticleUtils.display(Particle.FIREWORKS_SPARK, location.add(0, 1, 0)), 2L);
     }
   }
 
@@ -171,6 +172,7 @@ public class CosmeticHandler implements Listener {
     if (yaw < 0) {
       yaw += 360;
     }
+
     if (yaw >= 315 || yaw < 45) {
       return 4;
     } else if (yaw < 135) {

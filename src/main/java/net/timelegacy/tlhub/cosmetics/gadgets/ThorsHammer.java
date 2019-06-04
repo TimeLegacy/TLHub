@@ -20,7 +20,7 @@ public class ThorsHammer implements Listener {
 
   @EventHandler
   public void gadgetUse(PlayerInteractEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
     String gadgetName = "THOR_HAMMER";
 
@@ -42,48 +42,47 @@ public class ThorsHammer implements Listener {
       return;
     }
 
-    if (event.getAction() == Action.RIGHT_CLICK_AIR
-        || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-      if (p.getInventory().getItemInMainHand() != null) {
-        ItemStack inHand = p.getInventory().getItemInMainHand();
-
-        if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-            .contains(gadgetName.replace("_", " ").toLowerCase())) {
-          event.setCancelled(true);
-
-          if (Cooldown.hasCooldown(p.getUniqueId(), gadgetName)) {
-            MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                    .getTimeLeft(p.getUniqueId(), gadgetName)
-                    + (Cooldown.getTimeLeft(p.getUniqueId(), gadgetName) > 1 ? " seconds"
-                    : " second") +
-                    " before doing that again.", true);
-            return;
-          }
-
-//          TTA_Methods.sendTitle(p, "&eSUMMONING THE GODS...", 20, 20, 20, "", 20, 20, 20);
-
-          new BukkitRunnable() {
-
-            @Override
-            public void run() {
-              p.playSound(p.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
-
-              for (int i = 0; i < 50; i++) {
-                p.getWorld().strikeLightningEffect(p.getEyeLocation());
-              }
-            }
-          }.runTaskLaterAsynchronously(plugin, 20 * 3);
-
-          new Cooldown(
-              p.getUniqueId(),
-              gadgetName,
-              5)
-              .start();
-        }
-      }
+    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+      return;
     }
+
+    if (player.getInventory().getItemInMainHand() == null) {
+      return;
+    }
+
+    ItemStack inHand = player.getInventory().getItemInMainHand();
+
+    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+      event.setCancelled(true);
+
+      if (Cooldown.hasCooldown(player.getUniqueId(), gadgetName)) {
+        MessageUtils.sendMessage(
+            player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+                .getTimeLeft(player.getUniqueId(), gadgetName)
+                + (Cooldown.getTimeLeft(player.getUniqueId(), gadgetName) > 1 ? " seconds"
+                : " second") +
+                " before doing that again.", true);
+        return;
+      }
+
+//          TTA_Methods.sendTitle(player, "&eSUMMONING THE GODS...", 20, 20, 20, "", 20, 20, 20);
+
+      new BukkitRunnable() {
+
+        @Override
+        public void run() {
+          player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
+
+          for (int i = 0; i < 50; i++) {
+            player.getWorld().strikeLightningEffect(player.getEyeLocation());
+          }
+        }
+      }.runTaskLaterAsynchronously(plugin, 20 * 3);
+
+      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+    }
+
   }
 
 }

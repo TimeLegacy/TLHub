@@ -17,7 +17,7 @@ public class MainMenu implements Listener {
 
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
-    Player p = (Player) event.getWhoClicked();
+    Player player = (Player) event.getWhoClicked();
 
     if (event.getCurrentItem() != null) {
 

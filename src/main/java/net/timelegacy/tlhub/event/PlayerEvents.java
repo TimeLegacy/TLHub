@@ -9,7 +9,11 @@ import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
 import net.timelegacy.tlhub.handler.DiscoveriesHandler;
 import net.timelegacy.tlhub.handler.ScoreboardHandler;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,7 +25,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
 
 public class PlayerEvents implements Listener {
@@ -30,155 +39,126 @@ public class PlayerEvents implements Listener {
 
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
-    World world = p.getWorld();
-    Rank r = RankHandler.getRank(p.getUniqueId());
+    World world = player.getWorld();
+    Rank r = RankHandler.getRank(player.getUniqueId());
     if (r.getPriority() >= 7) {
-      p.setAllowFlight(true);
-      p.setFlying(true);
+      player.setAllowFlight(true);
+      player.setFlying(true);
     }
 
-    p.setHealthScale(20);
-    p.setExp(0);
-    p.setLevel(0);
+    player.setHealthScale(20);
+    player.setExp(0);
+    player.setLevel(0);
 
     Location spawn = TLHub.spawn;
     Location lookloc = new Location(world, 0.5, 118.5, 13.5);
     Vector dirBetweenLocations = lookloc.toVector().subtract(spawn.toVector());
     spawn.setDirection(dirBetweenLocations);
 
-    p.teleport(spawn);
+    player.teleport(spawn);
 
-    p.setGameMode(GameMode.ADVENTURE);
+    player.setGameMode(GameMode.ADVENTURE);
 
-    DiscoveriesHandler.playerJoin(p);
+    DiscoveriesHandler.playerJoin(player);
 
-      p.setScoreboard(ScoreboardHandler.setupScoreBoard());
-      ScoreboardHandler.updateEverything(p);
+    player.setScoreboard(ScoreboardHandler.setupScoreBoard());
+    ScoreboardHandler.updateEverything(player);
 
-    p.getInventory().clear();
-    p.updateInventory();
-    hotBarItems(p);
+    player.getInventory().clear();
+    player.updateInventory();
+    hotBarItems(player);
 
-      for (Player player : Bukkit.getOnlinePlayers()) {
-          player.sendMessage(
-                  "§7§l(§a+§7§l) "
-                          + RankHandler.chatColors(p.getUniqueId())
-                          .replace("%username% &8%arrows%", p.getName())
-                          .replace("&", "§")); // TODO Cleanup
-      }
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      p.sendMessage("§7§l(§a+§7§l) "
+          + RankHandler.chatColors(p.getUniqueId())
+          .replace("%username% &8%arrows%", p.getName())
+          .replace("&", "§")); // TODO Cleanup
+    }
 
     if (Bukkit.getOnlinePlayers().size() >= 1) {
-        TLHub.playersOnline = true;
+      TLHub.playersOnline = true;
     }
+
     ServerHandler.setOnlinePlayers(ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size());
   }
 
-  public void hotBarItems(Player p) {
+  public void hotBarItems(Player player) {
+    player.getInventory().setItem(0, ItemUtils.createItem(Material.ENCHANTING_TABLE, 1,
+        "&eCosmetics &8{&7Right Click&8}",
+        "&7Open Cosmetics to utilize all your",
+        "&7favorite features.",
+        "&aUnlocked&7: &8(&7"
+            + CosmeticHandler.getTotals(player).get("player")
+            + "/"
+            + CosmeticHandler.getCosmetics().size()
+            + "&8)"));
+    player.getInventory().setItem(1, ItemUtils.createItem(Material.BEACON, 1,
+        "&eLobby Selector &8{&7Right Click&8}",
+        "&7Right click to select",
+        "&7a lobby to join."));
+    player.getInventory().setItem(4, ItemUtils.createItem(Material.ENDER_CHEST, 1,
+        "&eServer Selector &8{&7Right Click&8}",
+        "&7Right click to select",
+        "&7a server to join."));
+    player.getInventory().setItem(7, ItemUtils.createItem(ItemUtils.playerSkull(player.getUniqueId()), 1,
+        "&eYour Profile &8{&7Right Click&8}",
+        "&7Right click to view your",
+        "&7profile and alter your user",
+        "&7specific settings."));
+    player.getInventory().setItem(8, ItemUtils.createItem(Material.BLAZE_ROD, 1,
+        "&ePlayer Visibility &aEnabled &8{&7Right Click&8}",
+        "&7Right click to no longer",
+        "&7view other players."));
+    player.getInventory().setHeldItemSlot(4);
 
-    p.getInventory()
-        .setItem(
-            0,
-            ItemUtils.createItem(
-                Material.ENCHANTING_TABLE,
-                1,
-                "&eCosmetics &8{&7Right Click&8}",
-                "&7Open Cosmetics to utilize all your",
-                "&7favorite features.",
-                "&aUnlocked&7: &8(&7"
-                    + CosmeticHandler.getTotals(p).get("player")
-                    + "/"
-                    + CosmeticHandler.getCosmetics().size()
-                    + "&8)"));
-    p.getInventory()
-        .setItem(
-            1,
-            ItemUtils.createItem(
-                Material.BEACON,
-                1,
-                "&eLobby Selector &8{&7Right Click&8}",
-                "&7Right click to select",
-                "&7a lobby to join."));
-    p.getInventory()
-        .setItem(
-            4,
-            ItemUtils.createItem(
-                Material.ENDER_CHEST,
-                1,
-                "&eServer Selector &8{&7Right Click&8}",
-                "&7Right click to select",
-                "&7a server to join."));
-    p.getInventory()
-        .setItem(
-            7,
-            ItemUtils.createItem(
-                ItemUtils.playerSkull(p.getUniqueId()),
-                1,
-                "&eYour Profile &8{&7Right Click&8}",
-                "&7Right click to view your",
-                "&7profile and alter your user",
-                "&7specific settings."));
-    p.getInventory()
-        .setItem(
-            8,
-            ItemUtils.createItem(
-                Material.BLAZE_ROD,
-                1,
-                "&ePlayer Visibility &aEnabled &8{&7Right Click&8}",
-                "&7Right click to no longer",
-                "&7view other players."));
-    p.getInventory().setHeldItemSlot(4);
-
-    p.updateInventory();
+    player.updateInventory();
   }
 
   @EventHandler
-  public void onMove(PlayerMoveEvent e) {
-    if (e.getPlayer().getLocation().getY() <= 10) {
-        Location spawn = TLHub.spawn;
-      Location lookloc = new Location(e.getPlayer().getWorld(), 41.5, 62.0, 1005.5);
+  public void onMove(PlayerMoveEvent event) {
+    if (event.getPlayer().getLocation().getY() <= 10) {
+      Location spawn = TLHub.spawn;
+      Location lookloc = new Location(event.getPlayer().getWorld(), 41.5, 62.0, 1005.5);
       Vector dirBetweenLocations = lookloc.toVector().subtract(spawn.toVector());
       spawn.setDirection(dirBetweenLocations);
 
-      e.getPlayer().teleport(spawn);
+      event.getPlayer().teleport(spawn);
 
-      MessageUtils.sendMessage(
-          e.getPlayer(),
-          MessageUtils.MAIN_COLOR + "You have been saved from the depths of the world!",
-          true);
+      MessageUtils.sendMessage(event.getPlayer(),
+          MessageUtils.MAIN_COLOR + "You have been saved from the depths of the world!", true);
     }
 
-    DiscoveriesHandler.discoveryMagic(e.getPlayer()); // Discovery system logic
+    DiscoveriesHandler.discoveryMagic(event.getPlayer()); // Discovery system logic
   }
 
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
-    ServerHandler.setOnlinePlayers(
-            ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size() - 1);
+    ServerHandler.setOnlinePlayers(ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size() - 1);
 
     if (Bukkit.getOnlinePlayers().size() < 1) {
-        TLHub.playersOnline = false;
+      TLHub.playersOnline = false;
     }
 
-      for (Player player : Bukkit.getOnlinePlayers()) {
-          player.sendMessage(
-                  "§7§l(§c-§7§l) "
-                          + RankHandler.chatColors(p.getUniqueId())
-                          .replace("%username% &8%arrows%", p.getName())
-                          .replace("&", "§")); // TODO Cleanup
-      }
-    DiscoveriesHandler.playerLeave(p);
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      p.sendMessage("§7§l(§c-§7§l) "
+          + RankHandler.chatColors(p.getUniqueId())
+          .replace("%username% &8%arrows%", p.getName())
+          .replace("&", "§")); // TODO Cleanup
+    }
+
+    DiscoveriesHandler.playerLeave(player);
   }
 
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
   public void onBlockPlace(BlockPlaceEvent event) {
-    Player p = event.getPlayer();
-    Rank r = RankHandler.getRank(p.getUniqueId());
+    Player player = event.getPlayer();
+    Rank rank = RankHandler.getRank(player.getUniqueId());
 
-    if (r.getPriority() >= 9) {
+    if (rank.getPriority() >= 9) {
       event.setCancelled(false);
     } else {
       event.setCancelled(true);
@@ -187,10 +167,10 @@ public class PlayerEvents implements Listener {
 
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
   public void onBlockBreak(BlockBreakEvent event) {
-    Player p = event.getPlayer();
-    Rank r = RankHandler.getRank(p.getUniqueId());
+    Player player = event.getPlayer();
+    Rank rank = RankHandler.getRank(player.getUniqueId());
 
-    if (r.getPriority() >= 9) {
+    if (rank.getPriority() >= 9) {
       event.setCancelled(false);
     } else {
       event.setCancelled(true);
@@ -238,10 +218,10 @@ public class PlayerEvents implements Listener {
   }
 
     @EventHandler
-    public void onButtonPress(PlayerInteractEvent ev) {
-        if (ev.getAction().equals(Action.PHYSICAL)) {
-            if (ev.getClickedBlock().getType() == Material.OAK_PRESSURE_PLATE) {
-                ev.setCancelled(true);
+    public void onButtonPress(PlayerInteractEvent event) {
+        if (event.getAction().equals(Action.PHYSICAL)) {
+            if (event.getClickedBlock().getType() == Material.OAK_PRESSURE_PLATE) {
+                event.setCancelled(true);
             }
         }
     }

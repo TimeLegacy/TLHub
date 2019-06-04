@@ -27,11 +27,8 @@ public class PetsMenu implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
-  @SuppressWarnings("deprecation")
-  public static void openMenu(Player p, int page) {
-
-    Inventory menu =
-        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lPets >> &8&nPage " + page));
+  public static void openMenu(Player player, int page) {
+    Inventory menu = Bukkit.createInventory(player, 54, MessageUtils.colorize("&8&lPets >> &8&nPage " + page));
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
@@ -41,7 +38,7 @@ public class PetsMenu implements Listener {
     // Row 6
     menu.setItem(49, ItemUtils.createItem(Material.ENCHANTING_TABLE, 1, "&eReturn to Cosmetics"));
 
-    p.openInventory(menu);
+    player.openInventory(menu);
 
     new BukkitRunnable() {
 
@@ -72,11 +69,11 @@ public class PetsMenu implements Listener {
           ItemStack itemStack = pets.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getUniqueId(), pets.get(current).getPerkPerm())
-                  || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
+          if (PerkHandler.hasPerk(player.getUniqueId(), pets.get(current).getPerkPerm())
+                  || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
-            if (CosmeticHandler.getPet(p)
+            if (CosmeticHandler.getPet(player)
                 .equalsIgnoreCase(pets.get(current).getCosmeticIdentifier())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
@@ -95,7 +92,7 @@ public class PetsMenu implements Listener {
           }
 
           menu.setItem(i, is);
-          p.updateInventory();
+          player.updateInventory();
         }
       }
     }.runTaskAsynchronously(plugin);

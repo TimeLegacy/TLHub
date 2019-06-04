@@ -57,28 +57,31 @@ public class BounceEffect implements Listener {
   }
 
   @EventHandler
-  public void onSneak(PlayerToggleSneakEvent e) {
-    Player p = e.getPlayer();
+  public void onSneak(PlayerToggleSneakEvent event) {
+    Player player = event.getPlayer();
 
-    if (e.isSneaking()) {
-      if (CosmeticHandler.particleEnabled(p, "BOUNCE")) {
-        if (p.isOnGround()) {
-          if (Cooldown.hasCooldown(p.getUniqueId(), "BOUNCE")) {
-            MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                    .getTimeLeft(p.getUniqueId(), "BOUNCE")
-                    + (Cooldown.getTimeLeft(p.getUniqueId(), "BOUNCE") > 1 ? "seconds" : "second") +
-                    " before doing that again.", true);
-
-          } else {
-            new Cooldown(p.getUniqueId(), "BOUNCE", 3).start();
-            bounceEffect(p);
-          }
-        } else {
-          MessageUtils.sendMessage(
-              p, MessageUtils.ERROR_COLOR + "You must be on the ground to do that.", true);
-        }
-      }
+    if (!player.isSneaking()) {
+      return;
     }
+
+    if (!CosmeticHandler.particleEnabled(player, "BOUNCE")) {
+      return;
+    }
+
+    if (!player.isOnGround()) {
+      MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You must be on the ground to do that.", true);
+      return;
+    }
+
+    if (Cooldown.hasCooldown(player.getUniqueId(), "BOUNCE")) {
+      MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+          .getTimeLeft(player.getUniqueId(), "BOUNCE")
+          + (Cooldown.getTimeLeft(player.getUniqueId(), "BOUNCE") > 1 ? "seconds" : "second") +
+          " before doing that again.", true);
+      return;
+    }
+
+    new Cooldown(player.getUniqueId(), "BOUNCE", 3).start();
+    bounceEffect(player);
   }
 }

@@ -7,7 +7,11 @@ import net.timelegacy.tlcore.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 public class ScoreboardHandler {
 
@@ -23,11 +27,8 @@ public class ScoreboardHandler {
     spacer1.addEntry("§1");
     stats.getScore("§1").setScore(9);
 
-    String serverString =
-            ChatColor.WHITE
-                    + "Server: "
-                    + ChatColor.GRAY
-                    + MessageUtils.friendlyify(ServerHandler.getType(ServerHandler.getServerUUID()));
+    String serverString = ChatColor.WHITE + "Server: " + ChatColor.GRAY
+        + MessageUtils.friendlyify(ServerHandler.getType(ServerHandler.getServerUUID()));
     Team server = board.registerNewTeam("server");
     server.addEntry(serverString);
     stats.getScore(serverString).setScore(8);
@@ -78,30 +79,20 @@ public class ScoreboardHandler {
   }
 
   public static void updateDiscoveries(Player player) {
-    player
-            .getScoreboard()
-            .getTeam("discoveries")
-            .setSuffix(
-                    ChatColor.LIGHT_PURPLE.toString()
-                            + DiscoveriesHandler.getExploredDiscoveries(player)
-                            + ChatColor.GRAY
-                            + "/"
-                            + ChatColor.LIGHT_PURPLE
-                            + DiscoveriesHandler.getTotalAvailableDiscoveries());
+    player.getScoreboard().getTeam("discoveries").setSuffix(ChatColor.LIGHT_PURPLE.toString()
+        + DiscoveriesHandler.getExploredDiscoveries(player)
+        + ChatColor.GRAY
+        + "/"
+        + ChatColor.LIGHT_PURPLE
+        + DiscoveriesHandler.getTotalAvailableDiscoveries());
   }
 
   public static void updateTokens(Player player) {
-    player
-            .getScoreboard()
-            .getTeam("tokens")
-            .setSuffix(ChatColor.AQUA.toString() + CoinHandler.getBalance(player.getUniqueId()));
+    player.getScoreboard().getTeam("tokens").setSuffix(ChatColor.AQUA.toString() + CoinHandler.getBalance(player.getUniqueId()));
   }
 
   public static void updateCrates(Player player) {
-    player
-            .getScoreboard()
-            .getTeam("crates")
-            .setSuffix(ChatColor.GOLD.toString() + CrateKeyHandler.getBalance(player.getUniqueId()));
+    player.getScoreboard().getTeam("crates").setSuffix(ChatColor.GOLD.toString() + CrateKeyHandler.getBalance(player.getUniqueId()));
   }
 
   public static void updateStatus(Player player) {// TODO Fix status once API is setup

@@ -41,51 +41,46 @@ public class AngelWings {
   }
 
   public static void particleRunnable() {
-    Bukkit.getScheduler()
-        .scheduleSyncRepeatingTask(
-            plugin,
-            () -> {
-              for (Player p : Bukkit.getOnlinePlayers()) {
-                if (CosmeticHandler.particleEnabled(p, "ANGELWINGS")) {
-                  Location location = p.getLocation();
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        if (CosmeticHandler.particleEnabled(p, "ANGELWINGS")) {
+          Location location = p.getLocation();
 
-                  double space = 0.2;
-                  double defX = location.getX() - (space * shape[0].length / 2) + space;
-                  double x = defX;
-                  double y = location.clone().getY() + 2;
-                  double angle = -((location.getYaw() + 180) / 60);
-                  angle += (location.getYaw() < -180 ? 3.25 : 2.985);
+          double space = 0.2;
+          double defX = location.getX() - (space * shape[0].length / 2) + space;
+          double x = defX;
+          double y = location.clone().getY() + 2;
+          double angle = -((location.getYaw() + 180) / 60);
+          angle += (location.getYaw() < -180 ? 3.25 : 2.985);
 
-                  for (boolean[] aShape : shape) {
-                    for (boolean anAShape : aShape) {
-                      if (anAShape) {
+          for (boolean[] aShape : shape) {
+            for (boolean anAShape : aShape) {
+              if (anAShape) {
 
-                        Location target = location.clone();
-                        target.setX(x);
-                        target.setY(y);
+                Location target = location.clone();
+                target.setX(x);
+                target.setY(y);
 
-                        Vector v = target.toVector().subtract(location.toVector());
-                        Vector v2 = getBackVector(location);
-                        v = rotateAroundAxisY(v, angle);
-                        v2.setY(0).multiply(-0.2);
+                Vector v = target.toVector().subtract(location.toVector());
+                Vector v2 = getBackVector(location);
+                v = rotateAroundAxisY(v, angle);
+                v2.setY(0).multiply(-0.2);
 
-                        location.add(v);
-                        location.add(v2);
-                        for (int k = 0; k < 3; k++) {
-                          ParticleUtils.display(255, 255, 255, location);
-                        }
-                        location.subtract(v2);
-                        location.subtract(v);
-                      }
-                      x += space;
-                    }
-                    y -= space;
-                    x = defX;
-                  }
+                location.add(v);
+                location.add(v2);
+                for (int k = 0; k < 3; k++) {
+                  ParticleUtils.display(255, 255, 255, location);
                 }
+                location.subtract(v2);
+                location.subtract(v);
               }
-            },
-            0,
-            2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
+              x += space;
+            }
+            y -= space;
+            x = defX;
+          }
+        }
+      }
+    }, 0, 2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
   }
 }

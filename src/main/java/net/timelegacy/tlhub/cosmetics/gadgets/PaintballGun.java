@@ -1,9 +1,16 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -16,10 +23,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class PaintballGun implements Listener {
 
@@ -49,7 +52,7 @@ public class PaintballGun implements Listener {
 
   @EventHandler
   public void gadgetUse(PlayerInteractEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
     String gadgetName = "PAINTBALL_GUN";
     ItemStack is = event.getItem();
@@ -69,39 +72,39 @@ public class PaintballGun implements Listener {
     if (!is.getItemMeta().hasDisplayName()) {
       return;
     }
-    if (event.getAction() == Action.RIGHT_CLICK_AIR
-        || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-      if (p.getInventory().getItemInMainHand() != null) {
-        ItemStack inHand = p.getInventory().getItemInMainHand();
-
-        if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-            .contains(gadgetName.replace("_", " ").toLowerCase())) {
-          event.setCancelled(true);
-
-          if (Cooldown.hasCooldown(p.getUniqueId(), gadgetName)) {
-            MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                    .getTimeLeft(p.getUniqueId(), gadgetName)
-                    + (Cooldown.getTimeLeft(p.getUniqueId(), gadgetName) > 1 ? " seconds"
-                    : " second") +
-                    " before doing that again.", true);
-            return;
-          }
-
-          Snowball snowball = p.launchProjectile(Snowball.class);
-          snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
-
-          p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
-
-          new Cooldown(
-              p.getUniqueId(),
-              gadgetName,
-              5)
-              .start();
-        }
-      }
+    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+      return;
     }
+
+    if (player.getInventory().getItemInMainHand() == null) {
+      return;
+    }
+
+    ItemStack inHand = player.getInventory().getItemInMainHand();
+
+    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+      event.setCancelled(true);
+
+      if (Cooldown.hasCooldown(player.getUniqueId(), gadgetName)) {
+        MessageUtils.sendMessage(
+            player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+                .getTimeLeft(player.getUniqueId(), gadgetName)
+                + (Cooldown.getTimeLeft(player.getUniqueId(), gadgetName) > 1 ? " seconds"
+                : " second") +
+                " before doing that again.", true);
+        return;
+      }
+
+      Snowball snowball = player.launchProjectile(Snowball.class);
+      snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
+
+      player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
+
+      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+    }
+
   }
 
   @EventHandler
