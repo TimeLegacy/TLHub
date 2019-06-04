@@ -47,17 +47,12 @@ public class Cosmetic {
     ItemStack itemStack;
 
     if (material == null && skullValue != null) {
-      ItemStack itemStack1 =
-          ItemUtils.createItem(
-              Material.PLAYER_HEAD,
-              1,
-              MessageUtils.SECOND_COLOR + name,
-              MessageUtils.MAIN_COLOR + slogan);
+      ItemStack itemStack1 = ItemUtils.createItem(Material.PLAYER_HEAD, 1, MessageUtils.SECOND_COLOR + name,
+          MessageUtils.MAIN_COLOR + slogan);
       itemStack = HeadLib.setSkullOwner(itemStack1, UUID.randomUUID(), skullValue);
     } else {
-      itemStack =
-          ItemUtils.createItem(
-              material, 1, MessageUtils.SECOND_COLOR + name, MessageUtils.MAIN_COLOR + slogan);
+      itemStack = ItemUtils.createItem(material, 1, MessageUtils.SECOND_COLOR + name,
+          MessageUtils.MAIN_COLOR + slogan);
     }
 
     return itemStack;

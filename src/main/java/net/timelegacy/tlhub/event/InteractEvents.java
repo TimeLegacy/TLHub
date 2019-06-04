@@ -15,21 +15,20 @@ public class InteractEvents implements Listener {
 
   @EventHandler
   public void onOpenMenu(PlayerInteractEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
-    if (event.getAction() == Action.RIGHT_CLICK_AIR
-        || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-      if (p.getInventory().getItemInMainHand() != null) {
-        Material inHand = p.getInventory().getItemInMainHand().getType();
+      if (player.getInventory().getItemInMainHand() != null) {
+        Material inHand = player.getInventory().getItemInMainHand().getType();
         if (inHand == Material.ENCHANTING_TABLE) {
           event.setCancelled(true);
 
-          CosmeticMenu.openMenu(p);
+          CosmeticMenu.openMenu(player);
         } else if (inHand == Material.TROPICAL_FISH) {
           event.setCancelled(true);
 
-          MainMenu.openMenu(p);
+          MainMenu.openMenu(player);
         }
 
         // TODO - Make gadgets hook into this part.
@@ -38,12 +37,12 @@ public class InteractEvents implements Listener {
   }
 
   @EventHandler
-  public void onEntityDamage(EntityDamageEvent e) {
-    e.setCancelled(true);
+  public void onEntityDamage(EntityDamageEvent event) {
+    event.setCancelled(true);
   }
 
   @EventHandler
-  public void catchFire(EntityCombustEvent e) {
-    e.setCancelled(true);
+  public void catchFire(EntityCombustEvent event) {
+    event.setCancelled(true);
   }
 }

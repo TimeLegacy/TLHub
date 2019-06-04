@@ -27,11 +27,8 @@ public class GadgetsMenu implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
-  @SuppressWarnings("deprecation")
   public static void openMenu(Player p, int page) {
-
-    Inventory menu =
-        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lGadgets >> &8&nPage " + page));
+    Inventory menu = Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lGadgets >> &8&nPage " + page));
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
@@ -72,14 +69,13 @@ public class GadgetsMenu implements Listener {
           ItemStack itemStack = gadgets.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getUniqueId(), gadgets.get(current).getPerkPerm())
-                  || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
+          if (PerkHandler.hasPerk(p.getUniqueId(), gadgets.get(current).getPerkPerm()) || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
             if (p.getInventory().getItem(5) != null &&
                 ChatColor.stripColor(p.getInventory().getItem(5).getItemMeta().getDisplayName())
-                    == ChatColor.stripColor(
-                    gadgets.get(current).getItemStack().getItemMeta().getDisplayName())) {
+                    .equals(ChatColor.stripColor(
+                        gadgets.get(current).getItemStack().getItemMeta().getDisplayName()))) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -88,12 +84,7 @@ public class GadgetsMenu implements Listener {
             ism.setLore(lore);
             is.setItemMeta(ism);
           } else {
-            is =
-                ItemUtils.createItem(
-                    Material.RED_STAINED_GLASS_PANE,
-                    1,
-                    "&c&lLOCKED",
-                    "&fUnlock by opening crates.");
+            is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&c&lLOCKED", "&fUnlock by opening crates.");
           }
 
           menu.setItem(i, is);

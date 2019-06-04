@@ -26,29 +26,24 @@ public class FrozenWalk {
   }
 
   public static void particleRunnable() {
-    Bukkit.getScheduler()
-        .scheduleSyncRepeatingTask(
-            plugin,
-            () -> {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
-              // swap this with snow walk to and make this one spawn snow then revert it after using
-              // packets
+      // swap this with snow walk to and make this one spawn snow then revert it after using
+      // packets
 
-              for (Player p : Bukkit.getOnlinePlayers()) {
-                if (CosmeticHandler.particleEnabled(p, "FROZENWALK")) {
-                  Vector vectorLeft = getLeftVector(p.getLocation()).normalize().multiply(0.15);
-                  Vector vectorRight = getRightVector(p.getLocation()).normalize().multiply(0.15);
-                  Location locationLeft = p.getLocation().add(vectorLeft);
-                  Location locationRight = p.getLocation().add(vectorRight);
-                  locationLeft.setY(p.getLocation().getY());
-                  locationRight.setY(p.getLocation().getY());
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        if (CosmeticHandler.particleEnabled(p, "FROZENWALK")) {
+          Vector vectorLeft = getLeftVector(p.getLocation()).normalize().multiply(0.15);
+          Vector vectorRight = getRightVector(p.getLocation()).normalize().multiply(0.15);
+          Location locationLeft = p.getLocation().add(vectorLeft);
+          Location locationRight = p.getLocation().add(vectorRight);
+          locationLeft.setY(p.getLocation().getY());
+          locationRight.setY(p.getLocation().getY());
 
-                  ParticleUtils.display(Particle.FIREWORKS_SPARK, locationLeft);
-                  ParticleUtils.display(Particle.FIREWORKS_SPARK, locationRight);
-                }
-              }
-            },
-            0,
-            2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, locationLeft);
+          ParticleUtils.display(Particle.FIREWORKS_SPARK, locationRight);
+        }
+      }
+    }, 0, 2L); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
   }
 }

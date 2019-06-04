@@ -1,5 +1,10 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
@@ -20,8 +25,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
-
 
 public class Partner implements Listener {
 
@@ -31,7 +34,7 @@ public class Partner implements Listener {
 
   @EventHandler
   public void gadgetUse(PlayerInteractEvent event) {
-    Player p = event.getPlayer();
+    Player player = event.getPlayer();
 
     String gadgetName = "PARTNER";
     ItemStack is = event.getItem();
@@ -51,55 +54,53 @@ public class Partner implements Listener {
     if (!is.getItemMeta().hasDisplayName()) {
       return;
     }
-    if (event.getAction() == Action.RIGHT_CLICK_AIR
-        || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-      if (p.getInventory().getItemInMainHand() != null) {
-        ItemStack inHand = p.getInventory().getItemInMainHand();
+    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+      return;
+    }
 
-        if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-            .contains(gadgetName.replace("_", " ").toLowerCase())) {
-          event.setCancelled(true);
+    if (player.getInventory().getItemInMainHand() == null) {
+      return;
+    }
 
-          if (!partnerEnabled.contains(p)) {
-            partnerEnabled.add(p);
+    ItemStack inHand = player.getInventory().getItemInMainHand();
 
-            ArmorStand armorStand = p.getWorld()
-                .spawn(p.getLocation().add(1, 1, 1), ArmorStand.class);
-            armorStand.setVisible(false);
-            armorStand.setGravity(false);
-            armorStand.setCollidable(false);
-            armorStand.setInvulnerable(true);
-            armorStand.setHelmet(ItemUtils.playerSkull(p.getUniqueId()));
-            armorStand.setCustomNameVisible(false);
+    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+      event.setCancelled(true);
 
-            playersWithPartners.put(p.getUniqueId(), armorStand);
-            MessageUtils.sendMessage(p, getRandomCreateMessage(), "&3&lPartner &8&l>&a&l> ");
+      if (!partnerEnabled.contains(player)) {
+        partnerEnabled.add(player);
 
-            new BukkitRunnable() {
-              @Override
-              public void run() {
-                if (!playersWithPartners.containsKey(p.getUniqueId())) {
-                  cancel();
-                } else {
-                  MessageUtils.sendMessage(p, getRandomPartnerMessage(), "&3&lPartner &8&l>&a&l> ");
-                }
-              }
-            }.runTaskTimer(plugin, 20 * 10, getRandom() * 20);
-          } else {
-            partnerEnabled.remove(p);
-            deleteArmorStand(p, playersWithPartners.get(p.getUniqueId()));
-            playersWithPartners.remove(p.getUniqueId());
-            MessageUtils.sendMessage(p, getRandomDestroyMessage(), "&3&lPartner &8&l>&a&l> ");
+        ArmorStand armorStand = player.getWorld().spawn(player.getLocation().add(1, 1, 1), ArmorStand.class);
+        armorStand.setVisible(false);
+        armorStand.setGravity(false);
+        armorStand.setCollidable(false);
+        armorStand.setInvulnerable(true);
+        armorStand.setHelmet(ItemUtils.playerSkull(player.getUniqueId()));
+        armorStand.setCustomNameVisible(false);
+
+        playersWithPartners.put(player.getUniqueId(), armorStand);
+        MessageUtils.sendMessage(player, getRandomCreateMessage(), "&3&lPartner &8&l>&a&l> ");
+
+        new BukkitRunnable() {
+          @Override
+          public void run() {
+            if (!playersWithPartners.containsKey(player.getUniqueId())) {
+              cancel();
+            } else {
+              MessageUtils.sendMessage(player, getRandomPartnerMessage(), "&3&lPartner &8&l>&a&l> ");
+            }
           }
-
-          new Cooldown(
-              p.getUniqueId(),
-              gadgetName,
-              5)
-              .start();
-        }
+        }.runTaskTimer(plugin, 20 * 10, getRandom() * 20);
+      } else {
+        partnerEnabled.remove(player);
+        deleteArmorStand(player, playersWithPartners.get(player.getUniqueId()));
+        playersWithPartners.remove(player.getUniqueId());
+        MessageUtils.sendMessage(player, getRandomDestroyMessage(), "&3&lPartner &8&l>&a&l> ");
       }
+
+      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
     }
   }
 
@@ -175,8 +176,7 @@ public class Partner implements Listener {
     List<String> partnerMessages = new ArrayList<>();
     partnerMessages.add("&7They may take our lives.. But they will never take our freedom!");
     partnerMessages.add("&7It was beauty that killed the beast..");
-    partnerMessages
-        .add("&7Life is like a box of chocolates, you never know which one you’re gonna get.");
+    partnerMessages.add("&7Life is like a box of chocolates, you never know which one you’re gonna get.");
     partnerMessages.add("&7They call it Royale with cheese.");
     partnerMessages.add("&7Gentlemen, you can’t fight in here! This is a war room.");
     partnerMessages.add("&7The cake is a lie");

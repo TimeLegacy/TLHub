@@ -28,11 +28,8 @@ public class HatsMenu implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
-  @SuppressWarnings("deprecation")
   public static void openMenu(Player p, int page) {
-
-    Inventory menu =
-        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lHats >> &8&nPage " + page));
+    Inventory menu = Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lHats >> &8&nPage " + page));
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
@@ -77,8 +74,7 @@ public class HatsMenu implements Listener {
                   || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
-            if (HeadLib.getTextureValue(itemStack)
-                .equalsIgnoreCase(hats.get(current).getSkullValue())) {
+            if (HeadLib.getTextureValue(itemStack).equalsIgnoreCase(hats.get(current).getSkullValue())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -87,12 +83,7 @@ public class HatsMenu implements Listener {
             ism.setLore(lore);
             is.setItemMeta(ism);
           } else {
-            is =
-                ItemUtils.createItem(
-                    Material.RED_STAINED_GLASS_PANE,
-                    1,
-                    "&c&lLOCKED",
-                    "&fUnlock by opening crates.");
+            is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1, "&c&lLOCKED", "&fUnlock by opening crates.");
           }
 
           menu.setItem(i, is);
@@ -104,7 +95,7 @@ public class HatsMenu implements Listener {
 
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
-    Player p = (Player) event.getWhoClicked();
+    Player player = (Player) event.getWhoClicked();
 
     if (event.getCurrentItem() != null) {
 
@@ -120,7 +111,7 @@ public class HatsMenu implements Listener {
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
-          CosmeticMenu.openMenu(p);
+          CosmeticMenu.openMenu(player);
           return;
         }
 
@@ -131,22 +122,18 @@ public class HatsMenu implements Listener {
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&cReset Hat"))) {
-          if (p.getInventory().getHelmet() != null) {
-            p.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
+          if (player.getInventory().getHelmet() != null) {
+            player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You have removed your hat cosmetic.", true);
+                player, MessageUtils.ERROR_COLOR + "You have removed your hat cosmetic.", true);
           } else {
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You do not have a hat enabled.", true);
+                player, MessageUtils.ERROR_COLOR + "You do not have a hat enabled.", true);
           }
           return;
         }
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&aPrevious Page"))) {
+        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&aPrevious Page"))) {
           if (pageNumber == 1) {
             MenuUtils.displayGUIError(
                 event.getInventory(),
@@ -156,17 +143,13 @@ public class HatsMenu implements Listener {
                 3);
             return;
           } else {
-            openMenu(p, pageNumber - 1);
+            openMenu(player, pageNumber - 1);
             return;
           }
         }
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&aNext Page"))) {
-          double pages = (double) CosmeticHandler.getTotals(p).get("hats") / 21;
+        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&aNext Page"))) {
+          double pages = (double) CosmeticHandler.getTotals(player).get("hats") / 21;
 
           if (pageNumber == MenuUtils.roundUp(pages)) {
             MenuUtils.displayGUIError(
@@ -177,7 +160,7 @@ public class HatsMenu implements Listener {
                 3);
             return;
           } else {
-            openMenu(p, pageNumber + 1);
+            openMenu(player, pageNumber + 1);
             return;
           }
         } else {
@@ -189,12 +172,12 @@ public class HatsMenu implements Listener {
                       ChatColor.stripColor(
                           cosmetic.getItemStack().getItemMeta().getDisplayName()))) {
 
-                p.closeInventory();
+                player.closeInventory();
 
-                p.getInventory().setHelmet(cosmetic.getItemStack());
+                player.getInventory().setHelmet(cosmetic.getItemStack());
 
                 MessageUtils.sendMessage(
-                    p,
+                    player,
                     MessageUtils.MAIN_COLOR
                         + "You have set your hat as "
                         + MessageUtils.SECOND_COLOR

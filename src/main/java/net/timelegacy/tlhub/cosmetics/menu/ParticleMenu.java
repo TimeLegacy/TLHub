@@ -27,11 +27,8 @@ public class ParticleMenu implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
 
-  @SuppressWarnings("deprecation")
-  public static void openMenu(Player p, int page) {
-
-    Inventory menu =
-        Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lParticles >> &8&nPage " + page));
+  public static void openMenu(Player player, int page) {
+    Inventory menu = Bukkit.createInventory(player, 54, MessageUtils.colorize("&8&lParticles >> &8&nPage " + page));
 
     // TODO fix
 
@@ -43,7 +40,7 @@ public class ParticleMenu implements Listener {
     // Row 6
     menu.setItem(49, ItemUtils.createItem(Material.ENCHANTING_TABLE, 1, "&eReturn to Cosmetics"));
 
-    p.openInventory(menu);
+    player.openInventory(menu);
 
     new BukkitRunnable() {
 
@@ -74,12 +71,12 @@ public class ParticleMenu implements Listener {
           ItemStack itemStack = particles.get(current).getItemStack();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getUniqueId(), particles.get(current).getPerkPerm())
-                  || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
+          if (PerkHandler.hasPerk(player.getUniqueId(), particles.get(current).getPerkPerm())
+                  || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore();
             if (CosmeticHandler.particleEnabled(
-                p, particles.get(current).getCosmeticIdentifier())) {
+                player, particles.get(current).getCosmeticIdentifier())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -97,7 +94,7 @@ public class ParticleMenu implements Listener {
           }
 
           menu.setItem(i, is);
-          p.updateInventory();
+          player.updateInventory();
         }
       }
     }.runTaskAsynchronously(plugin);
@@ -105,7 +102,7 @@ public class ParticleMenu implements Listener {
 
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
-    Player p = (Player) event.getWhoClicked();
+    Player player = (Player) event.getWhoClicked();
 
     if (event.getCurrentItem() != null) {
 
@@ -114,14 +111,12 @@ public class ParticleMenu implements Listener {
       if (title.startsWith("Particles>>Page")) {
         event.setCancelled(true);
 
-        int i = 0;
-
         if (event
             .getCurrentItem()
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
-          CosmeticMenu.openMenu(p);
+          CosmeticMenu.openMenu(player);
           return;
         }
 
@@ -132,13 +127,13 @@ public class ParticleMenu implements Listener {
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&cReset Particle"))) {
-          if (CosmeticHandler.hasParticle(p)) {
-            CosmeticHandler.removeParticle(p);
+          if (CosmeticHandler.hasParticle(player)) {
+            CosmeticHandler.removeParticle(player);
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You have removed your particle cosmetic.", true);
+                player, MessageUtils.ERROR_COLOR + "You have removed your particle cosmetic.", true);
           } else {
             MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You do not have a particle enabled.", true);
+                player, MessageUtils.ERROR_COLOR + "You do not have a particle enabled.", true);
           }
           return;
         }
@@ -157,7 +152,7 @@ public class ParticleMenu implements Listener {
                 3);
             return;
           } else {
-            openMenu(p, pageNumber - 1);
+            openMenu(player, pageNumber - 1);
             return;
           }
         }
@@ -167,7 +162,7 @@ public class ParticleMenu implements Listener {
             .getItemMeta()
             .getDisplayName()
             .equals(MessageUtils.colorize("&aNext Page"))) {
-          double pages = (double) CosmeticHandler.getTotals(p).get("particles") / 21;
+          double pages = (double) CosmeticHandler.getTotals(player).get("particles") / 21;
 
           if (pageNumber == MenuUtils.roundUp(pages)) {
             MenuUtils.displayGUIError(
@@ -178,7 +173,7 @@ public class ParticleMenu implements Listener {
                 3);
             return;
           } else {
-            openMenu(p, pageNumber + 1);
+            openMenu(player, pageNumber + 1);
             return;
           }
         } else {
@@ -186,12 +181,12 @@ public class ParticleMenu implements Listener {
           for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
             if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
               if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
-                CosmeticHandler.setParticle(p, cosmetic.getCosmeticIdentifier());
+                CosmeticHandler.setParticle(player, cosmetic.getCosmeticIdentifier());
 
-                p.closeInventory();
+                player.closeInventory();
 
                 MessageUtils.sendMessage(
-                    p,
+                    player,
                     MessageUtils.MAIN_COLOR
                         + "You have set your cosmetic as "
                         + MessageUtils.SECOND_COLOR
