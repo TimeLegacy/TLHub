@@ -565,6 +565,36 @@
       "shortname": "dancefloor"
     },
     {
+      "shortname": "starblox",
+      "formalname": "StarBlox",
+      "boundingboxes": [
+        [
+          [
+            12,
+            137.5,
+            92.5
+          ],
+          [
+            10,
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            13.5,
+            137.5,
+            94
+          ],
+          [
+            7,
+            6,
+            10
+          ]
+        ]
+      ]
+    },
+    {
       "boundingboxes": [
         [
           [
