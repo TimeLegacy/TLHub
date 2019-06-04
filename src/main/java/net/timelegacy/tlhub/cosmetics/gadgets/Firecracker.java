@@ -1,13 +1,12 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
-import java.util.ArrayList;
-import java.util.UUID;
 import net.timelegacy.tlcore.utils.FireworkUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -20,6 +19,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.UUID;
+
 public class Firecracker implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
@@ -31,7 +33,23 @@ public class Firecracker implements Listener {
     Player p = event.getPlayer();
 
     String gadgetName = "FIRECRACKER";
+    ItemStack is = event.getItem();
 
+    if (is == null) {
+      return;
+    }
+
+    if (is.getType() == Material.AIR) {
+      return;
+    }
+
+    if (!is.hasItemMeta()) {
+      return;
+    }
+
+    if (!is.getItemMeta().hasDisplayName()) {
+      return;
+    }
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 

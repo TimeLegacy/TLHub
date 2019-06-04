@@ -1,16 +1,9 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -23,6 +16,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class PaintballGun implements Listener {
 
@@ -55,7 +52,23 @@ public class PaintballGun implements Listener {
     Player p = event.getPlayer();
 
     String gadgetName = "PAINTBALL_GUN";
+    ItemStack is = event.getItem();
 
+    if (is == null) {
+      return;
+    }
+
+    if (is.getType() == Material.AIR) {
+      return;
+    }
+
+    if (!is.hasItemMeta()) {
+      return;
+    }
+
+    if (!is.getItemMeta().hasDisplayName()) {
+      return;
+    }
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 

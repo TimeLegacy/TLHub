@@ -1,12 +1,11 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,6 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HeadRider implements Listener {
 
@@ -24,7 +26,23 @@ public class HeadRider implements Listener {
     Player p = event.getPlayer();
 
     String gadgetName = "HEAD_RIDER";
+    ItemStack is = event.getPlayer().getItemOnCursor();
 
+    if (is == null) {
+      return;
+    }
+
+    if (is.getType() == Material.AIR) {
+      return;
+    }
+
+    if (!is.hasItemMeta()) {
+      return;
+    }
+
+    if (!is.getItemMeta().hasDisplayName()) {
+      return;
+    }
     if (!(event.getRightClicked() instanceof Player)) {
       return;
     }

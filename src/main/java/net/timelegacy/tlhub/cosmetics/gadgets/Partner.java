@@ -1,10 +1,5 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
@@ -25,6 +20,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.*;
+
 
 public class Partner implements Listener {
 
@@ -37,7 +34,23 @@ public class Partner implements Listener {
     Player p = event.getPlayer();
 
     String gadgetName = "PARTNER";
+    ItemStack is = event.getItem();
 
+    if (is == null) {
+      return;
+    }
+
+    if (is.getType() == Material.AIR) {
+      return;
+    }
+
+    if (!is.hasItemMeta()) {
+      return;
+    }
+
+    if (!is.getItemMeta().hasDisplayName()) {
+      return;
+    }
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 

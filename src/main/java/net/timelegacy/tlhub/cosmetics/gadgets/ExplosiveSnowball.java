@@ -4,6 +4,7 @@ import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -25,7 +26,23 @@ public class ExplosiveSnowball implements Listener {
     Player p = event.getPlayer();
 
     String gadgetName = "EXPLOSIVE_SNOWBALL";
+    ItemStack is = event.getItem();
 
+    if (is == null) {
+      return;
+    }
+
+    if (is.getType() == Material.AIR) {
+      return;
+    }
+
+    if (!is.hasItemMeta()) {
+      return;
+    }
+
+    if (!is.getItemMeta().hasDisplayName()) {
+      return;
+    }
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 

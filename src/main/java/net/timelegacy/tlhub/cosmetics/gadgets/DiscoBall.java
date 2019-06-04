@@ -1,8 +1,5 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
@@ -21,6 +18,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public class DiscoBall implements Listener {
 
   private static TLHub plugin = TLHub.getPlugin();
@@ -30,7 +31,23 @@ public class DiscoBall implements Listener {
     Player p = event.getPlayer();
 
     String gadgetName = "DISCO_BALL";
+      ItemStack is = event.getItem();
 
+      if (is == null) {
+          return;
+      }
+
+      if (is.getType() == Material.AIR) {
+          return;
+      }
+
+      if (!is.hasItemMeta()) {
+          return;
+      }
+
+      if (!is.getItemMeta().hasDisplayName()) {
+          return;
+      }
     if (event.getAction() == Action.RIGHT_CLICK_AIR
         || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
