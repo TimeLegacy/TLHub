@@ -217,12 +217,12 @@ public class PlayerEvents implements Listener {
     event.setFoodLevel(20);
   }
 
-    @EventHandler
-    public void onButtonPress(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.PHYSICAL)) {
-            if (event.getClickedBlock().getType() == Material.OAK_PRESSURE_PLATE) {
-                event.setCancelled(true);
-            }
-        }
+  @EventHandler
+  public void onButtonPress(PlayerInteractEvent event) {
+    if (event.getAction().equals(Action.PHYSICAL)) {
+      if (event.getClickedBlock().getType() == Material.OAK_PRESSURE_PLATE) {
+        event.setCancelled(true);
+      }
     }
+  }
 }

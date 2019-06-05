@@ -1,6 +1,7 @@
 package net.timelegacy.tlhub.event;
 
 import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
+import net.timelegacy.tlhub.cosmetics.menu.YourProfileGUI;
 import net.timelegacy.tlhub.menus.MainMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,6 +30,11 @@ public class InteractEvents implements Listener {
           event.setCancelled(true);
 
           MainMenu.openMenu(player);
+        }
+
+        if (inHand == Material.PLAYER_HEAD) {
+          YourProfileGUI.openGUI(player);
+          event.setCancelled(true);
         }
 
         // TODO - Make gadgets hook into this part.
