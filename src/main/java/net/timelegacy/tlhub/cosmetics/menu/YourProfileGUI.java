@@ -1,8 +1,8 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
 import java.util.Arrays;
-import net.timelegacy.tlcore.utils.Chat.ChatUtils;
 import net.timelegacy.tlcore.utils.ItemUtils;
+import net.timelegacy.tlcore.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,10 +11,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class YourProfileGUI {
 
-  public static String guiName = "&8&lYour Profile";
-
   public static void openGUI(Player player) {
-    Inventory inv = Bukkit.createInventory(null, 9 * 6, guiName);
+    Inventory inv = Bukkit.createInventory(null, 9 * 6, MenuUtils.centerTitle("&8&lYour Profile"));
 
     inv.setItem(10, ItemUtils.createItem(new ItemStack(Material.EXPERIENCE_BOTTLE), "&eYour Character",
         Arrays.asList(
@@ -103,7 +101,7 @@ public class YourProfileGUI {
     //        break;
     //    }
 
-    inv.setItem(25, ItemUtils.createItem(Material.COMPARATOR, ChatUtils.colorChat("&eSettings")));
+    inv.setItem(25, ItemUtils.createItem(Material.COMPARATOR, MessageUtils.colorize("&eSettings")));
 
     //		inv.setItem(16, ItemUtils.createItem(Utils.getStateItem(p), Utils.getStateName(p),
     // Arrays.asList(
@@ -124,7 +122,7 @@ public class YourProfileGUI {
 //    inv.setItem(
 //        40,
 //        ItemUtils.createNMSSkullItem(
-//            ItemUtils.createSkullItem(player.getName(), ChatUtils.colorChat("&eSocial Media")),
+//            ItemUtils.createSkullItem(player.getName(), MessageUtils.colorize("&eSocial Media")),
 //            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY4NWEwYmU3NDNlOTA2N2RlOTVjZDhjNmQxYmEyMWFiMjFkMzczNzFiM2Q1OTcyMTFiYjc1ZTQzMjc5In19fQ=="));
 
     player.openInventory(inv);
@@ -136,27 +134,27 @@ public class YourProfileGUI {
     }
     String name = is.getItemMeta().getDisplayName();
 
-    if (name.equals(ChatUtils.colorChat("&aGender"))) {
+    if (name.equals(MessageUtils.colorize("&aGender"))) {
       //GenderSelectorGUI.openGUI(player);
       return;
     }
 
-    if (name.equals(ChatUtils.colorChat("&a&lACTIVE"))
-        || name.equals(ChatUtils.colorChat("&e&lAWAY"))
-        || name.equals(ChatUtils.colorChat("&c&lDO NOT DISTURB"))) {
-      if (name.equals(ChatUtils.colorChat("&a&lACTIVE"))) {
+    if (name.equals(MessageUtils.colorize("&a&lACTIVE"))
+        || name.equals(MessageUtils.colorize("&e&lAWAY"))
+        || name.equals(MessageUtils.colorize("&c&lDO NOT DISTURB"))) {
+      if (name.equals(MessageUtils.colorize("&a&lACTIVE"))) {
        // Database.updateMode(player.getUniqueId(), 1);
         openGUI(player);
         return;
       }
 
-      if (name.equals(ChatUtils.colorChat("&e&lAWAY"))) {
+      if (name.equals(MessageUtils.colorize("&e&lAWAY"))) {
         //Database.updateMode(player.getUniqueId(), 2);
         openGUI(player);
         return;
       }
 
-      if (name.equals(ChatUtils.colorChat("&c&lDO NOT DISTURB"))) {
+      if (name.equals(MessageUtils.colorize("&c&lDO NOT DISTURB"))) {
         //Database.updateMode(player.getUniqueId(), 0);
         openGUI(player);
         return;
@@ -166,16 +164,16 @@ public class YourProfileGUI {
       return;
     }
 
-    if (name.equalsIgnoreCase(ChatUtils.colorChat("&eSettings"))) {
+    if (name.equalsIgnoreCase(MessageUtils.colorize("&eSettings"))) {
       //YourSettingsGUI.openGUI(player);
     }
 
-    if (name.equals(ChatUtils.colorChat("&eSocial Media"))) {
+    if (name.equals(MessageUtils.colorize("&eSocial Media"))) {
       //YourSocialMediaGUI.openGUI(player);
       return;
     }
     //
-    //    if (name.equals(ChatUtils.colorChat("&aConversations"))) {
+    //    if (name.equals(MessageUtils.colorize("&aConversations"))) {
     //      YourConversationsGUI.openGUI(player);
     //    }
 

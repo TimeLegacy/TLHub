@@ -1,10 +1,10 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
-import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
-import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cosmetic;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
@@ -17,9 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CosmeticMenu implements Listener {
 
@@ -49,12 +46,9 @@ public class CosmeticMenu implements Listener {
     return i;
   }
 
-  public static String centerTitle(String title) {
-    return Strings.repeat(" ", 26 - ChatColor.stripColor(title).length()) + MessageUtils.colorize(title);
-  }
-
   public static void openMenu(Player player) {
-    Inventory inv = Bukkit.createInventory(null, 9 * 6, centerTitle("&8&lCosmetics"));
+    Inventory inv = Bukkit.createInventory(null, 9 * 6, MenuUtils
+        .centerTitle("&8&lCosmetics"));
 
     // Row 1
 

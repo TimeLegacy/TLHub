@@ -70,13 +70,6 @@ public class PlayerEvents implements Listener {
     player.updateInventory();
     hotBarItems(player);
 
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      p.sendMessage("§7§l(§a+§7§l) "
-          + RankHandler.chatColors(p.getUniqueId())
-          .replace("%username% &8%arrows%", p.getName())
-          .replace("&", "§")); // TODO Cleanup
-    }
-
     if (Bukkit.getOnlinePlayers().size() >= 1) {
       TLHub.playersOnline = true;
     }
@@ -141,13 +134,6 @@ public class PlayerEvents implements Listener {
 
     if (Bukkit.getOnlinePlayers().size() < 1) {
       TLHub.playersOnline = false;
-    }
-
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      p.sendMessage("§7§l(§c-§7§l) "
-          + RankHandler.chatColors(p.getUniqueId())
-          .replace("%username% &8%arrows%", p.getName())
-          .replace("&", "§")); // TODO Cleanup
     }
 
     DiscoveriesHandler.playerLeave(player);
