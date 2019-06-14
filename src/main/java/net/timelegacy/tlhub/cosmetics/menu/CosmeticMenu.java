@@ -5,6 +5,7 @@ import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
+import net.timelegacy.tlcore.utils.MenuUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cosmetic;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;

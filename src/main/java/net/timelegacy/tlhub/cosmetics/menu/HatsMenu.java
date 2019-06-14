@@ -1,9 +1,12 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
 import de.erethon.headlib.HeadLib;
+import java.util.ArrayList;
+import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
+import net.timelegacy.tlcore.utils.MenuUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cosmetic;
@@ -20,9 +23,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HatsMenu implements Listener {
 

@@ -1,7 +1,7 @@
 package net.timelegacy.tlhub.event;
 
+import net.timelegacy.tlcore.menus.FriendsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
-import net.timelegacy.tlhub.cosmetics.menu.YourProfileGUI;
 import net.timelegacy.tlhub.menus.MainMenu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,7 +33,8 @@ public class InteractEvents implements Listener {
         }
 
         if (inHand == Material.PLAYER_HEAD) {
-          YourProfileGUI.openGUI(player);
+          //YourProfileGUI.openGUI(player);
+          FriendsMenu.openMenu(player, 1);
           event.setCancelled(true);
         }
 

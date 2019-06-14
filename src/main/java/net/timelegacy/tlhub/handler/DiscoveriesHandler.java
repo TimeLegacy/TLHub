@@ -27,6 +27,7 @@ public class DiscoveriesHandler {
   private static HashMap<UUID, BossBar> playersBossBar = new HashMap<>();
   private static HashMap<UUID, String> playersCurrentArea = new HashMap<>();
   private static HashMap<UUID, ArrayList<String>> playersDiscoveries = new HashMap<>();
+  private static HashMap<UUID, Double> playersBossBarStatus = new HashMap<>();
   private static Zone[] discoveries;
   private static Zone spawnArea = new Zone("spawn", "spawn",
       new Polygon(new AABB3D(new Vector(0.5, 122, 12.5), new Vector(23, 20, 45))));
@@ -78,7 +79,7 @@ public class DiscoveriesHandler {
         playersDiscoveries.get(player.getUniqueId()).add(perk.replace("LOBBY.DISCOVERY.", "").toLowerCase());
       }
     }
-
+    playersBossBarStatus.put(player.getUniqueId(), 0d);
     playersCurrentArea.put(player.getUniqueId(), "spawn");
   }
 
@@ -86,6 +87,7 @@ public class DiscoveriesHandler {
     playersDiscoveries.remove(player.getUniqueId());
     playersCurrentArea.remove(player.getUniqueId());
     playersBossBar.remove(player.getUniqueId());
+    playersBossBarStatus.remove(player.getUniqueId());
   }
 
   public static int getTotalAvailableDiscoveries() {
@@ -106,21 +108,20 @@ public class DiscoveriesHandler {
   }
 
   public static void discoveryMagic(Player player) {
-    if (!Polygon.isInside(spawnArea.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-      setBossBar(player, "", "spawn");
-      playersCurrentArea.put(player.getUniqueId(), "spawn");
+    if (Polygon.isInside(spawnArea.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+      setBossBar(player, " ", "spawn");
       return;
     }
-
-    for (Zone z : discoveries) {
+    for (Zone zone : discoveries) {
       if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
-        if (Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+        if (Polygon.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
           setBossBar(player,
-              ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE + " | "
-                  + ChatColor.YELLOW + ChatColor.ITALIC + z.getFormalname(), z.getShortName());
-          if (!playersDiscoveries.get(player.getUniqueId()).contains(z.getShortName())) {
-            playersDiscoveries.get(player.getUniqueId()).add(z.getShortName());
-            PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + z.getShortName());
+              ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE
+                  + " | "
+                  + ChatColor.YELLOW + ChatColor.ITALIC + zone.getFormalname(), zone.getShortName());
+          if (!playersDiscoveries.get(player.getUniqueId()).contains(zone.getShortName())) {
+            playersDiscoveries.get(player.getUniqueId()).add(zone.getShortName());
+            PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + zone.getShortName());
             ScoreboardHandler.updateDiscoveries(player);
             new BukkitRunnable() {
               int spaceCount = 10;
@@ -131,7 +132,7 @@ public class DiscoveriesHandler {
                 String title = "";
                 String subTitle = "";
 
-                char[] titleChars = z.getFormalname().toCharArray();
+                char[] titleChars = zone.getFormalname().toCharArray();
                 for (char titleChar : titleChars) {
                   title = title + repeatNTimes(" ", spaceCount) + titleChar;
                 }
@@ -150,11 +151,10 @@ public class DiscoveriesHandler {
           }
           return;
         }
-      } else if (z.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
-        if (!Polygon.isInside(z.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+      } else if (zone.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
+        if (!Polygon.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
           setBossBar(player, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Wilderness", "wild");
           discoveryMagic(player);
-          return;
         }
         return;
       }
@@ -164,17 +164,52 @@ public class DiscoveriesHandler {
   }
 
   private static void setBossBar(Player player, String display, String shortName) {
-    if (playersBossBar.get(player.getUniqueId()) != null) {
-      playersBossBar.get(player.getUniqueId()).removePlayer(player);
+    UUID uuid = player.getUniqueId();
+    if (playersCurrentArea.get(uuid).equals(shortName)) {
+      return;
     }
-
+    if (playersBossBar.get(uuid) != null) {
+      playersBossBar.get(uuid).removePlayer(player);
+    }
     if (display.equals("")) {
       return;
     }
 
-    playersBossBar.put(player.getUniqueId(), Bukkit.createBossBar(display, BarColor.PURPLE, BarStyle.SOLID));
-    playersBossBar.get(player.getUniqueId()).addPlayer(player);
-    playersCurrentArea.put(player.getUniqueId(), shortName);
+    playersBossBar.put(uuid, Bukkit.createBossBar(display, BarColor.PURPLE, BarStyle.SOLID));
+    playersBossBar.get(uuid).setProgress(playersBossBarStatus.get(uuid) / 60);
+    playersBossBar.get(uuid).addPlayer(player);
+    playersCurrentArea.put(uuid, shortName);
+
+    new BukkitRunnable() {
+      String last = playersCurrentArea.get(uuid);
+
+      @Override
+      public void run() {
+        if (!playersCurrentArea.get(uuid).equals(last)) {
+          cancel();
+        }
+        if (playersCurrentArea.get(uuid) == "spawn") {
+
+          playersBossBarStatus.put(uuid, playersBossBarStatus.get(uuid) - 1);
+          if (playersBossBarStatus.get(uuid) <= 0) {
+            playersBossBarStatus.put(uuid, 1d);
+            playersBossBar.get(uuid).removePlayer(player);
+            playersCurrentArea.put(uuid, shortName);
+            cancel();
+          }
+          playersBossBar.get(uuid).setProgress(playersBossBarStatus.get(uuid) / 60d);
+          return;
+        }
+
+        if (playersBossBarStatus.get(uuid) < 60) {
+          playersBossBarStatus.put(uuid, playersBossBarStatus.get(uuid) + 1);
+          playersBossBar.get(uuid).setProgress(playersBossBarStatus.get(uuid) / 60d);
+        } else {
+          playersBossBarStatus.put(uuid, 60d);
+          playersBossBar.get(uuid).setProgress(1);
+          cancel();
+        }
+      }
+    }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 1);
   }
 }
-
