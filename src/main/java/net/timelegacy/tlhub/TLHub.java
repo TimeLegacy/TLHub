@@ -21,6 +21,7 @@ import net.timelegacy.tlhub.cosmetics.menu.GadgetsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.HatsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.ParticleMenu;
 import net.timelegacy.tlhub.cosmetics.menu.PetsMenu;
+import net.timelegacy.tlhub.cosmetics.menu.YourProfileMenu;
 import net.timelegacy.tlhub.cosmetics.particles.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.particles.FireworkEffect;
 import net.timelegacy.tlhub.event.InteractEvents;
@@ -50,15 +51,15 @@ public class TLHub extends JavaPlugin {
     playersOnline = false;
 
     plugin = this;
-    config = plugin.getConfig();
+    config = getConfig();
 
     spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
 
-    plugin.saveDefaultConfig();
-    plugin.getConfig().options().copyDefaults(true);
-    plugin.saveConfig();
+    saveDefaultConfig();
+    getConfig().options().copyDefaults(true);
+    saveConfig();
 
-    plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
+    getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
     for (Entity e : Bukkit.getWorld("world").getEntities()) {
       if (e.getType() != EntityType.ITEM_FRAME) {
@@ -70,7 +71,7 @@ public class TLHub extends JavaPlugin {
 
     ServerHandler.setMaxPlayers(ServerHandler.getServerUUID(), 50);
 
-    Bukkit.getPluginManager().registerEvents(new MainMenu(), plugin);
+    Bukkit.getPluginManager().registerEvents(new MainMenu(), this);
     registerEvents();
 
     CosmeticHandler.register();
@@ -78,40 +79,42 @@ public class TLHub extends JavaPlugin {
   }
 
   public void onDisable() {
-    plugin.getServer().getScheduler().cancelTasks(plugin);
+    getServer().getScheduler().cancelTasks(this);
   }
 
   private void registerEvents() {
     PluginManager pm = Bukkit.getServer().getPluginManager();
-    
-    pm.registerEvents(new PlayerEvents(), plugin);
-    pm.registerEvents(new InteractEvents(), plugin);
 
-    pm.registerEvents(new ParticleMenu(), plugin);
-    pm.registerEvents(new CosmeticMenu(), plugin);
-    pm.registerEvents(new PetsMenu(), plugin);
-    pm.registerEvents(new HatsMenu(), plugin);
-    pm.registerEvents(new GadgetsMenu(), plugin);
-    pm.registerEvents(new CosmeticHandler(), plugin);
+    pm.registerEvents(new PlayerEvents(), this);
+    pm.registerEvents(new InteractEvents(), this);
 
-    pm.registerEvents(new AnimalCannon(), plugin);
-    pm.registerEvents(new BatLauncher(), plugin);
-    pm.registerEvents(new DiscoBall(), plugin);
-    pm.registerEvents(new Evolution(), plugin);
-    pm.registerEvents(new ExplosiveSnowball(), plugin);
-    pm.registerEvents(new Firecracker(), plugin);
-    pm.registerEvents(new HeadRider(), plugin);
-    pm.registerEvents(new PaintballGun(), plugin);
-    pm.registerEvents(new Partner(), plugin);
-    pm.registerEvents(new PartyPopper(), plugin);
-    pm.registerEvents(new SheepBomb(), plugin);
-    pm.registerEvents(new SuperPunch(), plugin);
-    pm.registerEvents(new SheepBomb(), plugin);
-    pm.registerEvents(new SuperPunch(), plugin);
-    pm.registerEvents(new ThorsHammer(), plugin);
-    pm.registerEvents(new TNTFountain(), plugin);
+    pm.registerEvents(new ParticleMenu(), this);
+    pm.registerEvents(new CosmeticMenu(), this);
+    pm.registerEvents(new PetsMenu(), this);
+    pm.registerEvents(new HatsMenu(), this);
+    pm.registerEvents(new GadgetsMenu(), this);
+    pm.registerEvents(new YourProfileMenu(), this);
 
-    pm.registerEvents(new BounceEffect(), plugin);
-    pm.registerEvents(new FireworkEffect(), plugin);
+    pm.registerEvents(new CosmeticHandler(), this);
+
+    pm.registerEvents(new AnimalCannon(), this);
+    pm.registerEvents(new BatLauncher(), this);
+    pm.registerEvents(new DiscoBall(), this);
+    pm.registerEvents(new Evolution(), this);
+    pm.registerEvents(new ExplosiveSnowball(), this);
+    pm.registerEvents(new Firecracker(), this);
+    pm.registerEvents(new HeadRider(), this);
+    pm.registerEvents(new PaintballGun(), this);
+    pm.registerEvents(new Partner(), this);
+    pm.registerEvents(new PartyPopper(), this);
+    pm.registerEvents(new SheepBomb(), this);
+    pm.registerEvents(new SuperPunch(), this);
+    pm.registerEvents(new SheepBomb(), this);
+    pm.registerEvents(new SuperPunch(), this);
+    pm.registerEvents(new ThorsHammer(), this);
+    pm.registerEvents(new TNTFountain(), this);
+
+    pm.registerEvents(new BounceEffect(), this);
+    pm.registerEvents(new FireworkEffect(), this);
   }
 }
