@@ -76,7 +76,7 @@ public class BounceEffect implements Listener {
     if (Cooldown.hasCooldown(player.getUniqueId(), "BOUNCE")) {
       MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
           .getTimeLeft(player.getUniqueId(), "BOUNCE")
-          + (Cooldown.getTimeLeft(player.getUniqueId(), "BOUNCE") > 1 ? "seconds" : "second") +
+          + (Cooldown.getTimeLeft(player.getUniqueId(), "BOUNCE") > 1 ? " seconds" : " second") +
           " before doing that again.", true);
       return;
     }
