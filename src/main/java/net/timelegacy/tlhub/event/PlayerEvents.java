@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.Vector;
 
 public class PlayerEvents implements Listener {
@@ -210,5 +211,10 @@ public class PlayerEvents implements Listener {
         event.setCancelled(true);
       }
     }
+  }
+
+  @EventHandler
+  public void onItemHandSwitch(PlayerSwapHandItemsEvent event) {
+    event.setCancelled(true);
   }
 }
