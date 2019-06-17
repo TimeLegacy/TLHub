@@ -99,7 +99,7 @@ public class PartyPopper implements Listener {
 
           if (i >= 2) {
             player.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, player.getLocation(), 1);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 5, 1));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 2, 1));
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
             cancel();
           }
