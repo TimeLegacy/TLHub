@@ -1,11 +1,11 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
+import java.util.Arrays;
 import java.util.HashMap;
-import net.timelegacy.tlcore.utils.MessageUtils;
+import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.Cooldown;
+import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,83 +14,99 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.ZombieVillager;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class Evolution implements Listener {
+public class Evolution extends Gadget {
 
-  private static TLHub plugin = TLHub.getPlugin();
+  private final TLHub plugin;
 
   private int timer = 0;
   private HashMap<Player, Entity> entityHashMap = new HashMap<>();
 
-  @EventHandler
-  public void gadgetUse(PlayerInteractEvent event) {
-    Player player = event.getPlayer();
+  public Evolution(TLHub plugin) {
+    this.plugin = plugin;
 
-    String gadgetName = "EVOLUTION";
-    ItemStack is = event.getItem();
+    setRarity(Rarity.COMMON);
+    setName("Evolution");
+    setDisplayName(getRarity().getColor() + "Evolution");
+    setLore(Arrays.asList("", "&7&oIt's quite rare that something can show", "&7&ohow things evolve over time.", ""));
+    setPermissionNode("hub.cosmetics.gadgets.evolution");
+    setCooldown(5);
 
-    if (is == null) {
-      return;
-    }
-
-    if (is.getType() == Material.AIR) {
-      return;
-    }
-
-    if (!is.hasItemMeta()) {
-      return;
-    }
-
-    if (!is.getItemMeta().hasDisplayName()) {
-      return;
-    }
-
-    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-      return;
-    }
-
-    if (player.getInventory().getItemInMainHand() == null) {
-      return;
-    }
-
-    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-      return;
-    }
-
-    if (player.getInventory().getItemInMainHand() == null) {
-      return;
-    }
-
-    ItemStack inHand = player.getInventory().getItemInMainHand();
-
-    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-        .contains(gadgetName.replace("_", " ").toLowerCase())) {
-      event.setCancelled(true);
-
-      if (Cooldown.hasCooldown(player.getUniqueId(), gadgetName)) {
-        MessageUtils.sendMessage(
-            player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                .getTimeLeft(player.getUniqueId(), gadgetName)
-                + (Cooldown.getTimeLeft(player.getUniqueId(), gadgetName) > 1 ? " seconds"
-                : " second") +
-                " before doing that again.", true);
-        return;
-      }
-
-      animateVillager(player);
-
-      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
-    }
+    setItem(ItemUtils.createItem(Material.BONE, getDisplayName(), getLore(), getName()));
   }
 
+  @Override
+  public void doAbility(PlayerInteractEvent event) {
+    Player player = event.getPlayer();
 
-  public void animateVillager(Player player) {
+    animateVillager(player);
+  }
+
+//  @EventHandler
+//  public void gadgetUse(PlayerInteractEvent event) {
+//    Player player = event.getPlayer();
+//
+//    String gadgetName = "EVOLUTION";
+//    ItemStack is = event.getItem();
+//
+//    if (is == null) {
+//      return;
+//    }
+//
+//    if (is.getType() == Material.AIR) {
+//      return;
+//    }
+//
+//    if (!is.hasItemMeta()) {
+//      return;
+//    }
+//
+//    if (!is.getItemMeta().hasDisplayName()) {
+//      return;
+//    }
+//
+//    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+//      return;
+//    }
+//
+//    if (player.getInventory().getItemInMainHand() == null) {
+//      return;
+//    }
+//
+//    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+//      return;
+//    }
+//
+//    if (player.getInventory().getItemInMainHand() == null) {
+//      return;
+//    }
+//
+//    ItemStack inHand = player.getInventory().getItemInMainHand();
+//
+//    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+//        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+//      event.setCancelled(true);
+//
+//      if (Cooldown.hasCooldown(player.getUniqueId(), gadgetName)) {
+//        MessageUtils.sendMessage(
+//            player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+//                .getTimeLeft(player.getUniqueId(), gadgetName)
+//                + (Cooldown.getTimeLeft(player.getUniqueId(), gadgetName) > 1 ? " seconds"
+//                : " second") +
+//                " before doing that again.", true);
+//        return;
+//      }
+//
+//      animateVillager(player);
+//
+//      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+//    }
+//  }
+
+
+  private void animateVillager(Player player) {
     // get 5 blocks away from player eye location
     Location location = player.getLocation();
 
@@ -171,7 +187,7 @@ public class Evolution implements Listener {
     //}
   }
 
-  public void spawnMob(ArmorStand armorStand, Entity mob, Player player) {
+  private void spawnMob(ArmorStand armorStand, Entity mob, Player player) {
     entityHashMap.remove(player);
     entityHashMap.put(player, mob);
 

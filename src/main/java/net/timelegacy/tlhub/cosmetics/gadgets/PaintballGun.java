@@ -1,13 +1,13 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import net.timelegacy.tlcore.utils.MessageUtils;
+import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.Cooldown;
+import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -17,95 +17,61 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class PaintballGun implements Listener {
+public class PaintballGun extends Gadget implements Listener {
 
-  private static TLHub plugin = TLHub.getPlugin();
+  private final TLHub plugin;
 
-  private static HashMap<Block, Double> getInRadius(Block block, double dR) {
-    HashMap<Block, Double> blockList = new HashMap<>();
-    int iR = (int) dR + 1;
+  public PaintballGun(TLHub plugin) {
+    this.plugin = plugin;
 
-    for (int x = -iR; x <= iR; x++) {
-      for (int z = -iR; z <= iR; z++) {
-        for (int y = -iR; y <= iR; y++) {
-          Block curBlock = block.getRelative(x, y, z);
+    setRarity(Rarity.COMMON);
+    setName("Paintball Gun");
+    setDisplayName(getRarity().getColor() + "Paintball Gun");
+    setLore(Arrays.asList("", "&7&oThe world was meant to be painted.", "&7&oHow will you design it?", ""));
+    setPermissionNode("hub.cosmetics.gadgets.paintball_gun");
+    setCooldown(5);
 
-          double offset = block.getLocation().toVector().subtract(curBlock.getLocation().toVector())
-              .length();
-
-          if (offset <= dR) {
-            blockList.put(curBlock, 1.0D - offset / dR);
-          }
-        }
-      }
-    }
-
-    return blockList;
+    setItem(ItemUtils.createItem(Material.DIAMOND_HORSE_ARMOR, getDisplayName(), getLore(), getName()));
   }
 
-  @EventHandler
-  public void gadgetUse(PlayerInteractEvent event) {
+  @Override
+  public void doAbility(PlayerInteractEvent event) {
     Player player = event.getPlayer();
 
-    String gadgetName = "PAINTBALL_GUN";
-    ItemStack is = event.getItem();
+    Snowball snowball = player.launchProjectile(Snowball.class);
+    snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
 
-    if (is == null) {
-      return;
-    }
-
-    if (is.getType() == Material.AIR) {
-      return;
-    }
-
-    if (!is.hasItemMeta()) {
-      return;
-    }
-
-    if (!is.getItemMeta().hasDisplayName()) {
-      return;
-    }
-
-    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-      return;
-    }
-
-    if (player.getInventory().getItemInMainHand() == null) {
-      return;
-    }
-
-    ItemStack inHand = player.getInventory().getItemInMainHand();
-
-    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-        .contains(gadgetName.replace("_", " ").toLowerCase())) {
-      event.setCancelled(true);
-
-      if (Cooldown.hasCooldown(player.getUniqueId(), gadgetName)) {
-        MessageUtils.sendMessage(
-            player, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                .getTimeLeft(player.getUniqueId(), gadgetName)
-                + (Cooldown.getTimeLeft(player.getUniqueId(), gadgetName) > 1 ? " seconds"
-                : " second") +
-                " before doing that again.", true);
-        return;
-      }
-
-      Snowball snowball = player.launchProjectile(Snowball.class);
-      snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
-
-      player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
-
-      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
-    }
-
+    player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
   }
+
+  @Override
+  public void registerExtraListeners() {
+    Bukkit.getPluginManager().registerEvents(this, plugin);
+  }
+
+  //  @EventHandler
+//  public void gadgetUse(PlayerInteractEvent event) {
+//    Player player = event.getPlayer();
+//
+//    ItemStack inHand = player.getInventory().getItemInMainHand();
+//
+//    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+//        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+//      event.setCancelled(true);
+//
+//      Snowball snowball = player.launchProjectile(Snowball.class);
+//      snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
+//
+//      player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
+//
+//      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+//    }
+//
+//  }
 
   @EventHandler
   public void onPaintballHit(ProjectileHitEvent e) {
@@ -216,20 +182,37 @@ public class PaintballGun implements Listener {
       block.setType(Material.LEGACY_STAINED_CLAY);
     }
 
-    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin,
-        new BukkitRunnable() {
-          public void run() {
-            for (BlockState bs : locations) {
-              Location loc = bs.getLocation();
-              Block b = loc.getBlock();
+    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+      for (BlockState bs : locations) {
+        Location loc = bs.getLocation();
+        Block b = loc.getBlock();
 
-              b.setType(bs.getType());
-              //b.setData(bs.getData().getData());
-            }
-          }
-        }, 80L);
+        b.setType(bs.getType());
+        //b.setData(bs.getData().getData());
+      }
+    }, 80L);
   }
 
+  private static HashMap<Block, Double> getInRadius(Block block, double dR) {
+    HashMap<Block, Double> blockList = new HashMap<>();
+    int iR = (int) dR + 1;
 
+    for (int x = -iR; x <= iR; x++) {
+      for (int z = -iR; z <= iR; z++) {
+        for (int y = -iR; y <= iR; y++) {
+          Block curBlock = block.getRelative(x, y, z);
+
+          double offset = block.getLocation().toVector().subtract(curBlock.getLocation().toVector())
+              .length();
+
+          if (offset <= dR) {
+            blockList.put(curBlock, 1.0D - offset / dR);
+          }
+        }
+      }
+    }
+
+    return blockList;
+  }
 
 }

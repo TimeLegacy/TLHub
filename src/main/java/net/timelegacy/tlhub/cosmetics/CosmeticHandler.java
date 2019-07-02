@@ -5,10 +5,184 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.utils.MessageUtils;
-import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.gadgets.AnimalCannon;
+import net.timelegacy.tlhub.cosmetics.gadgets.BatLauncher;
+import net.timelegacy.tlhub.cosmetics.gadgets.DiscoBall;
+import net.timelegacy.tlhub.cosmetics.gadgets.Evolution;
+import net.timelegacy.tlhub.cosmetics.gadgets.ExplosiveSnowball;
+import net.timelegacy.tlhub.cosmetics.gadgets.Firecracker;
+import net.timelegacy.tlhub.cosmetics.gadgets.Gadget;
+import net.timelegacy.tlhub.cosmetics.gadgets.HeadRider;
+import net.timelegacy.tlhub.cosmetics.gadgets.PaintballGun;
+import net.timelegacy.tlhub.cosmetics.gadgets.Partner;
+import net.timelegacy.tlhub.cosmetics.gadgets.PartyPopper;
+import net.timelegacy.tlhub.cosmetics.gadgets.SheepBomb;
+import net.timelegacy.tlhub.cosmetics.gadgets.SuperPunch;
+import net.timelegacy.tlhub.cosmetics.gadgets.TNTFountain;
+import net.timelegacy.tlhub.cosmetics.gadgets.ThorsHammer;
+import net.timelegacy.tlhub.cosmetics.hats.Hat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.AHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.BHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.CHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.DHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.EHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.FHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.GHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.HHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.IHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.JHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.KHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.LHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.MHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.NHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.OHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.PHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.QHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.RHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.SHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.THat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.UHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.VHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.WHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.XHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.YHat;
+import net.timelegacy.tlhub.cosmetics.hats.alphabet.ZHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.BatHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.BeeHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.ChickenHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.ClowfishHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.CowHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.DogeHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.DonkeyHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.DuckHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.ElephantHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.FerretHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.FoxHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.HorseHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.KoalaHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.LlamaHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.MonkeyHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.MuleHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.OcelotHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.OwlHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.PandaHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.ParrotHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.PenguinHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.PigHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.PolarBearHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.PugHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.RabbitHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.ReindeerHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.SheepHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.SlothHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.SquidHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.TurtleHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.WalrusHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.WaspHat;
+import net.timelegacy.tlhub.cosmetics.hats.animals.WolfHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.BookshelfHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.CactusHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.ChestHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.CommandBlockHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.EnderChestHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.MissingTextureHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.NetherPortalHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.NoteblockHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.PistonHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.PumpkinHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.SlimeBlockHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.StickyPistonHat;
+import net.timelegacy.tlhub.cosmetics.hats.blocks.TNTHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.AustraliaHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.CanadaHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.ChileHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.EnglandHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.FranceHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.GermanyHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.ItalyHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.MonacoHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.NetherlandsHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.NorwayHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.SingaporeHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.SpainHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.SwedenHat;
+import net.timelegacy.tlhub.cosmetics.hats.countries.UnitedStatesHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.BreadHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.BurgerHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.CakeHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.CandyCaneHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.CheeseHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.ChocolateHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.CoconutHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.CookieHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.MelonHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.PinkDonutHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.PopcornHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.SandwichHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.StrawberryHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.TacoHat;
+import net.timelegacy.tlhub.cosmetics.hats.food.WhiteChocolateHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.AstronautHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.BeachBallHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.CompanionCubeHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.ElfHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.GhostHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.JackOLanternHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.JakeHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.LichHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.LuigiHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.MarioHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.MasterballHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.PokeballHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.RainbowGlitchHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.SkullHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.SnowglobeHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.SnowmanHat;
+import net.timelegacy.tlhub.cosmetics.hats.miscellaneous.ToasterHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.BlazeHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.CaveSpiderHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.CreeperHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.ElderGuardianHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.EnderDragonHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.EndermanHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.GhastHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.GuardianHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.MagmaCubeHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.ShulkerHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.SkeletonHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.SlimeHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.SpiderHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.WitchHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.WitherSkeletonHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.ZombieHat;
+import net.timelegacy.tlhub.cosmetics.hats.monsters.ZombiePigmanHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.EightHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.ExclamationMarkHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.FiveHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.FourHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.HashtagHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.NineHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.OneHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.PlusHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.QuestionMarkHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.SevenHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.SixHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.ThreeHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.TwoHat;
+import net.timelegacy.tlhub.cosmetics.hats.numbersandpunctuation.ZeroHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.EarthHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.JupiterHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.MarsHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.MercuryHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.NeptuneHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.PlutoHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.SaturnHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.UranusHat;
+import net.timelegacy.tlhub.cosmetics.hats.planets.VenusHat;
 import net.timelegacy.tlhub.cosmetics.particles.AngelWings;
 import net.timelegacy.tlhub.cosmetics.particles.BloodHelix;
 import net.timelegacy.tlhub.cosmetics.particles.CandyCane;
@@ -20,16 +194,12 @@ import net.timelegacy.tlhub.cosmetics.particles.FrozenWalk;
 import net.timelegacy.tlhub.cosmetics.particles.GreenSparks;
 import net.timelegacy.tlhub.cosmetics.particles.InLove;
 import net.timelegacy.tlhub.cosmetics.particles.Music;
+import net.timelegacy.tlhub.cosmetics.particles.Particle;
 import net.timelegacy.tlhub.cosmetics.particles.RainCloud;
 import net.timelegacy.tlhub.cosmetics.particles.SantaHat;
 import net.timelegacy.tlhub.cosmetics.particles.SnowCloud;
 import net.timelegacy.tlhub.cosmetics.particles.Walks;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,34 +207,290 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CosmeticHandler implements Listener {
 
-  private static HashMap<Player, String> effects = new HashMap<>();
-  private static HashMap<Player, String> pets = new HashMap<>();
-  private static HashMap<Player, Entity> petEntity = new HashMap<>();
+  private final TLHub plugin;
 
-  private static TLHub plugin = TLHub.getPlugin();
+  private Map<UUID, Gadget> activeGadgets = new HashMap<>();
+  private static HashMap<Player, String> effects = new HashMap<>();
+
+  private List<Gadget> gadgets = new ArrayList<>();
+  private List<Particle> particles = new ArrayList<>();
+  private List<Hat> hats = new ArrayList<>();
+
+  public CosmeticHandler(TLHub plugin) {
+    this.plugin = plugin;
+  }
+
+  public void registerCosmetics() {
+    registerGadgets();
+    registerParticles();
+    registerHats();
+    registerOutfits();
+
+    registerRunnables();
+  }
+
+  private void registerGadgets() {
+    gadgets.add(new SuperPunch());
+    gadgets.add(new HeadRider());
+    gadgets.add(new Evolution(plugin));
+    gadgets.add(new Partner(plugin));
+    gadgets.add(new ThorsHammer(plugin));
+    gadgets.add(new AnimalCannon(plugin));
+    gadgets.add(new PaintballGun(plugin));
+    gadgets.add(new Firecracker(plugin));
+    gadgets.add(new DiscoBall(plugin));
+    gadgets.add(new BatLauncher(plugin));
+    gadgets.add(new PartyPopper(plugin));
+    gadgets.add(new SheepBomb(plugin));
+    gadgets.add(new ExplosiveSnowball(plugin));
+    gadgets.add(new TNTFountain(plugin));
+  }
+
+  private void registerParticles() {
+    particles.add(new AngelWings(plugin));
+    particles.add(new BloodHelix(plugin));
+    particles.add(new CandyCane(plugin));
+    particles.add(new Cone(plugin));
+    particles.add(new Enchanted(plugin));
+    particles.add(new EnderAura(plugin));
+    particles.add(new FlameFairy(plugin));
+    particles.add(new GreenSparks(plugin));
+    particles.add(new InLove(plugin));
+    particles.add(new Music(plugin));
+    particles.add(new RainCloud(plugin));
+    particles.add(new SantaHat(plugin));
+    particles.add(new SnowCloud(plugin));
+  }
+
+  private void registerHats() {
+    // Alphabet
+    hats.add(new AHat());
+    hats.add(new BHat());
+    hats.add(new CHat());
+    hats.add(new DHat());
+    hats.add(new EHat());
+    hats.add(new FHat());
+    hats.add(new GHat());
+    hats.add(new HHat());
+    hats.add(new IHat());
+    hats.add(new JHat());
+    hats.add(new KHat());
+    hats.add(new LHat());
+    hats.add(new MHat());
+    hats.add(new NHat());
+    hats.add(new OHat());
+    hats.add(new PHat());
+    hats.add(new QHat());
+    hats.add(new RHat());
+    hats.add(new SHat());
+    hats.add(new THat());
+    hats.add(new UHat());
+    hats.add(new VHat());
+    hats.add(new WHat());
+    hats.add(new XHat());
+    hats.add(new YHat());
+    hats.add(new ZHat());
+
+    // Numbers & Punctuation
+    hats.add(new ZeroHat());
+    hats.add(new OneHat());
+    hats.add(new TwoHat());
+    hats.add(new ThreeHat());
+    hats.add(new FourHat());
+    hats.add(new FiveHat());
+    hats.add(new SixHat());
+    hats.add(new SevenHat());
+    hats.add(new EightHat());
+    hats.add(new NineHat());
+    hats.add(new PlusHat());
+    hats.add(new HashtagHat());
+    hats.add(new QuestionMarkHat());
+    hats.add(new ExclamationMarkHat());
+
+    // Animals
+    hats.add(new CowHat());
+    hats.add(new SheepHat());
+    hats.add(new PigHat());
+    hats.add(new ChickenHat());
+    hats.add(new LlamaHat());
+    hats.add(new BatHat());
+    hats.add(new RabbitHat());
+    hats.add(new WolfHat());
+    hats.add(new OcelotHat());
+    hats.add(new HorseHat());
+    hats.add(new DonkeyHat());
+    hats.add(new MuleHat());
+    hats.add(new ParrotHat());
+    hats.add(new SquidHat());
+    hats.add(new TurtleHat());
+    hats.add(new PolarBearHat());
+    hats.add(new PandaHat());
+    hats.add(new FoxHat());
+    hats.add(new DogeHat());
+    hats.add(new OwlHat());
+    hats.add(new PugHat());
+    hats.add(new ElephantHat());
+    hats.add(new DuckHat());
+    hats.add(new BeeHat());
+    hats.add(new WaspHat());
+    hats.add(new WalrusHat());
+    hats.add(new PenguinHat());
+    hats.add(new ClowfishHat());
+    hats.add(new KoalaHat());
+    hats.add(new SlothHat());
+    hats.add(new FerretHat());
+    hats.add(new MonkeyHat());
+    hats.add(new ReindeerHat());
+
+    // Monsters
+    hats.add(new ZombieHat());
+    hats.add(new SkeletonHat());
+    hats.add(new CreeperHat());
+    hats.add(new SpiderHat());
+    hats.add(new CaveSpiderHat());
+    hats.add(new EndermanHat());
+    hats.add(new SlimeHat());
+    hats.add(new WitchHat());
+    hats.add(new GuardianHat());
+    hats.add(new ElderGuardianHat());
+    hats.add(new ZombiePigmanHat());
+    hats.add(new WitherSkeletonHat());
+    hats.add(new MagmaCubeHat());
+    hats.add(new BlazeHat());
+    hats.add(new GhastHat());
+    hats.add(new ShulkerHat());
+    hats.add(new EnderDragonHat());
+
+    // Blocks
+    hats.add(new NoteblockHat());
+    hats.add(new CommandBlockHat());
+    hats.add(new PistonHat());
+    hats.add(new StickyPistonHat());
+    hats.add(new CactusHat());
+    hats.add(new PumpkinHat());
+    hats.add(new ChestHat());
+    hats.add(new EnderChestHat());
+    hats.add(new BookshelfHat());
+    hats.add(new TNTHat());
+    hats.add(new SlimeBlockHat());
+    hats.add(new NetherPortalHat());
+    hats.add(new MissingTextureHat());
+
+    // Food
+    hats.add(new BreadHat());
+    hats.add(new CheeseHat());
+    hats.add(new CakeHat());
+    hats.add(new CookieHat());
+    hats.add(new ChocolateHat());
+    hats.add(new WhiteChocolateHat());
+    hats.add(new CandyCaneHat());
+    hats.add(new MelonHat());
+    hats.add(new StrawberryHat());
+    hats.add(new CoconutHat());
+    hats.add(new TacoHat());
+    hats.add(new BurgerHat());
+    hats.add(new PopcornHat());
+    hats.add(new PinkDonutHat());
+    hats.add(new SandwichHat());
+
+    // Planets
+    hats.add(new MercuryHat());
+    hats.add(new VenusHat());
+    hats.add(new EarthHat());
+    hats.add(new MarsHat());
+    hats.add(new JupiterHat());
+    hats.add(new SaturnHat());
+    hats.add(new UranusHat());
+    hats.add(new NeptuneHat());
+    hats.add(new PlutoHat());
+
+    // Countries
+    hats.add(new NetherlandsHat());
+    hats.add(new NorwayHat());
+    hats.add(new SwedenHat());
+    hats.add(new ChileHat());
+    hats.add(new MonacoHat());
+    hats.add(new CanadaHat());
+    hats.add(new UnitedStatesHat());
+    hats.add(new ItalyHat());
+    hats.add(new EnglandHat());
+    hats.add(new GermanyHat());
+    hats.add(new SingaporeHat());
+    hats.add(new FranceHat());
+    hats.add(new SpainHat());
+    hats.add(new AustraliaHat());
+
+    // Miscellaneous
+    hats.add(new BeachBallHat());
+    hats.add(new ToasterHat());
+    hats.add(new SnowmanHat());
+    hats.add(new SnowglobeHat());
+    hats.add(new GhostHat());
+    hats.add(new JackOLanternHat());
+    hats.add(new SkullHat());
+    hats.add(new AstronautHat());
+    hats.add(new ElfHat());
+    hats.add(new CompanionCubeHat());
+    hats.add(new RainbowGlitchHat());
+    hats.add(new PokeballHat());
+    hats.add(new MasterballHat());
+    hats.add(new MarioHat());
+    hats.add(new LuigiHat());
+    hats.add(new JakeHat());
+    hats.add(new LichHat());
+  }
+
+  private void registerOutfits() {
+
+  }
+
+  private void registerRunnables() {
+    for (Gadget gadget : gadgets) {
+      gadget.registerExtraListeners();
+    }
+
+    for (Particle particle : particles) {
+      particle.registerRunnable();
+    }
+  }
+
+  public List<Gadget> getGadgets() {
+    return gadgets;
+  }
+
+  public List<Particle> getParticles() {
+    return particles;
+  }
+
+  public List<Hat> getHats() {
+    return hats;
+  }
 
   /**
    * TODO - MAKE THE COSMETIC MENUS & PETS MENUS DYNAMIC & HATS DYNAMIC
    */
   public static void register() {
     // Particle Runnables
-    AngelWings.particleRunnable();
-    BloodHelix.particleRunnable();
-    CandyCane.particleRunnable();
-    Cone.particleRunnable();
-    Enchanted.particleRunnable();
-    EnderAura.particleRunnable();
-    FlameFairy.particleRunnable();
     FrozenWalk.particleRunnable();
-    GreenSparks.particleRunnable();
-    InLove.particleRunnable();
-    Music.particleRunnable();
-    RainCloud.particleRunnable();
-    SantaHat.particleRunnable();
-    SnowCloud.particleRunnable();
     Walks.particleRunnable();
 
-    syncPets();
+    //syncPets();
+  }
+
+  public boolean hasActiveGadget(UUID uuid) {
+    return activeGadgets.containsKey(uuid);
+  }
+
+  public void setActiveGadget(UUID uuid, Gadget gadget) {
+    activeGadgets.put(uuid, gadget);
+  }
+
+  public void removeActiveGadget(UUID uuid) {
+    activeGadgets.remove(uuid);
+  }
+
+  public Gadget getActiveGadget(UUID uuid) {
+    return activeGadgets.get(uuid);
   }
 
   public static void setParticle(Player player, String cosmetic) {
@@ -81,88 +507,12 @@ public class CosmeticHandler implements Listener {
     return effects.containsKey(player) && effects.get(player).equalsIgnoreCase(cosmetic);
   }
 
-  public static String getPet(Player player) {
-    if (hasPet(player)) {
-      return pets.get(player);
-    } else {
-      return "";
-    }
-  }
-
   public static boolean hasParticle(Player player) {
     return effects.containsKey(player);
   }
 
   public static void removeParticle(Player player) {
     effects.remove(player);
-  }
-
-  public static void setPet(Player player, String cosmetic) {
-    if (pets.containsKey(player)) {
-      removePet(player);
-
-      pets.put(player, cosmetic.toUpperCase());
-    } else {
-      pets.put(player, cosmetic);
-    }
-  }
-
-  public static boolean hasPet(Player player) {
-    return pets.containsKey(player);
-  }
-
-  public static void removePet(Player player) {
-    pets.remove(player);
-    if (petEntity.containsKey(player)) {
-      petEntity.get(player).remove();
-      petEntity.remove(player);
-    }
-  }
-
-  public static void syncPets() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-      for (Map.Entry<Player, String> pe : pets.entrySet()) {
-
-        if (pets.containsKey(pe.getKey()) && !petEntity.containsKey(pe.getKey())) {
-          ArmorStand armorStand =
-              pe.getKey().getWorld().spawn(pe.getKey().getLocation(), ArmorStand.class);
-
-          for (Cosmetic cosmetic : getCosmetics()) {
-            if (cosmetic.getCosmeticIdentifier().equalsIgnoreCase(pe.getValue())) {
-              armorStand.getEquipment().setHelmet(cosmetic.getItemStack());
-            }
-          }
-
-          // rabbit.setBaby(true);
-          armorStand.setSmall(true);
-
-          // rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999,
-          // 1));
-          armorStand.setVisible(false);
-
-          armorStand.setCustomName(pe.getKey().getUniqueId().toString());
-          armorStand.setCustomNameVisible(false);
-
-          petEntity.put(pe.getKey(), armorStand);
-        }
-
-        follow(pe.getKey(), petEntity.get(pe.getKey()));
-      }
-    }, 0, 1);
-  }
-
-  private static void follow(Player target, Entity follower) {
-    int direction = getDirection(target);
-    if (target.isOnGround()) {
-      Location location = target.getLocation().subtract(
-          direction == 1 ? -1.25 : (direction == 4) ? 1.25 : 0,
-          0,
-          direction == 2 ? -1.25 : (direction == 3) ? 1.25 : 0);
-      follower.teleport(location);
-
-      Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
-          () -> ParticleUtils.display(Particle.FIREWORKS_SPARK, location.add(0, 1, 0)), 2L);
-    }
   }
 
   private static int getDirection(Player player) {
@@ -512,8 +862,8 @@ public class CosmeticHandler implements Listener {
     return cosmeticsList;
   }
 
-  public static HashMap<String, Integer> getTotals(Player player) {
-    HashMap<String, Integer> totals = new HashMap<>();
+  public Map<String, Integer> getTotals(Player player) {
+    Map<String, Integer> totals = new HashMap<>();
 
     List<String> perks = PerkHandler.getPerks(player.getUniqueId());
 
@@ -529,55 +879,91 @@ public class CosmeticHandler implements Listener {
     int playerHats = 0;
     int playerGadgets = 0;
     int playerParticles = 0;
-    int playerOutfits = 0;
-    int playerPets = 0;
+    //int playerOutfits = 0;
+    //int playerPets = 0;
 
-    for (Cosmetic cosmetic : getCosmetics()) {
-      switch (cosmetic.getCosmeticType()) {
-        case "PARTICLE":
-          if (perks.contains(cosmetic.getPerkPerm())) {
-            playerInt++;
-            playerParticles++;
-          }
-          particlesInt++;
-          break;
-        case "PET":
-          if (perks.contains(cosmetic.getPerkPerm())) {
-            playerInt++;
-            playerPets++;
-          }
-          petsInt++;
-          break;
-        case "HAT":
-          if (perks.contains(cosmetic.getPerkPerm())) {
-            playerInt++;
-            playerHats++;
-          }
-          hatsInt++;
-          break;
-        case "GADGET":
-          if (perks.contains(cosmetic.getPerkPerm())) {
-            playerInt++;
-            playerGadgets++;
-          }
-          gadgetsInt++;
-          break;
-        case "OUTFIT":
-          if (perks.contains(cosmetic.getPerkPerm())) {
-            playerInt++;
-            playerOutfits++;
-          }
-          outfitsInt++;
-          break;
+    for (Gadget gadget : gadgets) {
+      if (perks.contains(gadget.getPermissionNode())) {
+        playerInt++;
+        playerGadgets++;
       }
+
+      gadgetsInt++;
+
+      totals.put("player", playerInt);
+      totals.put("playerGadgets", playerGadgets);
+    }
+
+    for (Particle particle : particles) {
+      if (perks.contains(particle.getPermissionNode())) {
+        playerInt++;
+        playerParticles++;
+      }
+
+      particlesInt++;
+
+      totals.put("player", playerInt);
+      totals.put("playerParticles", playerParticles);
+    }
+
+    for (Hat hat : hats) {
+      if (perks.contains(hat.getPermissionNode())) {
+        playerInt++;
+        playerHats++;
+      }
+
+      hatsInt++;
 
       totals.put("player", playerInt);
       totals.put("playerHats", playerHats);
-      totals.put("playerGadgets", playerGadgets);
-      totals.put("playerParticles", playerParticles);
-      totals.put("playerOutfits", playerOutfits);
-      totals.put("playerPets", playerOutfits);
     }
+
+//    for (Cosmetic cosmetic : getCosmetics()) {
+//      switch (cosmetic.getCosmeticType()) {
+//        case "PARTICLE":
+//          if (perks.contains(cosmetic.getPerkPerm())) {
+//            playerInt++;
+//            playerParticles++;
+//          }
+//          particlesInt++;
+//          break;
+//        case "PET":
+//          if (perks.contains(cosmetic.getPerkPerm())) {
+//            playerInt++;
+//            playerPets++;
+//          }
+//          petsInt++;
+//          break;
+//        case "HAT":
+//          if (perks.contains(cosmetic.getPerkPerm())) {
+//            playerInt++;
+//            playerHats++;
+//          }
+//          hatsInt++;
+//          break;
+//        case "GADGET":
+//          if (perks.contains(cosmetic.getPerkPerm())) {
+//            playerInt++;
+//            playerGadgets++;
+//          }
+//          gadgetsInt++;
+//          break;
+//        case "OUTFIT":
+//          if (perks.contains(cosmetic.getPerkPerm())) {
+//            playerInt++;
+//            playerOutfits++;
+//          }
+//          outfitsInt++;
+//          break;
+//      }
+//
+//      totals.put("player", playerInt);
+//      totals.put("playerHats", playerHats);
+//      totals.put("playerGadgets", playerGadgets);
+//      totals.put("playerParticles", playerParticles);
+//      totals.put("playerOutfits", playerOutfits);
+//      totals.put("playerPets", playerOutfits);
+//    }
 
     totals.put("hats", hatsInt);
     totals.put("gadgets", gadgetsInt);
@@ -590,15 +976,15 @@ public class CosmeticHandler implements Listener {
   }
 
   @EventHandler
-  public void onLeave(PlayerQuitEvent e) {
-    Player p = e.getPlayer();
+  public void onLeave(PlayerQuitEvent event) {
+    Player player = event.getPlayer();
 
-    if (hasParticle(p)) {
-      removeParticle(p);
+    if (hasParticle(player)) {
+      removeParticle(player);
     }
 
-    if (hasPet(p)) {
-      removePet(p);
+    if (hasActiveGadget(player.getUniqueId())) {
+      removeActiveGadget(player.getUniqueId());
     }
   }
 }

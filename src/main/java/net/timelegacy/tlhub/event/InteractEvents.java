@@ -1,5 +1,6 @@
 package net.timelegacy.tlhub.event;
 
+import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
 import net.timelegacy.tlhub.cosmetics.menu.YourProfileMenu;
 import net.timelegacy.tlhub.menus.MainMenu;
@@ -14,6 +15,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractEvents implements Listener {
 
+  private final TLHub plugin;
+
+  public InteractEvents(TLHub plugin) {
+    this.plugin = plugin;
+  }
+
   @EventHandler
   public void onOpenMenu(PlayerInteractEvent event) {
     Player player = event.getPlayer();
@@ -25,7 +32,7 @@ public class InteractEvents implements Listener {
         if (inHand == Material.ENCHANTING_TABLE) {
           event.setCancelled(true);
 
-          CosmeticMenu.openMenu(player);
+          new CosmeticMenu(plugin).openMenu(player);
         } else if (inHand == Material.TROPICAL_FISH) {
           event.setCancelled(true);
 

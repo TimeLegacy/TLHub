@@ -1,6 +1,6 @@
 package net.timelegacy.tlhub.cosmetics.menu;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
@@ -8,8 +8,8 @@ import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MenuUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.Cosmetic;
 import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
+import net.timelegacy.tlhub.cosmetics.particles.Particle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,9 +25,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ParticleMenu implements Listener {
 
-  private static TLHub plugin = TLHub.getPlugin();
+  private final TLHub plugin;
 
-  public static void openMenu(Player player, int page) {
+  public ParticleMenu(TLHub plugin) {
+    this.plugin = plugin;
+  }
+
+  public void openMenu(Player player, int page) {
     Inventory menu = Bukkit.createInventory(player, 54, MessageUtils.colorize("&8&lParticles >> &8&nPage " + page));
 
     // TODO fix
@@ -55,42 +59,46 @@ public class ParticleMenu implements Listener {
             continue;
           }
 
-          List<Cosmetic> particles = new ArrayList<>();
-          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
-              particles.add(cosmetic);
-            }
-          }
+//          List<Cosmetic> particles = new ArrayList<>();
+//          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
+//            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
+//              particles.add(cosmetic);
+//            }
+//          }
+//
+//          int current = ((i - 10) + start) - forgotten;
+//
+//          if (current >= particles.size()) {
+//            continue;
+//          }
 
           int current = ((i - 10) + start) - forgotten;
 
-          if (current >= particles.size()) {
+          if (current >= plugin.getCosmeticHandler().getParticles().size()) {
             continue;
           }
 
-          ItemStack itemStack = particles.get(current).getItemStack();
+          Particle particle = plugin.getCosmeticHandler().getParticles().get(current);
+
+          ItemStack itemStack = particle.getItem();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(player.getUniqueId(), particles.get(current).getPerkPerm())
-                  || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
+          if (PerkHandler.hasPerk(player.getUniqueId(), particle.getPermissionNode())
+              || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore();
-            if (CosmeticHandler.particleEnabled(
-                player, particles.get(current).getCosmeticIdentifier())) {
+            if (CosmeticHandler.particleEnabled(player, particle.getName())) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
               lore.add(MessageUtils.colorize("&a&lUNLOCKED"));
             }
+
             ism.setLore(lore);
             is.setItemMeta(ism);
           } else {
-            is =
-                ItemUtils.createItem(
-                    Material.RED_STAINED_GLASS_PANE,
-                    1,
-                    "&c&lLOCKED",
-                    "&fUnlock by opening crates.");
+            is = ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, "&c&lLOCKED",
+                Collections.singletonList("&fUnlock by opening crates."));
           }
 
           menu.setItem(i, is);
@@ -104,102 +112,102 @@ public class ParticleMenu implements Listener {
   public void onInventoryClick(InventoryClickEvent event) {
     Player player = (Player) event.getWhoClicked();
 
-    if (event.getCurrentItem() != null) {
+    if (event.getCurrentItem() == null) {
+      return;
+    }
 
-      String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
+    if (event.getCurrentItem().getType() == Material.AIR) {
+      return;
+    }
 
-      if (title.startsWith("Particles>>Page")) {
-        event.setCancelled(true);
+    String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
-          CosmeticMenu.openMenu(player);
-          return;
-        }
+    if (title.startsWith("Particles>>Page")) {
+      event.setCancelled(true);
 
-        int pageNumber = Integer.parseInt(title.split("Page")[1]);
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
+        new CosmeticMenu(plugin).openMenu(player);
+        return;
+      }
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&cReset Particle"))) {
-          if (CosmeticHandler.hasParticle(player)) {
-            CosmeticHandler.removeParticle(player);
-            MessageUtils.sendMessage(
-                player, MessageUtils.ERROR_COLOR + "You have removed your particle cosmetic.", true);
-          } else {
-            MessageUtils.sendMessage(
-                player, MessageUtils.ERROR_COLOR + "You do not have a particle enabled.", true);
-          }
-          return;
-        }
+      int pageNumber = Integer.parseInt(title.split("Page")[1]);
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&aPrevious Page"))) {
-          if (pageNumber == 1) {
-            MenuUtils.displayGUIError(
-                event.getInventory(),
-                event.getSlot(),
-                event.getCurrentItem(),
-                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"),
-                3);
-            return;
-          } else {
-            openMenu(player, pageNumber - 1);
-            return;
-          }
-        }
-
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&aNext Page"))) {
-          double pages = (double) CosmeticHandler.getTotals(player).get("particles") / 21;
-
-          if (pageNumber == MenuUtils.roundUp(pages)) {
-            MenuUtils.displayGUIError(
-                event.getInventory(),
-                event.getSlot(),
-                event.getCurrentItem(),
-                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"),
-                3);
-            return;
-          } else {
-            openMenu(player, pageNumber + 1);
-            return;
-          }
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&cReset Particle"))) {
+        if (CosmeticHandler.hasParticle(player)) {
+          CosmeticHandler.removeParticle(player);
+          MessageUtils.sendMessage(
+              player, MessageUtils.ERROR_COLOR + "You have removed your particle cosmetic.", true);
         } else {
+          MessageUtils.sendMessage(
+              player, MessageUtils.ERROR_COLOR + "You do not have a particle enabled.", true);
+        }
+        return;
+      }
 
-          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
-              if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
-                CosmeticHandler.setParticle(player, cosmetic.getCosmeticIdentifier());
-
-                player.closeInventory();
-
-                MessageUtils.sendMessage(
-                    player,
-                    MessageUtils.MAIN_COLOR
-                        + "You have set your cosmetic as "
-                        + MessageUtils.SECOND_COLOR
-                        + MessageUtils
-                        .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
-                    true);
-
-                break;
-              }
-            }
-          }
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&aPrevious Page"))) {
+        if (pageNumber == 1) {
+          MenuUtils.displayGUIError(
+              event.getInventory(),
+              event.getSlot(),
+              event.getCurrentItem(),
+              ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"),
+              3);
+          return;
+        } else {
+          openMenu(player, pageNumber - 1);
+          return;
         }
       }
+
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&aNext Page"))) {
+        double pages = (double) plugin.getCosmeticHandler().getParticles().size() / 21;
+
+        if (pageNumber == MenuUtils.roundUp(pages)) {
+          MenuUtils.displayGUIError(
+              event.getInventory(),
+              event.getSlot(),
+              event.getCurrentItem(),
+              ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"),
+              3);
+        } else {
+          openMenu(player, pageNumber + 1);
+        }
+
+        return;
+      }
+
+      for (Particle particle : plugin.getCosmeticHandler().getParticles()) {
+        if (event.getCurrentItem().getItemMeta().getLocalizedName().equals(particle.getName())) {
+          CosmeticHandler.setParticle(player, particle.getName());
+          MessageUtils.sendMessage(player, "&eYou have set your active particle as " + particle.getDisplayName(), false);
+          player.updateInventory();
+          player.closeInventory();
+          break;
+        }
+      }
+
+//      for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
+//        if (cosmetic.getCosmeticType().equalsIgnoreCase("PARTICLE")) {
+//          if (event.getCurrentItem().getType() == cosmetic.getItemStack().getType()) {
+//            CosmeticHandler.setParticle(player, cosmetic.getCosmeticIdentifier());
+//
+//            player.closeInventory();
+//
+//            MessageUtils.sendMessage(
+//                player,
+//                MessageUtils.MAIN_COLOR
+//                    + "You have set your cosmetic as "
+//                    + MessageUtils.SECOND_COLOR
+//                    + MessageUtils
+//                    .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
+//                true);
+//
+//            break;
+//          }
+//        }
+//      }
+
     }
+
   }
 }

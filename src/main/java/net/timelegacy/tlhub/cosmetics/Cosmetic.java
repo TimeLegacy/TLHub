@@ -16,8 +16,7 @@ public class Cosmetic {
   private final String slogan;
   private final String skullValue;
 
-  public Cosmetic(
-      String perkPerm, Material material, String name, String slogan, String skullValue) {
+  public Cosmetic(String perkPerm, Material material, String name, String slogan, String skullValue) {
     this.perkPerm = perkPerm;
     this.name = name;
     this.material = material;

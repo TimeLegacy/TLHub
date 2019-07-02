@@ -84,7 +84,7 @@ public class PlayerEvents implements Listener {
         "&7Open Cosmetics to utilize all your",
         "&7favorite features.",
         "&aUnlocked&7: &8(&7"
-            + CosmeticHandler.getTotals(player).get("player")
+            + plugin.getCosmeticHandler().getTotals(player).get("player")
             + "/"
             + CosmeticHandler.getCosmetics().size()
             + "&8)"));
