@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
+import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,7 +20,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class HeadRider extends Gadget {
 
-  public HeadRider() {
+  private final TLHub plugin;
+
+  public HeadRider(TLHub plugin) {
+    this.plugin = plugin;
+
     setRarity(Rarity.COMMON);
     setName("Head Rider");
     setDisplayName(getRarity().getColor() + "Head Rider");
@@ -40,6 +45,8 @@ public class HeadRider extends Gadget {
     }
 
     getTopPlayer(player).addPassenger(rightClicked);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
 //  private void gadgetUse(PlayerInteractEntityEvent event) {

@@ -3,6 +3,7 @@ package net.timelegacy.tlhub.cosmetics.gadgets;
 import java.util.Arrays;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -39,6 +40,8 @@ public class ExplosiveSnowball extends Gadget implements Listener {
 
     Snowball snowball = player.launchProjectile(Snowball.class);
     snowball.setMetadata("explosiveSnowball", new FixedMetadataValue(plugin, "ExplosiveSnowball"));
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override

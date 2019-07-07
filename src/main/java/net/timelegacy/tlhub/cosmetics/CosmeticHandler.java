@@ -230,9 +230,9 @@ public class CosmeticHandler implements Listener {
   }
 
   private void registerGadgets() {
-    gadgets.add(new SuperPunch());
-    gadgets.add(new HeadRider());
-    gadgets.add(new Evolution(plugin));
+    gadgets.add(new SuperPunch(plugin));
+    //gadgets.add(new HeadRider(plugin));
+    //gadgets.add(new Evolution(plugin));
     gadgets.add(new Partner(plugin));
     gadgets.add(new ThorsHammer(plugin));
     gadgets.add(new AnimalCannon(plugin));

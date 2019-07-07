@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,6 +47,8 @@ public class PaintballGun extends Gadget implements Listener {
     snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
 
     player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override

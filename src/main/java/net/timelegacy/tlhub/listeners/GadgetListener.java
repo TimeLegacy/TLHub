@@ -2,6 +2,7 @@ package net.timelegacy.tlhub.listeners;
 
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.cosmetics.gadgets.Gadget;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -55,30 +56,37 @@ public class GadgetListener implements Listener {
     }
 
     for (Gadget gadget : plugin.getCosmeticHandler().getGadgets()) {
-      if (is.getItemMeta().getLocalizedName().equals(gadget.getName())) {
-        event.setCancelled(true);
-        gadget.doAbility(event);
+      if (!is.getItemMeta().getLocalizedName().equals(gadget.getName())) {
+        continue;
+      }
+
+      String cooldownName = plugin.getName() + gadget.getName() + "Cooldown";
+
+      if (Cooldown.hasCooldown(player.getUniqueId(), cooldownName)) {
+        MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You must wait " +
+            Cooldown.getTimeLeft(player.getUniqueId(), cooldownName)
+            + (Cooldown.getTimeLeft(player.getUniqueId(), cooldownName) > 1 ? " seconds"
+            : " second") +
+            " before doing that again.", true);
         break;
       }
+
+      event.setCancelled(true);
+      gadget.doAbility(event);
+      break;
     }
 
   }
 
   @EventHandler
   public void onEntityDamage(EntityDamageByEntityEvent event) {
-    System.out.println("Damage Pass 1");
-
     if (!(event.getDamager() instanceof Player)) {
       return;
     }
 
-    System.out.println("Damage Pass 2");
-
     if (!(event.getEntity() instanceof Player)) {
       return;
     }
-
-    System.out.println("Damage Pass 3");
 
     Player player = (Player) event.getDamager();
 
@@ -88,25 +96,17 @@ public class GadgetListener implements Listener {
       return;
     }
 
-    System.out.println("Damage Pass 4");
-
     if (is.getType() == Material.AIR) {
       return;
     }
-
-    System.out.println("Damage Pass 5");
 
     if (!is.hasItemMeta()) {
       return;
     }
 
-    System.out.println("Damage Pass 6");
-
     if (!is.getItemMeta().hasDisplayName()) {
       return;
     }
-
-    System.out.println("Damage Pass 7");
 
     for (Gadget gadget : plugin.getCosmeticHandler().getGadgets()) {
       if (gadget.getName().contains(MessageUtils.replaceColors(is.getItemMeta().getDisplayName()))) {
@@ -115,8 +115,6 @@ public class GadgetListener implements Listener {
         break;
       }
     }
-
-    System.out.println("Damage Pass 8");
   }
 
 }

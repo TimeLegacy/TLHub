@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.timelegacy.tlcore.utils.FireworkUtils;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -76,6 +77,8 @@ public class Firecracker extends Gadget implements Listener {
 
       FireworkUtils.spawnFirework(i.getLocation(), 1);
     }, 3 * 20);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override

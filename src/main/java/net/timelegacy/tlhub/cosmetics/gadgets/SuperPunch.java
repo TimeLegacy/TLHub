@@ -2,6 +2,8 @@ package net.timelegacy.tlhub.cosmetics.gadgets;
 
 import java.util.Arrays;
 import net.timelegacy.tlcore.utils.ItemUtils;
+import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,7 +11,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class SuperPunch extends Gadget {
 
-  public SuperPunch() {
+  private final TLHub plugin;
+
+  public SuperPunch(TLHub plugin) {
+    this.plugin = plugin;
+
     setRarity(Rarity.COMMON);
     setName("Super Punch");
     setDisplayName(getRarity().getColor() + "Super Punch");
@@ -30,6 +36,8 @@ public class SuperPunch extends Gadget {
 
     target.teleport(target.getLocation().add(0, 0.5, 0));
     target.setVelocity(player.getLocation().getDirection().multiply(9));
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
 }

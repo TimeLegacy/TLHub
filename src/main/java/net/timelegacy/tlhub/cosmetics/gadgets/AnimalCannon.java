@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,6 +48,8 @@ public class AnimalCannon extends Gadget implements Listener {
 
     Egg egg = player.launchProjectile(Egg.class);
     egg.setMetadata("AnimalCannon", new FixedMetadataValue(plugin, "AnimalCannonEgg"));
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override

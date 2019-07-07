@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -85,6 +86,8 @@ public class DiscoBall extends Gadget {
         }
       }
     }.runTaskTimer(plugin, 1, 4);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
 
     //do gadget shit here
 

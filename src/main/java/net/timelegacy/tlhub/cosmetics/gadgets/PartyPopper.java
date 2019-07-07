@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -72,6 +73,8 @@ public class PartyPopper extends Gadget {
         }
       }
     }.runTaskTimer(plugin, 0, getRandom());
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
 //  @EventHandler

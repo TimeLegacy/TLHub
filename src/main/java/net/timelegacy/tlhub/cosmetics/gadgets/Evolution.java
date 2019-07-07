@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,6 +43,8 @@ public class Evolution extends Gadget {
     Player player = event.getPlayer();
 
     animateVillager(player);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
 //  @EventHandler

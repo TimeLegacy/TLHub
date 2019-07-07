@@ -10,6 +10,7 @@ import java.util.UUID;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -81,6 +82,8 @@ public class Partner extends Gadget implements Listener {
       playersWithPartners.remove(player.getUniqueId());
       MessageUtils.sendMessage(player, getRandomDestroyMessage(), "&3&lPartner &8&l>&c&l> ");
     }
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override

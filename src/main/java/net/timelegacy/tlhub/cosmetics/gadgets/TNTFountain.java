@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,6 +62,8 @@ public class TNTFountain extends Gadget implements Listener {
         this.cancel();
       }
     }.runTaskTimer(plugin, 0L, 8L);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override

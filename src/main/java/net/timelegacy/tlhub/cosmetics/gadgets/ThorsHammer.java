@@ -3,6 +3,7 @@ package net.timelegacy.tlhub.cosmetics.gadgets;
 import java.util.Arrays;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,6 +43,8 @@ public class ThorsHammer extends Gadget {
 //        }
 //      }
 //    }.runTaskLaterAsynchronously(plugin, 20 * 3);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
 //  @EventHandler
