@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.Cooldown;
 import net.timelegacy.tlhub.enums.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,6 +24,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class PaintballGun extends Gadget implements Listener {
 
   private final TLHub plugin;
+
+  private List<Location> activeBlocks = new ArrayList<>();
 
   public PaintballGun(TLHub plugin) {
     this.plugin = plugin;
@@ -48,7 +49,7 @@ public class PaintballGun extends Gadget implements Listener {
 
     player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
 
-    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
+    //new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
 
   @Override
@@ -56,120 +57,99 @@ public class PaintballGun extends Gadget implements Listener {
     Bukkit.getPluginManager().registerEvents(this, plugin);
   }
 
-  //  @EventHandler
-//  public void gadgetUse(PlayerInteractEvent event) {
-//    Player player = event.getPlayer();
-//
-//    ItemStack inHand = player.getInventory().getItemInMainHand();
-//
-//    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-//        .contains(gadgetName.replace("_", " ").toLowerCase())) {
-//      event.setCancelled(true);
-//
-//      Snowball snowball = player.launchProjectile(Snowball.class);
-//      snowball.setMetadata("paintball", new FixedMetadataValue(plugin, "Paintball"));
-//
-//      player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1F, 2F);
-//
-//      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
-//    }
-//
-//  }
-
   @EventHandler
-  public void onPaintballHit(ProjectileHitEvent e) {
-    if (!(e.getEntity() instanceof Snowball)) {
+  public void onPaintballHit(ProjectileHitEvent event) {
+    if (!(event.getEntity() instanceof Snowball)) {
       return;
     }
 
-    if (!e.getEntity().hasMetadata("paintball")) {
+    if (!event.getEntity().hasMetadata("paintball")) {
       return;
     }
 
     List<Material> ignoredBlocks = new ArrayList<>();
     ignoredBlocks.add(Material.AIR);
     ignoredBlocks.add(Material.BARRIER);
+    ignoredBlocks.add(Material.WATER);
+    ignoredBlocks.add(Material.LAVA);
+
+    // Portals
     ignoredBlocks.add(Material.NETHER_PORTAL);
     ignoredBlocks.add(Material.END_PORTAL);
-    ignoredBlocks.add(Material.CRAFTING_TABLE);
-    ignoredBlocks.add(Material.CHEST);
-    ignoredBlocks.add(Material.ENDER_CHEST);
-    ignoredBlocks.add(Material.ENCHANTING_TABLE);
-    ignoredBlocks.add(Material.END_PORTAL_FRAME);
-    ignoredBlocks.add(Material.FURNACE);
-    ignoredBlocks.add(Material.CAULDRON);
-    ignoredBlocks.add(Material.HOPPER);
-    ignoredBlocks.add(Material.ANVIL);
+
     ignoredBlocks.add(Material.LADDER);
-    ignoredBlocks.add(Material.LEGACY_CARPET);
-    ignoredBlocks.add(Material.LEGACY_STAINED_CLAY);
-    ignoredBlocks.add(Material.COBBLESTONE_WALL);
-    ignoredBlocks.add(Material.REDSTONE_LAMP);
-    ignoredBlocks.add(Material.LEGACY_BED_BLOCK);
     ignoredBlocks.add(Material.RAIL);
-    ignoredBlocks.add(Material.POWERED_RAIL);
-    ignoredBlocks.add(Material.ACTIVATOR_RAIL);
-    ignoredBlocks.add(Material.DETECTOR_RAIL);
-    ignoredBlocks.add(Material.LEGACY_WOOD_BUTTON);
-    ignoredBlocks.add(Material.STONE_BUTTON);
-    ignoredBlocks.add(Material.LEGACY_WOOD_PLATE);
-    ignoredBlocks.add(Material.LEGACY_STONE_PLATE);
-    ignoredBlocks.add(Material.LEGACY_IRON_PLATE);
-    ignoredBlocks.add(Material.LEGACY_GOLD_PLATE);
-    ignoredBlocks.add(Material.LEGACY_LONG_GRASS);
-    ignoredBlocks.add(Material.LEGACY_DOUBLE_PLANT);
-    ignoredBlocks.add(Material.LEGACY_RED_ROSE);
-    ignoredBlocks.add(Material.LEGACY_YELLOW_FLOWER);
-    ignoredBlocks.add(Material.DEAD_BUSH);
-    ignoredBlocks.add(Material.COBWEB);
-    ignoredBlocks.add(Material.RED_MUSHROOM);
-    ignoredBlocks.add(Material.BROWN_MUSHROOM);
-    ignoredBlocks.add(Material.WATER);
-    ignoredBlocks.add(Material.LEGACY_STATIONARY_WATER);
-    ignoredBlocks.add(Material.LAVA);
-    ignoredBlocks.add(Material.LEGACY_STATIONARY_LAVA);
-    ignoredBlocks.add(Material.FLOWER_POT);
-    ignoredBlocks.add(Material.SUGAR_CANE);
-    ignoredBlocks.add(Material.CACTUS);
-    ignoredBlocks.add(Material.LEGACY_SOIL);
-    ignoredBlocks.add(Material.LEGACY_CROPS);
-    ignoredBlocks.add(Material.WHEAT);
-    ignoredBlocks.add(Material.POTATO);
-    ignoredBlocks.add(Material.CARROT);
-    ignoredBlocks.add(Material.BEETROOTS);
-    ignoredBlocks.add(Material.PUMPKIN_STEM);
-    ignoredBlocks.add(Material.MELON_STEM);
-    ignoredBlocks.add(Material.FIRE);
+
+    // Buttons
+    ignoredBlocks.add(Material.OAK_BUTTON);
+    ignoredBlocks.add(Material.SPRUCE_BUTTON);
+    ignoredBlocks.add(Material.BIRCH_BUTTON);
+    ignoredBlocks.add(Material.JUNGLE_BUTTON);
+    ignoredBlocks.add(Material.DARK_OAK_BUTTON);
+    ignoredBlocks.add(Material.ACACIA_BUTTON);
+
+    // Pressure Plates
+    ignoredBlocks.add(Material.OAK_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.SPRUCE_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.BIRCH_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.ACACIA_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+    ignoredBlocks.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
+
+    // Carpets
+    ignoredBlocks.add(Material.RED_CARPET);
+    ignoredBlocks.add(Material.ORANGE_CARPET);
+    ignoredBlocks.add(Material.YELLOW_CARPET);
+    ignoredBlocks.add(Material.LIME_CARPET);
+    ignoredBlocks.add(Material.GREEN_CARPET);
+    ignoredBlocks.add(Material.LIGHT_BLUE_CARPET);
+    ignoredBlocks.add(Material.CYAN_CARPET);
+    ignoredBlocks.add(Material.BLUE_CARPET);
+    ignoredBlocks.add(Material.PINK_CARPET);
+    ignoredBlocks.add(Material.MAGENTA_CARPET);
+    ignoredBlocks.add(Material.PURPLE_CARPET);
+    ignoredBlocks.add(Material.BROWN_CARPET);
+    ignoredBlocks.add(Material.WHITE_CARPET);
+    ignoredBlocks.add(Material.LIGHT_GRAY_CARPET);
+    ignoredBlocks.add(Material.GRAY_CARPET);
+    ignoredBlocks.add(Material.BLACK_CARPET);
+
     ignoredBlocks.add(Material.WALL_SIGN);
     ignoredBlocks.add(Material.SIGN);
-    ignoredBlocks.add(Material.LEGACY_BANNER);
-    ignoredBlocks.add(Material.LEGACY_STANDING_BANNER);
-    ignoredBlocks.add(Material.LEGACY_WALL_BANNER);
     ignoredBlocks.add(Material.ITEM_FRAME);
-    ignoredBlocks.add(Material.LEGACY_SKULL);
-    ignoredBlocks.add(Material.TORCH);
-    ignoredBlocks.add(Material.REDSTONE_TORCH);
-    ignoredBlocks.add(Material.REDSTONE_WALL_TORCH);
-    ignoredBlocks.add(Material.LEGACY_TRAP_DOOR);
-    ignoredBlocks.add(Material.IRON_TRAPDOOR);
-    ignoredBlocks.add(Material.IRON_BARS);
-    ignoredBlocks.add(Material.LEGACY_FENCE);
-    ignoredBlocks.add(Material.SPRUCE_FENCE);
-    ignoredBlocks.add(Material.BIRCH_FENCE);
-    ignoredBlocks.add(Material.JUNGLE_FENCE);
-    ignoredBlocks.add(Material.ACACIA_FENCE);
-    ignoredBlocks.add(Material.DARK_OAK_FENCE);
-    ignoredBlocks.add(Material.LEGACY_FENCE_GATE);
-    ignoredBlocks.add(Material.SPRUCE_FENCE_GATE);
-    ignoredBlocks.add(Material.BIRCH_FENCE_GATE);
-    ignoredBlocks.add(Material.JUNGLE_FENCE_GATE);
-    ignoredBlocks.add(Material.ACACIA_FENCE_GATE);
-    ignoredBlocks.add(Material.DARK_OAK_FENCE_GATE);
 
-    List<BlockState> locations = new ArrayList<>();
+    // Stairs
+    ignoredBlocks.add(Material.COBBLESTONE_STAIRS);
+    ignoredBlocks.add(Material.SANDSTONE_STAIRS);
+    ignoredBlocks.add(Material.BRICK_STAIRS);
 
-    for (Block block : getInRadius(e.getEntity().getLocation().getBlock(), 2.5).keySet()) {
+    // Slabs
+    ignoredBlocks.add(Material.STONE_SLAB);
+    ignoredBlocks.add(Material.STONE_BRICK_SLAB);
+    ignoredBlocks.add(Material.BRICK_SLAB);
+
+    // Foliage
+    ignoredBlocks.add(Material.ROSE_BUSH);
+    ignoredBlocks.add(Material.DANDELION);
+    ignoredBlocks.add(Material.ALLIUM);
+    ignoredBlocks.add(Material.LILAC);
+    ignoredBlocks.add(Material.WHITE_TULIP);
+    ignoredBlocks.add(Material.RED_TULIP);
+    ignoredBlocks.add(Material.ORANGE_TULIP);
+    ignoredBlocks.add(Material.PINK_TULIP);
+    ignoredBlocks.add(Material.OXEYE_DAISY);
+    ignoredBlocks.add(Material.AZURE_BLUET);
+
+    List<BlockState> blockStates = new ArrayList<>();
+
+    for (Block block : getInRadius(event.getEntity().getLocation().getBlock(), 2.5).keySet()) {
       if (ignoredBlocks.contains(block.getType())) {
+        continue;
+      }
+
+      if (activeBlocks.contains(block.getLocation())) {
         continue;
       }
 
@@ -178,20 +158,16 @@ public class PaintballGun extends Gadget implements Listener {
         continue;
       }
 
-      if (block.getType() != Material.LEGACY_STAINED_CLAY) {
-        locations.add(block.getState());
-      }
+      blockStates.add(block.getState());
 
-      block.setType(Material.LEGACY_STAINED_CLAY);
+      block.setType(Material.TERRACOTTA);
+      activeBlocks.add(block.getLocation());
     }
 
     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-      for (BlockState bs : locations) {
-        Location loc = bs.getLocation();
-        Block b = loc.getBlock();
-
-        b.setType(bs.getType());
-        //b.setData(bs.getData().getData());
+      for (BlockState blockState : blockStates) {
+        blockState.update(true);
+        activeBlocks.remove(blockState.getLocation());
       }
     }, 80L);
   }
@@ -205,8 +181,7 @@ public class PaintballGun extends Gadget implements Listener {
         for (int y = -iR; y <= iR; y++) {
           Block curBlock = block.getRelative(x, y, z);
 
-          double offset = block.getLocation().toVector().subtract(curBlock.getLocation().toVector())
-              .length();
+          double offset = block.getLocation().toVector().subtract(curBlock.getLocation().toVector()).length();
 
           if (offset <= dR) {
             blockList.put(curBlock, 1.0D - offset / dR);
