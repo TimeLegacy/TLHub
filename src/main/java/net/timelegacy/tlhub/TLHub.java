@@ -9,10 +9,12 @@ import net.timelegacy.tlhub.cosmetics.menu.ParticleMenu;
 import net.timelegacy.tlhub.cosmetics.menu.YourProfileMenu;
 import net.timelegacy.tlhub.cosmetics.particles.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.particles.FireworkEffect;
+import net.timelegacy.tlhub.crates.MiniCrateFinderListener;
 import net.timelegacy.tlhub.event.InteractEvents;
 import net.timelegacy.tlhub.event.PlayerEvents;
 import net.timelegacy.tlhub.handler.DiscoveriesHandler;
 import net.timelegacy.tlhub.listeners.GadgetListener;
+import net.timelegacy.tlhub.listeners.PlayerVisibilityListener;
 import net.timelegacy.tlhub.menus.MainMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TLHub extends JavaPlugin {
 
   private CosmeticHandler cosmeticHandler;
+  private MiniCrateFinderListener miniCrateFinderListener;
 
   private static FileConfiguration config;
   public static boolean playersOnline;
@@ -68,14 +71,19 @@ public class TLHub extends JavaPlugin {
 
     //CosmeticHandler.register();
     ServerHandler.setType(ServerHandler.getServerUUID(), "LOBBY");
+
+    miniCrateFinderListener.startRunnable();
+    //miniCrateFinderListener.beaconShower();
   }
 
   public void onDisable() {
     getServer().getScheduler().cancelTasks(this);
+    miniCrateFinderListener.unloadMiniCrates();
   }
 
   private void registerClasses() {
     this.cosmeticHandler = new CosmeticHandler(this);
+    this.miniCrateFinderListener = new MiniCrateFinderListener(this);
   }
 
   private void registerEvents() {
@@ -90,7 +98,10 @@ public class TLHub extends JavaPlugin {
     pm.registerEvents(new GadgetsMenu(this), this);
     pm.registerEvents(new YourProfileMenu(), this);
 
+    pm.registerEvents(new PlayerVisibilityListener(this), this);
+
     pm.registerEvents(cosmeticHandler, this);
+    pm.registerEvents(miniCrateFinderListener, this);
 
 //    pm.registerEvents(new AnimalCannon(), this);
 //    pm.registerEvents(new BatLauncher(), this);
