@@ -72,7 +72,7 @@ public class TLHub extends JavaPlugin {
     //CosmeticHandler.register();
     ServerHandler.setType(ServerHandler.getServerUUID(), "LOBBY");
 
-    miniCrateFinderListener.startRunnable();
+    //miniCrateFinderListener.startRunnable();
     //miniCrateFinderListener.beaconShower();
   }
 
