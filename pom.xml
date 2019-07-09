@@ -16,10 +16,10 @@
   <repositories>
     <repository>
       <id>spigotmc-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/timelegacy-snapshots/</url>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>snapshots</id>
+      <id>timelegacy-snapshots</id>
       <url>https://nexus.dec0de.xyz/content/repositories/timelegacy-snapshots/</url>
     </repository>
   </repositories>
@@ -79,11 +79,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>snapshots</id>
-      <url>${env.NEXUS_REPO_URL}snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>
