@@ -1,14 +1,18 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
+import net.timelegacy.tlhub.enums.Rarity;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,93 +20,148 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
-public class Partner implements Listener {
+public class Partner extends Gadget implements Listener {
 
-  private static TLHub plugin = TLHub.getPlugin();
-  private HashMap<UUID, ArmorStand> playersWithPartners = new HashMap<>();
+  private final TLHub plugin;
+
+  private Map<UUID, ArmorStand> playersWithPartners = new HashMap<>();
   private List<Player> partnerEnabled = new ArrayList<>();
 
-  @EventHandler
-  public void gadgetUse(PlayerInteractEvent event) {
+  public Partner(TLHub plugin) {
+    this.plugin = plugin;
+
+    setRarity(Rarity.COMMON);
+    setName("Partner");
+    setDisplayName(getRarity().getColor() + "Partner");
+    setLore(Arrays.asList("", "&7&oFeeling lonely? You're not alone.", "&7&oWith this gadget, you'll never be alone!", ""));
+    setPermissionNode("hub.cosmetics.gadgets.partner");
+    setCooldown(5);
+
+    setItem(ItemUtils.createItem(Material.PLAYER_HEAD, getDisplayName(), getLore(), getName()));
+  }
+
+  @Override
+  public void doAbility(PlayerInteractEvent event) {
     Player player = event.getPlayer();
 
-    String gadgetName = "PARTNER";
-    ItemStack is = event.getItem();
+    if (!partnerEnabled.contains(player)) {
+      partnerEnabled.add(player);
 
-    if (is == null) {
-      return;
-    }
+      ArmorStand armorStand = player.getWorld().spawn(player.getLocation().add(1, 1, 1), ArmorStand.class);
+      armorStand.setVisible(false);
+      armorStand.setGravity(false);
+      armorStand.setCollidable(false);
+      armorStand.setInvulnerable(true);
+      armorStand.setHelmet(ItemUtils.playerSkull(player.getUniqueId()));
+      armorStand.setCustomNameVisible(false);
 
-    if (is.getType() == Material.AIR) {
-      return;
-    }
+      playersWithPartners.put(player.getUniqueId(), armorStand);
+      MessageUtils.sendMessage(player, getRandomCreateMessage(), "&3&lPartner &8&l>&a&l> ");
 
-    if (!is.hasItemMeta()) {
-      return;
-    }
-
-    if (!is.getItemMeta().hasDisplayName()) {
-      return;
-    }
-
-    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-      return;
-    }
-
-    if (player.getInventory().getItemInMainHand() == null) {
-      return;
-    }
-
-    ItemStack inHand = player.getInventory().getItemInMainHand();
-
-    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-        .contains(gadgetName.replace("_", " ").toLowerCase())) {
-      event.setCancelled(true);
-
-      if (!partnerEnabled.contains(player)) {
-        partnerEnabled.add(player);
-
-        ArmorStand armorStand = player.getWorld().spawn(player.getLocation().add(1, 1, 1), ArmorStand.class);
-        armorStand.setVisible(false);
-        armorStand.setGravity(false);
-        armorStand.setCollidable(false);
-        armorStand.setInvulnerable(true);
-        armorStand.setHelmet(ItemUtils.playerSkull(player.getUniqueId()));
-        armorStand.setCustomNameVisible(false);
-
-        playersWithPartners.put(player.getUniqueId(), armorStand);
-        MessageUtils.sendMessage(player, getRandomCreateMessage(), "&3&lPartner &8&l>&a&l> ");
-
-        new BukkitRunnable() {
-          @Override
-          public void run() {
-            if (!playersWithPartners.containsKey(player.getUniqueId())) {
-              cancel();
-            } else {
-              MessageUtils.sendMessage(player, getRandomPartnerMessage(), "&3&lPartner &8&l>&a&l> ");
-            }
+      new BukkitRunnable() {
+        @Override
+        public void run() {
+          if (!playersWithPartners.containsKey(player.getUniqueId())) {
+            cancel();
+          } else {
+            MessageUtils.sendMessage(player, getRandomPartnerMessage(), "&3&lPartner &8&l>> ");
           }
-        }.runTaskTimer(plugin, 20 * 10, getRandom() * 20);
-      } else {
-        partnerEnabled.remove(player);
-        deleteArmorStand(player, playersWithPartners.get(player.getUniqueId()));
-        playersWithPartners.remove(player.getUniqueId());
-        MessageUtils.sendMessage(player, getRandomDestroyMessage(), "&3&lPartner &8&l>&a&l> ");
-      }
-
-      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+        }
+      }.runTaskTimer(plugin, 20 * 10, getRandom() * 20);
+    } else {
+      partnerEnabled.remove(player);
+      deleteArmorStand(player, playersWithPartners.get(player.getUniqueId()));
+      playersWithPartners.remove(player.getUniqueId());
+      MessageUtils.sendMessage(player, getRandomDestroyMessage(), "&3&lPartner &8&l>&c&l> ");
     }
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
+
+  @Override
+  public void registerExtraListeners() {
+    Bukkit.getPluginManager().registerEvents(this, plugin);
+  }
+
+  //  @EventHandler
+//  public void gadgetUse(PlayerInteractEvent event) {
+//    Player player = event.getPlayer();
+//
+//    String gadgetName = "PARTNER";
+//    ItemStack is = event.getItem();
+//
+//    if (is == null) {
+//      return;
+//    }
+//
+//    if (is.getType() == Material.AIR) {
+//      return;
+//    }
+//
+//    if (!is.hasItemMeta()) {
+//      return;
+//    }
+//
+//    if (!is.getItemMeta().hasDisplayName()) {
+//      return;
+//    }
+//
+//    if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+//      return;
+//    }
+//
+//    if (player.getInventory().getItemInMainHand() == null) {
+//      return;
+//    }
+//
+//    ItemStack inHand = player.getInventory().getItemInMainHand();
+//
+//    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+//        .contains(gadgetName.replace("_", " ").toLowerCase())) {
+//      event.setCancelled(true);
+//
+//      if (!partnerEnabled.contains(player)) {
+//        partnerEnabled.add(player);
+//
+//        ArmorStand armorStand = player.getWorld().spawn(player.getLocation().add(1, 1, 1), ArmorStand.class);
+//        armorStand.setVisible(false);
+//        armorStand.setGravity(false);
+//        armorStand.setCollidable(false);
+//        armorStand.setInvulnerable(true);
+//        armorStand.setHelmet(ItemUtils.playerSkull(player.getUniqueId()));
+//        armorStand.setCustomNameVisible(false);
+//
+//        playersWithPartners.put(player.getUniqueId(), armorStand);
+//        MessageUtils.sendMessage(player, getRandomCreateMessage(), "&3&lPartner &8&l>&a&l> ");
+//
+//        new BukkitRunnable() {
+//          @Override
+//          public void run() {
+//            if (!playersWithPartners.containsKey(player.getUniqueId())) {
+//              cancel();
+//            } else {
+//              MessageUtils.sendMessage(player, getRandomPartnerMessage(), "&3&lPartner &8&l>&a&l> ");
+//            }
+//          }
+//        }.runTaskTimer(plugin, 20 * 10, getRandom() * 20);
+//      } else {
+//        partnerEnabled.remove(player);
+//        deleteArmorStand(player, playersWithPartners.get(player.getUniqueId()));
+//        playersWithPartners.remove(player.getUniqueId());
+//        MessageUtils.sendMessage(player, getRandomDestroyMessage(), "&3&lPartner &8&l>&a&l> ");
+//      }
+//
+//      new Cooldown(player.getUniqueId(), gadgetName, 5).start();
+//    }
+//  }
 
   private int getRandom() {
     int min = 20;
@@ -254,7 +313,7 @@ public class Partner implements Listener {
     return destroyMessages.get(new Random().nextInt(destroyMessages.size()));
   }
 
-  public HashMap<UUID, ArmorStand> getPlayersWithPartners() {
+  public Map<UUID, ArmorStand> getPlayersWithPartners() {
     return playersWithPartners;
   }
 

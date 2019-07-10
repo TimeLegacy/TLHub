@@ -1,54 +1,43 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
+import java.util.Arrays;
+import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlhub.TLHub;
-import org.bukkit.ChatColor;
+import net.timelegacy.tlhub.cosmetics.Cooldown;
+import net.timelegacy.tlhub.enums.Rarity;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.ItemStack;
 
-public class SuperPunch implements Listener {
+public class SuperPunch extends Gadget {
 
-  private static TLHub plugin = TLHub.getPlugin();
+  private final TLHub plugin;
 
-  @EventHandler
-  public void onSuperPunchInteract(EntityDamageByEntityEvent e) {
-    if (!(e.getDamager() instanceof Player)) {
-      return;
-    }
+  public SuperPunch(TLHub plugin) {
+    this.plugin = plugin;
 
-    if (!(e.getEntity() instanceof Player)) {
-      return;
-    }
+    setRarity(Rarity.COMMON);
+    setName("Super Punch");
+    setDisplayName(getRarity().getColor() + "Super Punch");
+    setLore(Arrays.asList("", "&7&oFALCON", "&7&oPUUUUUNNCH", ""));
+    setPermissionNode("hub.cosmetics.gadgets.super_punch");
+    setCooldown(5);
 
-    String gadgetName = "SUPER_PUNCH";
+    setItem(ItemUtils.createItem(Material.SLIME_BALL, getDisplayName(), getLore(), getName()));
+  }
 
-    Player player = (Player) e.getDamager();
+  @Override
+  public void doAbility(EntityDamageByEntityEvent event) {
+    Player player = (Player) event.getDamager();
+    Player target = (Player) event.getEntity();
 
-    ItemStack inHand = player.getInventory().getItemInMainHand();
-
-    if (!inHand.hasItemMeta()) {
-      return;
-    }
-
-    if (!player.getInventory().getItemInMainHand().hasItemMeta()) {
-      return;
-    }
-
-    if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-        .contains(gadgetName.replace("_", " ").toLowerCase())) {
-      return;
-    }
-
-    Player target = (Player) e.getEntity();
-
-    e.setCancelled(true);
-    e.setDamage(0);
+    event.setCancelled(true);
+    event.setDamage(0);
 
     target.teleport(target.getLocation().add(0, 0.5, 0));
     target.setVelocity(player.getLocation().getDirection().multiply(9));
-  }
 
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
+  }
 
 }

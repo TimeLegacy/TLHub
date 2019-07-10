@@ -8,8 +8,7 @@ import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MenuUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
-import net.timelegacy.tlhub.cosmetics.Cosmetic;
-import net.timelegacy.tlhub.cosmetics.CosmeticHandler;
+import net.timelegacy.tlhub.cosmetics.gadgets.Gadget;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,10 +24,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class GadgetsMenu implements Listener {
 
-  private static TLHub plugin = TLHub.getPlugin();
+  private final TLHub plugin;
 
-  public static void openMenu(Player p, int page) {
-    Inventory menu = Bukkit.createInventory(p, 54, MessageUtils.colorize("&8&lGadgets >> &8&nPage " + page));
+  public GadgetsMenu(TLHub plugin) {
+    this.plugin = plugin;
+  }
+
+  public void openMenu(Player player, int page) {
+    Inventory menu = Bukkit.createInventory(player, 9 * 6, MessageUtils.colorize("&8&lGadgets >> &8&nPage " + page));
 
     // Row 5
     menu.setItem(39, ItemUtils.createItem(Material.ARROW, 1, "&aPrevious Page"));
@@ -38,7 +41,7 @@ public class GadgetsMenu implements Listener {
     // Row 6
     menu.setItem(49, ItemUtils.createItem(Material.ENCHANTING_TABLE, 1, "&eReturn to Cosmetics"));
 
-    p.openInventory(menu);
+    player.openInventory(menu);
 
     new BukkitRunnable() {
 
@@ -53,29 +56,37 @@ public class GadgetsMenu implements Listener {
             continue;
           }
 
-          List<Cosmetic> gadgets = new ArrayList<>();
-          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("GADGET")) {
-              gadgets.add(cosmetic);
-            }
-          }
+//          List<Cosmetic> gadgets = new ArrayList<>();
+//          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
+//            if (cosmetic.getCosmeticType().equalsIgnoreCase("GADGET")) {
+//              gadgets.add(cosmetic);
+//            }
+//          }
+//
+//          int current = ((i - 10) + start) - forgotten;
+//
+//          if (current >= gadgets.size()) {
+//            continue;
+//          }
 
           int current = ((i - 10) + start) - forgotten;
 
-          if (current >= gadgets.size()) {
+          if (current >= plugin.getCosmeticHandler().getGadgets().size()) {
             continue;
           }
 
-          ItemStack itemStack = gadgets.get(current).getItemStack();
+          Gadget gadget = plugin.getCosmeticHandler().getGadgets().get(current);
+
+          ItemStack itemStack = gadget.getItem();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(p.getUniqueId(), gadgets.get(current).getPerkPerm()) || RankHandler.getRank(p.getUniqueId()).getPriority() >= 9) {
+          if (PerkHandler.hasPerk(player.getUniqueId(), gadget.getPermissionNode())
+              || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
-            if (p.getInventory().getItem(5) != null &&
-                ChatColor.stripColor(p.getInventory().getItem(5).getItemMeta().getDisplayName())
-                    .equals(ChatColor.stripColor(
-                        gadgets.get(current).getItemStack().getItemMeta().getDisplayName()))) {
+            if (player.getInventory().getItem(5) != null &&
+                ChatColor.stripColor(player.getInventory().getItem(5).getItemMeta().getDisplayName())
+                    .equals(ChatColor.stripColor(gadget.getItem().getItemMeta().getDisplayName()))) {
               ism.addEnchant(Enchantment.DURABILITY, 1, true);
               lore.add(MessageUtils.colorize("&a&lENABLED!"));
             } else {
@@ -88,7 +99,7 @@ public class GadgetsMenu implements Listener {
           }
 
           menu.setItem(i, is);
-          p.updateInventory();
+          player.updateInventory();
         }
       }
     }.runTaskAsynchronously(plugin);
@@ -96,120 +107,117 @@ public class GadgetsMenu implements Listener {
 
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
-    Player p = (Player) event.getWhoClicked();
+    Player player = (Player) event.getWhoClicked();
 
-    if (event.getCurrentItem() != null) {
+    if (event.getCurrentItem() == null) {
+      return;
+    }
 
-      String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
+    if (event.getCurrentItem().getType() == Material.AIR) {
+      return;
+    }
 
-      if (title.startsWith("Gadgets>>Page")) {
-        event.setCancelled(true);
+    String title = ChatColor.stripColor(event.getInventory().getTitle()).replace(" ", "");
 
-        int i = 0;
+    if (title.startsWith("Gadgets>>Page")) {
+      event.setCancelled(true);
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
-          CosmeticMenu.openMenu(p);
-          return;
-        }
+      int i = 0;
 
-        int pageNumber = Integer.parseInt(title.split("Page")[1]);
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&eReturn to Cosmetics"))) {
+        new CosmeticMenu(plugin).openMenu(player);
+        return;
+      }
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&cReset Gadget"))) {
-          if (p.getInventory().getItem(5) != null) {
+      int pageNumber = Integer.parseInt(title.split("Page")[1]);
 
-            p.getInventory().setItem(5, new ItemStack(Material.AIR, 1));
-            p.updateInventory();
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&cReset Gadget"))) {
+        if (player.getInventory().getItem(5) != null) {
 
-            MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You have removed your gadget cosmetic.", true);
-          } else {
-            MessageUtils.sendMessage(
-                p, MessageUtils.ERROR_COLOR + "You do not have a gadget enabled.", true);
-          }
-          return;
-        }
+          player.getInventory().setItem(5, new ItemStack(Material.AIR, 1));
+          player.updateInventory();
 
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&aPrevious Page"))) {
-          if (pageNumber == 1) {
-            MenuUtils
-                .displayGUIError(
-                event.getInventory(),
-                event.getSlot(),
-                event.getCurrentItem(),
-                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"),
-                3);
-            return;
-          } else {
-            openMenu(p, pageNumber - 1);
-            return;
-          }
-        }
-
-        if (event
-            .getCurrentItem()
-            .getItemMeta()
-            .getDisplayName()
-            .equals(MessageUtils.colorize("&aNext Page"))) {
-          double pages = (double) CosmeticHandler.getTotals(p).get("gadgets") / 21;
-
-          if (pageNumber == MenuUtils.roundUp(pages)) {
-            MenuUtils.displayGUIError(
-                event.getInventory(),
-                event.getSlot(),
-                event.getCurrentItem(),
-                ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"),
-                3);
-            return;
-          } else {
-            openMenu(p, pageNumber + 1);
-            return;
-          }
+          player.sendMessage(MessageUtils.ERROR_COLOR + "You have removed your gadget cosmetic.");
+          //MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You have removed your gadget cosmetic.", true);
         } else {
+          MessageUtils.sendMessage(player, MessageUtils.ERROR_COLOR + "You do not have a gadget enabled.", true);
+        }
 
-          for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
-            if (cosmetic.getCosmeticType().equalsIgnoreCase("GADGET")) {
-              if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())
-                  .equalsIgnoreCase(
-                      ChatColor.stripColor(
-                          cosmetic.getItemStack().getItemMeta().getDisplayName()))) {
-                ItemStack item = ItemUtils.createItem(cosmetic.getItemStack().getType(),
-                    1, "&e" + ChatColor
-                        .stripColor(cosmetic.getItemStack().getItemMeta().getDisplayName())
-                        + " &8{&7Right Click&8}");
+        return;
+      }
 
-                p.getInventory().setItem(5, item);
-                p.updateInventory();
-
-                p.closeInventory();
-
-                MessageUtils.sendMessage(
-                    p,
-                    MessageUtils.MAIN_COLOR
-                        + "You have set your gadget as "
-                        + MessageUtils.SECOND_COLOR
-                        + MessageUtils
-                        .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
-                    true);
-
-                break;
-              }
-            }
-          }
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&aPrevious Page"))) {
+        if (pageNumber == 1) {
+          MenuUtils.displayGUIError(event.getInventory(), event.getSlot(), event.getCurrentItem(),
+                  ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the first page!"), 3);
+          return;
+        } else {
+          openMenu(player, pageNumber - 1);
+          return;
         }
       }
+
+      if (event.getCurrentItem().getItemMeta().getDisplayName().equals(MessageUtils.colorize("&aNext Page"))) {
+        double pages = (double) plugin.getCosmeticHandler().getGadgets().size() / 21;
+
+        if (pageNumber == MenuUtils.roundUp(pages)) {
+          MenuUtils.displayGUIError(
+              event.getInventory(),
+              event.getSlot(),
+              event.getCurrentItem(),
+              ItemUtils.createItem(Material.BARRIER, 1, "&cThis is the last page!"), 3);
+          return;
+        } else {
+          openMenu(player, pageNumber + 1);
+          return;
+        }
+      }
+
+      for (Gadget gadget : plugin.getCosmeticHandler().getGadgets()) {
+        if (event.getCurrentItem().getItemMeta().getLocalizedName().equals(gadget.getName())) {
+          ItemStack item = ItemUtils.createItem(gadget.getItem(), "&e" + gadget.getName());
+
+          player.getInventory().setItem(5, item);
+
+          MessageUtils.sendMessage(player, "&eYou have set your gadget as " + gadget.getDisplayName(), false);
+          player.updateInventory();
+          player.closeInventory();
+          break;
+        }
+      }
+
+//        for (Cosmetic cosmetic : CosmeticHandler.getCosmetics()) {
+//          if (cosmetic.getCosmeticType().equalsIgnoreCase("GADGET")) {
+//            if (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())
+//                .equalsIgnoreCase(
+//                    ChatColor.stripColor(
+//                        cosmetic.getItemStack().getItemMeta().getDisplayName()))) {
+//              ItemStack item = ItemUtils.createItem(cosmetic.getItemStack().getType(),
+//                  1, "&e" + ChatColor
+//                      .stripColor(cosmetic.getItemStack().getItemMeta().getDisplayName())
+//                      + " &8{&7Right Click&8}");
+//
+//              player.getInventory().setItem(5, item);
+//              player.updateInventory();
+//
+//              player.closeInventory();
+//
+//              MessageUtils.sendMessage(
+//                  player,
+//                  MessageUtils.MAIN_COLOR
+//                      + "You have set your gadget as "
+//                      + MessageUtils.SECOND_COLOR
+//                      + MessageUtils
+//                      .friendlyify(cosmetic.getCosmeticIdentifier().replace("_", " ")),
+//                  true);
+//
+//              break;
+//            }
+//          }
+//        }
+
     }
+
   }
 
 }

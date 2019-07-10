@@ -1,87 +1,110 @@
 package net.timelegacy.tlhub.cosmetics.gadgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.Cooldown;
+import net.timelegacy.tlhub.enums.Rarity;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+public class HeadRider extends Gadget {
 
-public class HeadRider implements Listener {
+  private final TLHub plugin;
 
-  private static TLHub plugin = TLHub.getPlugin();
+  public HeadRider(TLHub plugin) {
+    this.plugin = plugin;
 
-  @EventHandler
-  public void gadgetUse(PlayerInteractEntityEvent event) {
-    Player p = event.getPlayer();
+    setRarity(Rarity.COMMON);
+    setName("Head Rider");
+    setDisplayName(getRarity().getColor() + "Head Rider");
+    setLore(Arrays.asList("", "&7&oRide players", "&7&ojust for the fun of it.", ""));
+    setPermissionNode("hub.cosmetics.gadgets.head_rider");
+    setCooldown(5);
 
-    String gadgetName = "HEAD_RIDER";
-    ItemStack is = event.getPlayer().getItemOnCursor();
+    setItem(ItemUtils.createItem(Material.SADDLE, getDisplayName(), getLore(), getName()));
+  }
 
-    if (is == null) {
-      return;
-    }
-
-    if (is.getType() == Material.AIR) {
-      return;
-    }
-
-    if (!is.hasItemMeta()) {
-      return;
-    }
-
-    if (!is.getItemMeta().hasDisplayName()) {
-      return;
-    }
-    if (!(event.getRightClicked() instanceof Player)) {
-      return;
-    }
-
+  @Override
+  public void doAbility(PlayerInteractEntityEvent event) {
+    Player player = event.getPlayer();
     Player rightClicked = (Player) event.getRightClicked();
 
-    if (p.getInventory().getItemInMainHand() != null) {
-      ItemStack inHand = p.getInventory().getItemInMainHand();
-
-      if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
-          .contains(gadgetName.replace("_", " ").toLowerCase())) {
-        event.setCancelled(true);
-
-        if (Cooldown.hasCooldown(p.getUniqueId(), gadgetName)) {
-          MessageUtils.sendMessage(
-              p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
-                  .getTimeLeft(p.getUniqueId(), gadgetName)
-                  + (Cooldown.getTimeLeft(p.getUniqueId(), gadgetName) > 1 ? " seconds" : " second")
-                  +
-                  " before doing that again.", true);
-          return;
-        }
-
-        if (getTopPlayer(p) == rightClicked) {
-          return;
-        }
-
-        getTopPlayer(p).addPassenger(rightClicked);
-
-        //do gadget shit here
-
-        new Cooldown(
-            p.getUniqueId(),
-            gadgetName,
-            5)
-            .start();
-      }
+    if (getTopPlayer(player) == rightClicked) {
+      return;
     }
+
+    getTopPlayer(player).addPassenger(rightClicked);
+
+    new Cooldown(player.getUniqueId(), plugin.getName() + getName() + "Cooldown", getCooldown()).start();
   }
+
+//  private void gadgetUse(PlayerInteractEntityEvent event) {
+//    Player p = event.getPlayer();
+//
+//    String gadgetName = "HEAD_RIDER";
+//    ItemStack is = event.getPlayer().getItemOnCursor();
+//
+//    if (is == null) {
+//      return;
+//    }
+//
+//    if (is.getType() == Material.AIR) {
+//      return;
+//    }
+//
+//    if (!is.hasItemMeta()) {
+//      return;
+//    }
+//
+//    if (!is.getItemMeta().hasDisplayName()) {
+//      return;
+//    }
+//    if (!(event.getRightClicked() instanceof Player)) {
+//      return;
+//    }
+//
+//    Player rightClicked = (Player) event.getRightClicked();
+//
+//    if (p.getInventory().getItemInMainHand() != null) {
+//      ItemStack inHand = p.getInventory().getItemInMainHand();
+//
+//      if (ChatColor.stripColor(inHand.getItemMeta().getDisplayName().toLowerCase())
+//          .contains(gadgetName.replace("_", " ").toLowerCase())) {
+//        event.setCancelled(true);
+//
+//        if (Cooldown.hasCooldown(p.getUniqueId(), gadgetName)) {
+//          MessageUtils.sendMessage(
+//              p, MessageUtils.ERROR_COLOR + "You must wait " + Cooldown
+//                  .getTimeLeft(p.getUniqueId(), gadgetName)
+//                  + (Cooldown.getTimeLeft(p.getUniqueId(), gadgetName) > 1 ? " seconds" : " second")
+//                  +
+//                  " before doing that again.", true);
+//          return;
+//        }
+//
+//        if (getTopPlayer(p) == rightClicked) {
+//          return;
+//        }
+//
+//        getTopPlayer(p).addPassenger(rightClicked);
+//
+//        //do gadget shit here
+//
+//        new Cooldown(p.getUniqueId(), gadgetName, 5).start();
+//      }
+//    }
+//  }
 
   @EventHandler
   public void onPunchInteract(EntityDamageByEntityEvent event) {

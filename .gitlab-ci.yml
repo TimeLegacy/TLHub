@@ -21,7 +21,7 @@ package:
   script:
     - mvn $MAVEN_CLI_OPTS clean package -Dmaven.test.skip=true
   artifacts:
-    name: "TLBungee"
+    name: "TLHub"
     paths:
       - target/*.jar
   only:
