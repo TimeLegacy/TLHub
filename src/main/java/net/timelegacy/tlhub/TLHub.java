@@ -6,7 +6,6 @@ import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
 import net.timelegacy.tlhub.cosmetics.menu.GadgetsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.HatsMenu;
 import net.timelegacy.tlhub.cosmetics.menu.ParticleMenu;
-import net.timelegacy.tlhub.cosmetics.menu.YourProfileMenu;
 import net.timelegacy.tlhub.cosmetics.particles.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.particles.FireworkEffect;
 import net.timelegacy.tlhub.crates.MiniCrateFinderListener;
@@ -96,7 +95,6 @@ public class TLHub extends JavaPlugin {
     pm.registerEvents(new CosmeticMenu(this), this);
     pm.registerEvents(new HatsMenu(this), this);
     pm.registerEvents(new GadgetsMenu(this), this);
-    pm.registerEvents(new YourProfileMenu(), this);
 
     pm.registerEvents(new PlayerVisibilityListener(this), this);
 
