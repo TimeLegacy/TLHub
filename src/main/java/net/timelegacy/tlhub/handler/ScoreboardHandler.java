@@ -1,5 +1,6 @@
 package net.timelegacy.tlhub.handler;
 
+import net.timelegacy.tlcore.datatype.PlayerProfile;
 import net.timelegacy.tlcore.handler.CoinHandler;
 import net.timelegacy.tlcore.handler.CrateKeyHandler;
 import net.timelegacy.tlcore.handler.ServerHandler;
@@ -96,6 +97,21 @@ public class ScoreboardHandler {
   }
 
   public static void updateStatus(Player player) {// TODO Fix status once API is setup
-    player.getScoreboard().getTeam("status").setSuffix(ChatColor.GRAY + "?");
+    PlayerProfile playerProfile = new PlayerProfile(player.getUniqueId());
+    String status = ChatColor.GRAY + "?";
+
+    switch (playerProfile.getStatus().toString()) {
+      case "ACTIVE":
+        status = ChatColor.GREEN + "ACTIVE";
+        break;
+      case "AWAY":
+        status = ChatColor.YELLOW + "AWAY";
+        break;
+      case "DND":
+        status = ChatColor.RED + "DO NOT DISTURB";
+        break;
+    }
+
+    player.getScoreboard().getTeam("status").setSuffix(status);
   }
 }
