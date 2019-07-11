@@ -12,6 +12,7 @@ import net.timelegacy.tlhub.crates.MiniCrateFinderListener;
 import net.timelegacy.tlhub.event.InteractEvents;
 import net.timelegacy.tlhub.event.PlayerEvents;
 import net.timelegacy.tlhub.handler.DiscoveriesHandler;
+import net.timelegacy.tlhub.handler.ScoreboardHandler;
 import net.timelegacy.tlhub.listeners.GadgetListener;
 import net.timelegacy.tlhub.listeners.PlayerVisibilityListener;
 import net.timelegacy.tlhub.menus.MainMenu;
@@ -70,6 +71,8 @@ public class TLHub extends JavaPlugin {
 
     //CosmeticHandler.register();
     ServerHandler.setType(ServerHandler.getServerUUID(), "LOBBY");
+
+    ScoreboardHandler.setupScoreBoard();
 
     //miniCrateFinderListener.startRunnable();
     //miniCrateFinderListener.beaconShower();

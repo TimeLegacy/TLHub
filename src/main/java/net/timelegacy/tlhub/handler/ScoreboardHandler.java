@@ -5,20 +5,18 @@ import net.timelegacy.tlcore.handler.CoinHandler;
 import net.timelegacy.tlcore.handler.CrateKeyHandler;
 import net.timelegacy.tlcore.handler.ServerHandler;
 import net.timelegacy.tlcore.utils.MessageUtils;
-import org.bukkit.Bukkit;
+import net.timelegacy.tlcore.utils.ScoreboardUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class ScoreboardHandler {
 
-  public static Scoreboard setupScoreBoard() {
-    ScoreboardManager manager = Bukkit.getScoreboardManager();
-    Scoreboard board = manager.getNewScoreboard();
+  public static void setupScoreBoard() {
+    Scoreboard board = ScoreboardUtils.getScoreboard();
     Objective stats = board.registerNewObjective("stats", "dummy");
 
     stats.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -67,8 +65,6 @@ public class ScoreboardHandler {
     Team ip = board.registerNewTeam("ip");
     ip.addEntry(ipString);
     stats.getScore(ipString).setScore(1);
-
-    return board;
   }
 
   public static void updateEverything(Player player) {
