@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
+import net.timelegacy.tlhub.cosmetics.gadgets.Gadget;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -34,59 +36,107 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class MiniCrateFinderListener implements Listener {
 
-  public TLHub plugin;
+  private final TLHub plugin;
+  private Map<Location, String> minicrates = new HashMap<>();
 
   public MiniCrateFinderListener(TLHub plugin) {
     this.plugin = plugin;
+
+    for (String s : plugin.getConfig().getConfigurationSection("minicrates").getKeys(false)) {
+      Location location = new Location(
+          Bukkit.getWorld("world"),
+          plugin.getConfig().getDouble("minicrates." + s + ".x"),
+          plugin.getConfig().getDouble("minicrates." + s + ".y"),
+          plugin.getConfig().getDouble("minicrates." + s + ".z"));
+      minicrates.put(location, s);
+    }
   }
 
-  public void beaconShower() {
-    HashMap<Entity, Location> entityLocationHashMap = getBeacons();
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-      public void run() {
-        if (!(Bukkit.getOnlinePlayers().size() >= 1)) {
-          return;
-        }
+  public void startRunnable() {
+    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+      if (minicrates.isEmpty()) {
+        return;
+      }
 
-        for (Map.Entry<Entity, Location> locationEntry : entityLocationHashMap.entrySet()) {
-          for (Entity entity : locationEntry.getKey().getNearbyEntities(25, 25, 25)) {
-            if (entity.getType() != EntityType.PLAYER) {
-              return;
-            }
 
-            Player player = (Player) entity;
-            if (!player.hasPermission("hub.minicrates." + locationEntry.getKey().getCustomName())) {
-              Location location = locationEntry.getValue().clone().add(
-                  locationEntry.getValue().getX() > 0 ? 0.5 : -0.5,
-                  4.0,
-                  locationEntry.getValue().getZ() > 0 ? 0.5 : -0.5);
-              for (int i = 0; i < 20; i++) {
-                ParticleUtils.display(Particle.VILLAGER_HAPPY, location);
-//                    ParticleEffects.VILLAGER_HAPPY.display(
-//                        0, 0, 0, 1, 10, location.add(0, 0.1, 0), player);
+      if (!(Bukkit.getOnlinePlayers().size() >= 1)) {
+        return;
+      }
 
-              }
-            }
+      for (Location loc : minicrates.keySet()) {
+        for (Entity entity : loc.getWorld().getNearbyEntities(loc, 25,25,25)) {
+          if (entity.getType() != EntityType.PLAYER) {
+            continue;
           }
 
-          for (Entity entity : locationEntry.getKey().getNearbyEntities(8, 8, 8)) {
-            if (entity.getType() != EntityType.PLAYER) {
-              return;
-            }
+          Player player = (Player) entity;
+          if (PerkHandler.hasPerk(player.getUniqueId(), "hub.minicrates." + minicrates.get(loc))) {
+            return;
+          }
 
-            Player player = (Player) entity;
-            System.out.println(locationEntry.getKey().getCustomName());
-            if (!player.hasPermission("hub.minicrates." + locationEntry.getKey().getCustomName())) {
-              player.sendMessage(MessageUtils.colorize("&7A MiniCrate is nearby!"));
-            }
+          Location location = loc.clone().add(
+              loc.getX() > 0 ? 0.5 : -0.5,
+              1.0,
+              loc.getZ() > 0 ? 0.5 : -0.5);
+
+          for (int i = 0; i < 10; i++) {
+            ParticleUtils.display(Particle.VILLAGER_HAPPY, location);
           }
         }
       }
-
-    }, 0, 5 * 20); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
+    }, 0, 5 * 20);
   }
 
-  public HashMap<Entity, Location> getBeacons() {
+//  public void beaconShower() {
+//    HashMap<Entity, Location> entityLocationHashMap = getBeacons();
+//    Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+//      if (!(Bukkit.getOnlinePlayers().size() >= 1)) {
+//        return;
+//      }
+//
+//      for (Map.Entry<Entity, Location> locationEntry : entityLocationHashMap.entrySet()) {
+//        for (Entity entity : locationEntry.getKey().getNearbyEntities(25, 25, 25)) {
+//          if (entity.getType() != EntityType.PLAYER) {
+//            continue;
+//          }
+//
+//          Player player = (Player) entity;
+//          if (PerkHandler.hasPerk(player.getUniqueId(), "hub.minicrates." + locationEntry.getKey().getCustomName())) {
+//            return;
+//          }
+//
+//          Location location = locationEntry.getValue().clone().add(
+//              locationEntry.getValue().getX() > 0 ? 0.5 : -0.5,
+//              4.0,
+//              locationEntry.getValue().getZ() > 0 ? 0.5 : -0.5);
+//          for (int i = 0; i < 20; i++) {
+//            ParticleUtils.display(Particle.VILLAGER_HAPPY, location);
+//          }
+//
+//        }
+//
+//        for (Entity entity : locationEntry.getKey().getNearbyEntities(8, 8, 8)) {
+//          if (entity.getType() != EntityType.PLAYER) {
+//            continue;
+//          }
+//
+//          Player player = (Player) entity;
+//          System.out.println(locationEntry.getKey().getCustomName());
+//          if (PerkHandler.hasPerk(player.getUniqueId(), "hub.minicrates." + locationEntry.getKey().getCustomName())) {
+//            return;
+//          }
+//
+//          player.sendMessage(MessageUtils.colorize("&7A MiniCrate is nearby!"));
+//
+////          if (!player.hasPermission("hub.minicrates." + locationEntry.getKey().getCustomName())) {
+////            player.sendMessage(MessageUtils.colorize("&7A MiniCrate is nearby!"));
+////          }
+//        }
+//      }
+//    }, 0, 5 * 20); // 20 ticks = 1 second. So 5 * 20 = 100 which is 5 seconds
+//  }
+
+  private HashMap<Entity, Location> getBeacons() {
     HashMap<Entity, Location> beacons = new HashMap<>();
 
     for (String s : plugin.getConfig().getConfigurationSection("minicrates").getKeys(false)) {
@@ -154,6 +204,11 @@ public class MiniCrateFinderListener implements Listener {
       boolean canUse = false;
       String crateNum = "0";
 
+      if (plugin.getConfig().getConfigurationSection("minicrates") == null) {
+        System.out.println("Configuration Section `minicrates` doesn't exist!");
+        return;
+      }
+
       for (String s : plugin.getConfig().getConfigurationSection("minicrates").getKeys(false)) {
         // TODO change to check if DOESNT have permission
 
@@ -162,13 +217,13 @@ public class MiniCrateFinderListener implements Listener {
             plugin.getConfig().getInt("minicrates." + s + ".x"),
             plugin.getConfig().getInt("minicrates." + s + ".y"),
             plugin.getConfig().getInt("minicrates." + s + ".z"));
-        Location l1 = new Location(Bukkit.getWorld("world"), skull.getX(), skull.getY(), skull.getZ());
+        Location l1 = new Location(Bukkit.getWorld("world"), skull.getBlock().getX(), skull.getBlock().getY(), skull.getBlock().getZ());
 
         System.out.println(l1.getX() + " " + l1.getY() + " " + l1.getZ());
         System.out.println(l2.getX() + " " + l2.getY() + " " + l2.getZ());
 
         if (l1.getX() == l2.getX() && l1.getY() == l2.getY() && l1.getZ() == l2.getZ()) {
-          if (!player.hasPermission("hub.minicrates." + s)) {
+          if (!PerkHandler.hasPerk(player.getUniqueId(), ("hub.minicrates." + s).toUpperCase())) {
             System.out.println("hub.minicrates." + s + " <----- can use");
             canUse = true;
             crateNum = s;
@@ -179,10 +234,10 @@ public class MiniCrateFinderListener implements Listener {
       }
 
       if (canUse) {
-        Pair<ItemStack, String> outfit = getRandomOutfit(player);
+        Pair<ItemStack, String> outfit = getRandomGadget();
         player.sendMessage(MessageUtils.colorize("&aYou found a " + outfit.getLeft().getItemMeta().getDisplayName()));
 
-        PerkHandler.addPerk(player.getUniqueId(), "LOBBY.MINICRATES." + crateNum);
+        PerkHandler.addPerk(player.getUniqueId(), "hub.minicrates." + crateNum);
 
         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1, (float) 1.0);
         ParticleUtils.display(Particle.EXPLOSION_NORMAL, skull.getLocation());
@@ -195,47 +250,14 @@ public class MiniCrateFinderListener implements Listener {
     }
   }
 
-  public Pair<ItemStack, String> getRandomOutfit(Player player) {
+  private Pair<ItemStack, String> getRandomGadget() {
+    plugin.getCosmeticHandler().getGadgets();
 
-    //CosmeticHandler.getCosmetics().get(12);
+    Random random = new Random();
+    int gadgetN = random.nextInt(plugin.getCosmeticHandler().getGadgets().size());
+    Gadget gadget = plugin.getCosmeticHandler().getGadgets().get(gadgetN);
 
-    // user
-//    Random random = new Random();
-//    int outfitn = random.nextInt(Outfits.values().length);
-//    int piece = random.nextInt(3);
-//
-//    Outfits.Outfit outfit = Outfits.Outfit.values()[outfitn];
-//
-//    String permission;
-//    ItemStack is;
-//    switch (piece) {
-//      default:
-//        permission = outfit.getOutfitPermissions().getHelmetPermission();
-//        is = outfit.getHelmet();
-//        break;
-//      case 1:
-//        permission = outfit.getOutfitPermissions().getChestplatePermission();
-//        is = outfit.getChestplate();
-//        break;
-//      case 2:
-//        permission = outfit.getOutfitPermissions().getLeggingsPermission();
-//        is = outfit.getLeggings();
-//        break;
-//      case 3:
-//        permission = outfit.getOutfitPermissions().getBootsPermission();
-//        is = outfit.getBoots();
-//        break;
-//    }
-//
-//    if (LuckPerms.getApi()
-//        .getUser(p.getUniqueId())
-//        .getPermissions()
-//        .contains(LuckPerms.getApi().buildNode(permission).build())) {
-//      return getRandomOutfit(p);
-//    }
-//
-//    return Pair.of(is, permission);
-    return null;
+    return Pair.of(gadget.getItem(), gadget.getPermissionNode());
   }
 
   private void launchFirework(Location loc, double d) {
