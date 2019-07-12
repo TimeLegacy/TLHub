@@ -63,8 +63,6 @@ public class PlayerEvents implements Listener {
     player.setGameMode(GameMode.ADVENTURE);
 
     DiscoveriesHandler.playerJoin(player);
-
-    player.setScoreboard(ScoreboardHandler.setupScoreBoard());
     ScoreboardHandler.updateEverything(player);
 
     player.getInventory().clear();
