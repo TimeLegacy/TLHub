@@ -1,6 +1,5 @@
 package net.timelegacy.tlhub.event;
 
-import net.timelegacy.tlcore.menus.profile.ProfileMenu;
 import net.timelegacy.tlhub.TLHub;
 import net.timelegacy.tlhub.cosmetics.menu.CosmeticMenu;
 import net.timelegacy.tlhub.menus.MainMenu;
@@ -40,7 +39,6 @@ public class InteractEvents implements Listener {
         }
 
         if (inHand == Material.PLAYER_HEAD) {
-          ProfileMenu.openMenu(player);
           event.setCancelled(true);
         }
 
