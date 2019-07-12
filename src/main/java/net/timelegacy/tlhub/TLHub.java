@@ -49,9 +49,11 @@ public class TLHub extends JavaPlugin {
 
     spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
 
-    saveDefaultConfig();
-    getConfig().options().copyDefaults(true);
-    saveConfig();
+//    saveDefaultConfig();
+//    getConfig().options().copyDefaults(true);
+//    saveConfig();
+
+    saveResource("config.yml", false);
 
     getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 

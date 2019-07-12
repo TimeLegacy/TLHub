@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import net.timelegacy.tlcore.handler.PerkHandler;
+import net.timelegacy.tlcore.utils.FlyingItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlcore.utils.ParticleUtils;
 import net.timelegacy.tlhub.TLHub;
@@ -58,13 +59,12 @@ public class MiniCrateFinderListener implements Listener {
         return;
       }
 
-
       if (!(Bukkit.getOnlinePlayers().size() >= 1)) {
         return;
       }
 
       for (Location loc : minicrates.keySet()) {
-        for (Entity entity : loc.getWorld().getNearbyEntities(loc, 25,25,25)) {
+        for (Entity entity : loc.getWorld().getNearbyEntities(loc, 25, 25, 25)) {
           if (entity.getType() != EntityType.PLAYER) {
             continue;
           }
@@ -75,9 +75,9 @@ public class MiniCrateFinderListener implements Listener {
           }
 
           Location location = loc.clone().add(
-              loc.getX() > 0 ? 0.5 : -0.5,
+              0.5,
               1.0,
-              loc.getZ() > 0 ? 0.5 : -0.5);
+              0.5);
 
           for (int i = 0; i < 10; i++) {
             ParticleUtils.display(Particle.VILLAGER_HAPPY, location);
@@ -173,7 +173,6 @@ public class MiniCrateFinderListener implements Listener {
    */
   @EventHandler
   public void onInteract(PlayerInteractEvent event) {
-    Player player = event.getPlayer();
     if (!(event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
       return;
     }
@@ -209,55 +208,121 @@ public class MiniCrateFinderListener implements Listener {
         return;
       }
 
+      Player player = event.getPlayer();
+
       for (String s : plugin.getConfig().getConfigurationSection("minicrates").getKeys(false)) {
         // TODO change to check if DOESNT have permission
 
+        Location l1 = new Location(Bukkit.getWorld("world"), skull.getX(), skull.getY(), skull.getZ());
         Location l2 = new Location(
             Bukkit.getWorld("world"),
             plugin.getConfig().getInt("minicrates." + s + ".x"),
             plugin.getConfig().getInt("minicrates." + s + ".y"),
             plugin.getConfig().getInt("minicrates." + s + ".z"));
-        Location l1 = new Location(Bukkit.getWorld("world"), skull.getBlock().getX(), skull.getBlock().getY(), skull.getBlock().getZ());
 
         System.out.println(l1.getX() + " " + l1.getY() + " " + l1.getZ());
         System.out.println(l2.getX() + " " + l2.getY() + " " + l2.getZ());
 
         if (l1.getX() == l2.getX() && l1.getY() == l2.getY() && l1.getZ() == l2.getZ()) {
-          if (!PerkHandler.hasPerk(player.getUniqueId(), ("hub.minicrates." + s).toUpperCase())) {
-            System.out.println("hub.minicrates." + s + " <----- can use");
+          if (!PerkHandler.hasPerk(player.getUniqueId(), "lobby.minicrates." + s)) {
             canUse = true;
             crateNum = s;
-
             break;
           }
         }
       }
 
-      if (canUse) {
-        Pair<ItemStack, String> outfit = getRandomGadget();
-        player.sendMessage(MessageUtils.colorize("&aYou found a " + outfit.getLeft().getItemMeta().getDisplayName()));
-
-        PerkHandler.addPerk(player.getUniqueId(), "hub.minicrates." + crateNum);
-
-        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1, (float) 1.0);
-        ParticleUtils.display(Particle.EXPLOSION_NORMAL, skull.getLocation());
-        //ParticleEffects.EXPLODE.display(0, 0, 0, 1, 10, skull.getLocation(), player);
-
-        canUse = false;
-      } else {
+      if (!canUse) {
         player.sendMessage(MessageUtils.colorize("&cYou've already unlocked this MiniCrate!"));
+        return;
       }
+
+      Pair<Gadget, String> gadget = getRandomGadget();
+      player.sendMessage(
+          MessageUtils.colorize("&aYou found a " + gadget.getLeft().getItem().getItemMeta().getDisplayName()));
+
+      PerkHandler.addPerk(player.getUniqueId(), "lobby.minicrates." + crateNum);
+      PerkHandler.addPerk(player.getUniqueId(), gadget.getLeft().getPermissionNode());
+
+      player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1, (float) 1.0);
+      ParticleUtils.display(Particle.EXPLOSION_NORMAL, skull.getLocation());
+
+      Location location = new Location(
+          Bukkit.getWorld("world"),
+          plugin.getConfig().getInt("minicrates." + crateNum + ".x"),
+          plugin.getConfig().getInt("minicrates." + crateNum + ".y"),
+          plugin.getConfig().getInt("minicrates." + crateNum + ".z"));
+
+      animateItem(player, location, gadget.getLeft().getItem());
+
+      //animation(minicrateLocation, outfit.getLeft());
+      //ParticleEffects.EXPLODE.display(0, 0, 0, 1, 10, skull.getLocation(), player);
     }
   }
 
-  private Pair<ItemStack, String> getRandomGadget() {
+  private int task;
+
+  public void animateItem(Player player, Location location, ItemStack itemStack) {
+
+    Location teleported = location.clone().clone().add(0.5, 0.5, 0.5);
+
+    FlyingItemUtils flyingItem = new FlyingItemUtils();
+    flyingItem.setText(itemStack.getItemMeta().getDisplayName());
+    flyingItem.setItemStack(itemStack);
+    flyingItem.setLocation(teleported);
+    flyingItem.spawn();
+
+    //  2 = left 0 = middle, 1 = right
+    task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+      int timer;
+
+      @Override
+      public void run() {
+        // TODO - make faster?
+        timer++;
+
+        System.out.println(timer);
+        if (timer == 20) {
+          flyingItem.remove();
+
+          Bukkit.getScheduler().cancelTask(task);
+
+          Bukkit.getServer().getScheduler().cancelTask(task);
+        }
+      }
+    }, 0, 5);
+  }
+
+
+  private void animation(Location location, Gadget gadget) {
+    ArmorStand as = location.getWorld().spawn(location, ArmorStand.class);
+
+    as.setBasePlate(false);
+    as.setVisible(false);
+    as.setArms(false);
+    as.setInvulnerable(true);
+    as.setCanPickupItems(false);
+    as.setHelmet(gadget.getItem());
+
+    as.setCustomName(MessageUtils.colorize(gadget.getDisplayName()));
+    as.setCustomNameVisible(true);
+
+    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+      @Override
+      public void run() {
+        as.remove();
+      }
+    }, 20 * 5);
+  }
+
+  private Pair<Gadget, String> getRandomGadget() {
     plugin.getCosmeticHandler().getGadgets();
 
     Random random = new Random();
     int gadgetN = random.nextInt(plugin.getCosmeticHandler().getGadgets().size());
     Gadget gadget = plugin.getCosmeticHandler().getGadgets().get(gadgetN);
 
-    return Pair.of(gadget.getItem(), gadget.getPermissionNode());
+    return Pair.of(gadget, gadget.getPermissionNode());
   }
 
   private void launchFirework(Location loc, double d) {
