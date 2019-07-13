@@ -75,8 +75,8 @@ public class DiscoveriesHandler {
     List<String> perks = PerkHandler.getPerks(player.getUniqueId());
 
     for (String perk : perks) {
-      if (perk.startsWith("LOBBY.DISCOVERY.")) {
-        playersDiscoveries.get(player.getUniqueId()).add(perk.replace("LOBBY.DISCOVERY.", "").toLowerCase());
+      if (perk.startsWith("lobby.discovery.")) {
+        playersDiscoveries.get(player.getUniqueId()).add(perk.replace("lobby.discovery.", "").toLowerCase());
       }
     }
     playersBossBarStatus.put(player.getUniqueId(), 0d);
@@ -121,7 +121,7 @@ public class DiscoveriesHandler {
                   + ChatColor.YELLOW + ChatColor.ITALIC + zone.getFormalname(), zone.getShortName());
           if (!playersDiscoveries.get(player.getUniqueId()).contains(zone.getShortName())) {
             playersDiscoveries.get(player.getUniqueId()).add(zone.getShortName());
-            PerkHandler.addPerk(player.getUniqueId(), "LOBBY.DISCOVERY." + zone.getShortName());
+            PerkHandler.addPerk(player.getUniqueId(), "lobby.discovery." + zone.getShortName());
             ScoreboardHandler.updateDiscoveries(player);
             new BukkitRunnable() {
               int spaceCount = 10;

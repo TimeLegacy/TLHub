@@ -68,9 +68,6 @@
             <configuration>
               <artifactSet>
                 <includes>
-                  <include>de.erethon:headlib</include>
-                  <include>org.apache.commons:commons-lang3</include>
-                  <include>org.json:json</include>
                 </includes>
               </artifactSet>
             </configuration>
