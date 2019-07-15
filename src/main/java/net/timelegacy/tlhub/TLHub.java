@@ -47,7 +47,7 @@ public class TLHub extends JavaPlugin {
     plugin = this;
     config = getConfig();
 
-    spawn = new Location(Bukkit.getWorld("world"), 0.5, 117.5, 0.5);
+    spawn = new Location(Bukkit.getWorld("world"), 71.5, 119, 2048.5);
 
 //    saveDefaultConfig();
 //    getConfig().options().copyDefaults(true);
