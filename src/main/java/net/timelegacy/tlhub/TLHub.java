@@ -9,6 +9,7 @@ import net.timelegacy.tlhub.cosmetics.menu.ParticleMenu;
 import net.timelegacy.tlhub.cosmetics.particles.BounceEffect;
 import net.timelegacy.tlhub.cosmetics.particles.FireworkEffect;
 import net.timelegacy.tlhub.crates.MiniCrateFinderListener;
+import net.timelegacy.tlhub.event.ChecksListener;
 import net.timelegacy.tlhub.event.InteractEvents;
 import net.timelegacy.tlhub.event.PlayerEvents;
 import net.timelegacy.tlhub.handler.DiscoveriesHandler;
@@ -124,6 +125,7 @@ public class TLHub extends JavaPlugin {
     pm.registerEvents(new FireworkEffect(), this);
 
     pm.registerEvents(new GadgetListener(this), this);
+    pm.registerEvents(new ChecksListener(), this);
   }
 
   public CosmeticHandler getCosmeticHandler() {

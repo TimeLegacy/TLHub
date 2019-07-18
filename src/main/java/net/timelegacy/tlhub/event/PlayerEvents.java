@@ -1,8 +1,11 @@
 package net.timelegacy.tlhub.event;
 
+import net.timelegacy.tlcore.datatype.AABB3D;
+import net.timelegacy.tlcore.datatype.Polygon;
 import net.timelegacy.tlcore.datatype.Rank;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.handler.ServerHandler;
+import net.timelegacy.tlcore.utils.BungeeUtils;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MessageUtils;
 import net.timelegacy.tlhub.TLHub;
@@ -37,6 +40,8 @@ import org.bukkit.util.Vector;
 public class PlayerEvents implements Listener {
 
   public static TLHub plugin = TLHub.getPlugin();
+
+  private Polygon creativePortal = new Polygon(new AABB3D(new Vector(0.5, 119.5, 33.5), new Vector(3, 5, 1)));
 
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
@@ -124,6 +129,11 @@ public class PlayerEvents implements Listener {
     }
 
     DiscoveriesHandler.discoveryMagic(event.getPlayer()); // Discovery system logic
+
+    if (Polygon.isInside(creativePortal, AABB3D.getPlayersAABB(event.getPlayer()))) {
+      BungeeUtils.sendPlayer(event.getPlayer(), "b9596d57-ad35-345d-a9b2-267c028fbf1b");
+      //event.getPlayer().performCommand("/connect creative");
+    }
   }
 
   @EventHandler
