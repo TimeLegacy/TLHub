@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import net.timelegacy.tlcore.datatype.AABB3D;
-import net.timelegacy.tlcore.datatype.Polygon;
+import net.timelegacy.tlcore.datatype.Polyhedron;
 import net.timelegacy.tlcore.datatype.Zone;
 import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlhub.TLHub;
@@ -33,7 +33,7 @@ public class DiscoveriesHandler {
       new Zone(
           "spawn",
           "spawn",
-          new Polygon(new AABB3D(new Vector(0.5, 122, 12.5), new Vector(23, 20, 45))));
+          new Polyhedron(0.5, 122, 12.5,23, 20, 45));
 
   public static void setupDiscoveries() {
     // TODO load discoveries from config
@@ -65,7 +65,7 @@ public class DiscoveriesHandler {
       AABB3D[] polyArray = new AABB3D[poly.size()];
       polyArray = poly.toArray(polyArray);
       discoveriesList.add(
-          new Zone(d.getString("shortname"), d.getString("formalname"), new Polygon(polyArray)));
+          new Zone(d.getString("shortname"), d.getString("formalname"), new Polyhedron(polyArray)));
     }
 
     discoveries = new Zone[discoveriesList.size()];
@@ -116,13 +116,13 @@ public class DiscoveriesHandler {
   }
 
   public static void discoveryMagic(Player player) {
-    if (Polygon.isInside(spawnArea.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+    if (Polyhedron.isInside(spawnArea.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
       setBossBar(player, " ", "spawn");
       return;
     }
     for (Zone zone : discoveries) {
       if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
-        if (Polygon.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+        if (Polyhedron.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
           setBossBar(
               player,
               ChatColor.LIGHT_PURPLE
@@ -171,7 +171,7 @@ public class DiscoveriesHandler {
           return;
         }
       } else if (zone.getShortName().equals(playersCurrentArea.get(player.getUniqueId()))) {
-        if (!Polygon.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
+        if (!Polyhedron.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
           setBossBar(player, ChatColor.YELLOW + ChatColor.ITALIC.toString() + "Wilderness", "wild");
           discoveryMagic(player);
         }
