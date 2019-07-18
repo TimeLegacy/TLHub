@@ -80,8 +80,7 @@ public class GadgetsMenu implements Listener {
           ItemStack itemStack = gadget.getItem();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(player.getUniqueId(), gadget.getPermissionNode())
-              || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
+          if (player.hasPermission(gadget.getPermissionNode()) || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
             if (player.getInventory().getItem(5) != null &&

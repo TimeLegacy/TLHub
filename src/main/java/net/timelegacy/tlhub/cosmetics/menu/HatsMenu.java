@@ -79,8 +79,7 @@ public class HatsMenu implements Listener {
           ItemStack itemStack = hat.getItem();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(player.getUniqueId(), hat.getPermissionNode())
-              || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
+          if (player.hasPermission(hat.getPermissionNode()) || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore() == null ? new ArrayList<>() : ism.getLore();
 

@@ -83,8 +83,7 @@ public class ParticleMenu implements Listener {
           ItemStack itemStack = particle.getItem();
           ItemStack is = itemStack.clone();
 
-          if (PerkHandler.hasPerk(player.getUniqueId(), particle.getPermissionNode())
-              || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
+          if (player.hasPermission(particle.getPermissionNode()) || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
             ItemMeta ism = is.getItemMeta();
             List<String> lore = ism.getLore();
             if (CosmeticHandler.particleEnabled(player, particle.getName())) {

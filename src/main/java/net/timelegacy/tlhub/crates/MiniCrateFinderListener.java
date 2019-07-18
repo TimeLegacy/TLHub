@@ -70,7 +70,7 @@ public class MiniCrateFinderListener implements Listener {
           }
 
           Player player = (Player) entity;
-          if (PerkHandler.hasPerk(player.getUniqueId(), "hub.minicrates." + minicrates.get(loc))) {
+          if (player.hasPermission("hub.minicrates." + minicrates.get(loc))) {
             return;
           }
 
@@ -224,7 +224,7 @@ public class MiniCrateFinderListener implements Listener {
         System.out.println(l2.getX() + " " + l2.getY() + " " + l2.getZ());
 
         if (l1.getX() == l2.getX() && l1.getY() == l2.getY() && l1.getZ() == l2.getZ()) {
-          if (!PerkHandler.hasPerk(player.getUniqueId(), "lobby.minicrates." + s)) {
+          if (!player.hasPermission("lobby.minicrates." + s)) {
             canUse = true;
             crateNum = s;
             break;
