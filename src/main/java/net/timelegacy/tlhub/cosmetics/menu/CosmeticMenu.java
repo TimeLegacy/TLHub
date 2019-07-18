@@ -3,7 +3,6 @@ package net.timelegacy.tlhub.cosmetics.menu;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.timelegacy.tlcore.handler.PerkHandler;
 import net.timelegacy.tlcore.handler.RankHandler;
 import net.timelegacy.tlcore.utils.ItemUtils;
 import net.timelegacy.tlcore.utils.MenuUtils;
@@ -29,18 +28,13 @@ public class CosmeticMenu implements Listener {
 
   static int getI(Player player, Inventory menu, int i, Cosmetic cosmetic, TLHub lobby) {
     if (menu.getItem(i) == null) {
-      if (PerkHandler.hasPerk(player.getUniqueId(), cosmetic.getPerkPerm())
-          || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
+      if (player.hasPermission(cosmetic.getPerkPerm()) || RankHandler.getRank(player.getUniqueId()).getPriority() >= 9) {
         menu.setItem(i, cosmetic.getItemStack());
       } else {
-        menu.setItem(
-            i,
-            ItemUtils.createItem(
-                Material.RED_STAINED_GLASS_PANE,
-                1,
-                "&cUnavailable.",
-                "&fUnlock by",
-                "&fopening crates."));
+        menu.setItem(i, ItemUtils.createItem(Material.RED_STAINED_GLASS_PANE, 1,
+            "&cUnavailable.",
+            "&fUnlock by",
+            "&fopening crates."));
       }
       i++;
     } else {
@@ -50,6 +44,7 @@ public class CosmeticMenu implements Listener {
       menu.setItem(i, cosmetic.getItemStack());
       i++;
     }
+
     return i;
   }
 
@@ -88,7 +83,8 @@ public class CosmeticMenu implements Listener {
     List<String> fakeList = new ArrayList<>();
     fakeList.add(
         "&aUnlocked&7: &8(&7"
-            + plugin.getCosmeticHandler().getTotals(player).get("player" + type.substring(0, 1).toUpperCase() + type.substring(1))
+            + plugin.getCosmeticHandler().getTotals(player)
+            .get("player" + type.substring(0, 1).toUpperCase() + type.substring(1))
             + "/"
             + plugin.getCosmeticHandler().getTotals(player).get(type)
             + "&8)");
