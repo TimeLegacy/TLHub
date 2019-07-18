@@ -29,11 +29,14 @@ public class DiscoveriesHandler {
   private static HashMap<UUID, ArrayList<String>> playersDiscoveries = new HashMap<>();
   private static HashMap<UUID, Double> playersBossBarStatus = new HashMap<>();
   private static Zone[] discoveries;
-  private static Zone spawnArea = new Zone("spawn", "spawn",
-      new Polygon(new AABB3D(new Vector(0.5, 122, 12.5), new Vector(23, 20, 45))));
+  private static Zone spawnArea =
+      new Zone(
+          "spawn",
+          "spawn",
+          new Polygon(new AABB3D(new Vector(0.5, 122, 12.5), new Vector(23, 20, 45))));
 
   public static void setupDiscoveries() {
-    //TODO load discoveries from config
+    // TODO load discoveries from config
     String resourceName = "/discoveries.json";
     InputStream is = TLHub.class.getResourceAsStream(resourceName);
     if (is == null) {
@@ -54,12 +57,15 @@ public class DiscoveriesHandler {
       for (int ii = 0; ii < boundingBoxes.length(); ii++) {
         JSONArray center = boundingBoxes.getJSONArray(ii).getJSONArray(0);
         JSONArray size = boundingBoxes.getJSONArray(ii).getJSONArray(1);
-        poly.add(new AABB3D(new Vector(center.getDouble(0), center.getDouble(1), center.getDouble(2)),
-            new Vector(size.getDouble(0), size.getDouble(1), size.getDouble(2))));
+        poly.add(
+            new AABB3D(
+                new Vector(center.getDouble(0), center.getDouble(1), center.getDouble(2)),
+                new Vector(size.getDouble(0), size.getDouble(1), size.getDouble(2))));
       }
       AABB3D[] polyArray = new AABB3D[poly.size()];
       polyArray = poly.toArray(polyArray);
-      discoveriesList.add(new Zone(d.getString("shortname"), d.getString("formalname"), new Polygon(polyArray)));
+      discoveriesList.add(
+          new Zone(d.getString("shortname"), d.getString("formalname"), new Polygon(polyArray)));
     }
 
     discoveries = new Zone[discoveriesList.size()];
@@ -67,7 +73,7 @@ public class DiscoveriesHandler {
   }
 
   public static void playerJoin(Player player) {
-    //TODO get players Discoveries from the database
+    // TODO get players Discoveries from the database
     if (!playersDiscoveries.containsKey(player.getUniqueId())) {
       playersDiscoveries.put(player.getUniqueId(), new ArrayList<>());
     }
@@ -76,7 +82,9 @@ public class DiscoveriesHandler {
 
     for (String perk : perks) {
       if (perk.startsWith("lobby.discovery.")) {
-        playersDiscoveries.get(player.getUniqueId()).add(perk.replace("lobby.discovery.", "").toLowerCase());
+        playersDiscoveries
+            .get(player.getUniqueId())
+            .add(perk.replace("lobby.discovery.", "").toLowerCase());
       }
     }
     playersBossBarStatus.put(player.getUniqueId(), 0d);
@@ -115,10 +123,17 @@ public class DiscoveriesHandler {
     for (Zone zone : discoveries) {
       if (playersCurrentArea.get(player.getUniqueId()).equals("wild")) {
         if (Polygon.isInside(zone.getBoundingBoxes(), AABB3D.getPlayersAABB(player))) {
-          setBossBar(player,
-              ChatColor.LIGHT_PURPLE + ChatColor.ITALIC.toString() + "Discovered Area" + ChatColor.WHITE
+          setBossBar(
+              player,
+              ChatColor.LIGHT_PURPLE
+                  + ChatColor.ITALIC.toString()
+                  + "Discovered Area"
+                  + ChatColor.WHITE
                   + " | "
-                  + ChatColor.YELLOW + ChatColor.ITALIC + zone.getFormalname(), zone.getShortName());
+                  + ChatColor.YELLOW
+                  + ChatColor.ITALIC
+                  + zone.getFormalname(),
+              zone.getShortName());
           if (!playersDiscoveries.get(player.getUniqueId()).contains(zone.getShortName())) {
             playersDiscoveries.get(player.getUniqueId()).add(zone.getShortName());
             PerkHandler.addPerk(player.getUniqueId(), "lobby.discovery." + zone.getShortName());
@@ -140,8 +155,12 @@ public class DiscoveriesHandler {
                 for (char subTitleChar : subTitleChars) {
                   subTitle = subTitle + repeatNTimes(" ", spaceCount) + subTitleChar;
                 }
-                player.sendTitle(ChatColor.LIGHT_PURPLE + title,
-                    ChatColor.YELLOW + ChatColor.ITALIC.toString() + subTitle, 1, 45, 20);
+                player.sendTitle(
+                    ChatColor.LIGHT_PURPLE + title,
+                    ChatColor.YELLOW + ChatColor.ITALIC.toString() + subTitle,
+                    1,
+                    45,
+                    20);
 
                 if (spaceCount == 0) {
                   cancel();
@@ -185,7 +204,7 @@ public class DiscoveriesHandler {
 
       @Override
       public void run() {
-        if (!playersCurrentArea.get(uuid).equals(last)) {
+        if (playersCurrentArea.get(uuid) == null || !playersCurrentArea.get(uuid).equals(last)) {
           cancel();
         }
         if (playersCurrentArea.get(uuid) == "spawn") {
