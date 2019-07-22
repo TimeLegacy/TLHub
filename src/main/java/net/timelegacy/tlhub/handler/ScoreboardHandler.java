@@ -30,7 +30,7 @@ public class ScoreboardHandler {
     sb.setLine(3, MessageUtils.colorize("&2"));
     sb.setLine(4, ChatColor.WHITE + "Discoveries: ");
     sb.setLine(5, ChatColor.WHITE + "Coins: ");
-    sb.setLine(6, ChatColor.WHITE + "Crates: ");
+//    sb.setLine(6, ChatColor.WHITE + "Crates: ");
     sb.setLine(7, MessageUtils.colorize("&3"));
     sb.setLine(8, ChatColor.YELLOW + "play.timelegacy.net");
 
@@ -41,7 +41,7 @@ public class ScoreboardHandler {
     updateStatus(player);
     updateDiscoveries(player);
     updateTokens(player);
-    updateCrates(player);
+//    updateCrates(player);
   }
 
   public static void updateDiscoveries(Player player) {
@@ -69,13 +69,13 @@ public class ScoreboardHandler {
   }
 
   public static void updateCrates(Player player) {
-    CustomScoreboard sb = ScoreboardUtils.getCustomScoreboard(player.getUniqueId());
-    sb.setLine(
-        6,
-        ChatColor.WHITE
-            + "Crates: "
-            + ChatColor.GOLD.toString()
-            + CrateKeyHandler.getBalance(player.getUniqueId()));
+//    CustomScoreboard sb = ScoreboardUtils.getCustomScoreboard(player.getUniqueId());
+//    sb.setLine(
+//        6,
+//        ChatColor.WHITE
+//            + "Crates: "
+//            + ChatColor.GOLD.toString()
+//            + CrateKeyHandler.getBalance(player.getUniqueId()));
   }
 
   public static void updateStatus(Player player) { // TODO Fix status once API is setup
