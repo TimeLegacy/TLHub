@@ -13,11 +13,19 @@ import org.bukkit.entity.Player;
 public class ScoreboardHandler {
 
   public static void setupScoreBoard(Player player) {
-    CustomScoreboard sb = new CustomScoreboard(player, ChatColor.RED + "" + ChatColor.BOLD + "TIME LEGACY");
+    CustomScoreboard sb =
+        new CustomScoreboard(player, ChatColor.RED + "" + ChatColor.BOLD + "TIME LEGACY");
     sb.create();
-    sb.setLine(0, MessageUtils.colorize("&1")); //-> Important not to leave empty, color code helps to avoid worries//
-    sb.setLine(1, ChatColor.WHITE + "Server: " + ChatColor.GRAY
-        + MessageUtils.friendlyify(ServerHandler.getType(ServerHandler.getServerUUID())));
+    sb.setLine(
+        0,
+        MessageUtils.colorize(
+            "&1")); // -> Important not to leave empty, color code helps to avoid worries//
+    sb.setLine(
+        1,
+        ChatColor.WHITE
+            + "Server: "
+            + ChatColor.GRAY
+            + MessageUtils.friendlyify(ServerHandler.getType(ServerHandler.getServerUUID())));
     sb.setLine(2, ChatColor.WHITE + "Status: ");
     sb.setLine(3, MessageUtils.colorize("&2"));
     sb.setLine(4, ChatColor.WHITE + "Discoveries: ");
@@ -38,39 +46,51 @@ public class ScoreboardHandler {
 
   public static void updateDiscoveries(Player player) {
     CustomScoreboard sb = ScoreboardUtils.getCustomScoreboard(player.getUniqueId());
-    sb.setLine(4, ChatColor.WHITE + "Discoveries: " + ChatColor.LIGHT_PURPLE.toString()
-        + DiscoveriesHandler.getExploredDiscoveries(player)
-        + ChatColor.GRAY
-        + "/"
-        + ChatColor.LIGHT_PURPLE
-        + DiscoveriesHandler.getTotalAvailableDiscoveries());
+    sb.setLine(
+        4,
+        ChatColor.WHITE
+            + "Discoveries: "
+            + ChatColor.LIGHT_PURPLE.toString()
+            + DiscoveriesHandler.getExploredDiscoveries(player)
+            + ChatColor.GRAY
+            + "/"
+            + ChatColor.LIGHT_PURPLE
+            + DiscoveriesHandler.getTotalAvailableDiscoveries());
   }
 
   public static void updateTokens(Player player) {
     CustomScoreboard sb = ScoreboardUtils.getCustomScoreboard(player.getUniqueId());
-    sb.setLine(5,
-        ChatColor.WHITE + "Coins: " + ChatColor.AQUA.toString() + CoinHandler.getBalance(player.getUniqueId()));
+    sb.setLine(
+        5,
+        ChatColor.WHITE
+            + "Coins: "
+            + ChatColor.AQUA.toString()
+            + CoinHandler.getBalance(player.getUniqueId()));
   }
 
   public static void updateCrates(Player player) {
     CustomScoreboard sb = ScoreboardUtils.getCustomScoreboard(player.getUniqueId());
-    sb.setLine(6,
-        ChatColor.WHITE + "Crates: " + ChatColor.GOLD.toString() + CrateKeyHandler.getBalance(player.getUniqueId()));
+    sb.setLine(
+        6,
+        ChatColor.WHITE
+            + "Crates: "
+            + ChatColor.GOLD.toString()
+            + CrateKeyHandler.getBalance(player.getUniqueId()));
   }
 
-  public static void updateStatus(Player player) {// TODO Fix status once API is setup
+  public static void updateStatus(Player player) { // TODO Fix status once API is setup
     PlayerProfile playerProfile = new PlayerProfile(player.getUniqueId());
     String status = ChatColor.GRAY + "?";
 
     switch (playerProfile.getStatus().toString()) {
       case "ACTIVE":
-        status = ChatColor.GREEN + "ACTIVE";
+        status = ChatColor.GREEN + "" + ChatColor.BOLD + "ACTIVE";
         break;
       case "AWAY":
-        status = ChatColor.YELLOW + "AWAY";
+        status = ChatColor.YELLOW + "" + ChatColor.BOLD + "AWAY";
         break;
       case "DND":
-        status = ChatColor.RED + "DO NOT DISTURB";
+        status = ChatColor.RED + "" + ChatColor.BOLD + "DND";
         break;
     }
 
