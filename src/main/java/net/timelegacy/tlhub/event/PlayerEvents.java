@@ -1,5 +1,8 @@
 package net.timelegacy.tlhub.event;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
 import net.timelegacy.tlcore.datatype.AABB3D;
 import net.timelegacy.tlcore.datatype.Polyhedron;
 import net.timelegacy.tlcore.datatype.Rank;
@@ -27,13 +30,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.Vector;
@@ -41,9 +44,9 @@ import org.bukkit.util.Vector;
 public class PlayerEvents implements Listener {
 
   public static TLHub plugin = TLHub.getPlugin();
+  public static HashMap<UUID, Date> playerLastPortalEvent = new HashMap<>();
 
-  private Polyhedron creativePortal = new Polyhedron(0.5, 119.5, 33.5,3, 5, 1);
-
+  private Polyhedron creativePortal = new Polyhedron(0.5, 119.5, 33.5, 3, 5, 3);
 
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
@@ -85,32 +88,62 @@ public class PlayerEvents implements Listener {
   }
 
   public void hotBarItems(Player player) {
-    player.getInventory().setItem(0, ItemUtils.createItem(Material.ENCHANTING_TABLE, 1,
-        "&eCosmetics &8{&7Right Click&8}",
-        "&7Open Cosmetics to utilize all your",
-        "&7favorite features.",
-        "&aUnlocked&7: &8(&7"
-            + plugin.getCosmeticHandler().getTotals(player).get("player")
-            + "/"
-            + CosmeticHandler.getCosmetics().size()
-            + "&8)"));
-    player.getInventory().setItem(1, ItemUtils.createItem(Material.BEACON, 1,
-        "&eLobby Selector &8{&7Right Click&8}",
-        "&7Right click to select",
-        "&7a lobby to join."));
-    player.getInventory().setItem(4, ItemUtils.createItem(Material.ENDER_CHEST, 1,
-        "&eServer Selector &8{&7Right Click&8}",
-        "&7Right click to select",
-        "&7a server to join."));
-    player.getInventory().setItem(7, ItemUtils.createItem(ItemUtils.playerSkull(player.getUniqueId()), 1,
-        "&eYour Profile &8{&7Right Click&8}",
-        "&7Right click to view your",
-        "&7profile and alter your user",
-        "&7specific settings."));
-    player.getInventory().setItem(8, ItemUtils.createItem(Material.BLAZE_ROD, 1,
-        "&ePlayer Visibility &aEnabled &8{&7Right Click&8}",
-        "&7Right click to no longer",
-        "&7view other players."));
+    player
+        .getInventory()
+        .setItem(
+            0,
+            ItemUtils.createItem(
+                Material.ENCHANTING_TABLE,
+                1,
+                "&eCosmetics &8{&7Right Click&8}",
+                "&7Open Cosmetics to utilize all your",
+                "&7favorite features.",
+                "&aUnlocked&7: &8(&7"
+                    + plugin.getCosmeticHandler().getTotals(player).get("player")
+                    + "/"
+                    + CosmeticHandler.getCosmetics().size()
+                    + "&8)"));
+    player
+        .getInventory()
+        .setItem(
+            1,
+            ItemUtils.createItem(
+                Material.BEACON,
+                1,
+                "&eLobby Selector &8{&7Right Click&8}",
+                "&7Right click to select",
+                "&7a lobby to join."));
+    player
+        .getInventory()
+        .setItem(
+            4,
+            ItemUtils.createItem(
+                Material.ENDER_CHEST,
+                1,
+                "&eServer Selector &8{&7Right Click&8}",
+                "&7Right click to select",
+                "&7a server to join."));
+    player
+        .getInventory()
+        .setItem(
+            7,
+            ItemUtils.createItem(
+                ItemUtils.playerSkull(player.getUniqueId()),
+                1,
+                "&eYour Profile &8{&7Right Click&8}",
+                "&7Right click to view your",
+                "&7profile and alter your user",
+                "&7specific settings."));
+    player
+        .getInventory()
+        .setItem(
+            8,
+            ItemUtils.createItem(
+                Material.BLAZE_ROD,
+                1,
+                "&ePlayer Visibility &aEnabled &8{&7Right Click&8}",
+                "&7Right click to no longer",
+                "&7view other players."));
     player.getInventory().setHeldItemSlot(4);
 
     player.updateInventory();
@@ -126,25 +159,28 @@ public class PlayerEvents implements Listener {
 
       event.getPlayer().teleport(spawn);
 
-      MessageUtils.sendMessage(event.getPlayer(),
-          MessageUtils.MAIN_COLOR + "You have been saved from the depths of the world!", true);
+      MessageUtils.sendMessage(
+          event.getPlayer(),
+          MessageUtils.MAIN_COLOR + "You have been saved from the depths of the world!",
+          true);
     }
 
     DiscoveriesHandler.discoveryMagic(event.getPlayer()); // Discovery system logic
-
   }
 
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
 
-    ServerHandler.setOnlinePlayers(ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size() - 1);
+    ServerHandler.setOnlinePlayers(
+        ServerHandler.getServerUUID(), Bukkit.getOnlinePlayers().size() - 1);
 
     if (Bukkit.getOnlinePlayers().size() < 1) {
       TLHub.playersOnline = false;
     }
 
     DiscoveriesHandler.playerLeave(player);
+    playerLastPortalEvent.remove(player.getUniqueId());
   }
 
   @EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
@@ -224,10 +260,22 @@ public class PlayerEvents implements Listener {
   public void onItemHandSwitch(PlayerSwapHandItemsEvent event) {
     event.setCancelled(true);
   }
+
   @EventHandler
-  public void onPortalEvent(PlayerPortalEvent event) {
-    if (Polyhedron.isInside(creativePortal, AABB3D.getPlayersAABB(event.getPlayer()))) {
-      BungeeUtils.sendPlayer(event.getPlayer(), "b9596d57-ad35-345d-a9b2-267c028fbf1b");
+  public void onPortalEvent(EntityPortalEnterEvent event) {
+    if (((Player) event.getEntity()).getPlayer() == null) {
+      return;
+    }
+    Player player = ((Player) event.getEntity()).getPlayer();
+    if (playerLastPortalEvent.get(player.getUniqueId()) != null) {
+      if (playerLastPortalEvent.get(player.getUniqueId()).getTime() > new Date().getTime() - 5000) {
+        return;
+      }
+    } else {
+      playerLastPortalEvent.put(player.getUniqueId(), new Date());
+    }
+    if (Polyhedron.isInside(creativePortal, AABB3D.getPlayersAABB(player))) {
+      BungeeUtils.sendPlayer(player, "b9596d57-ad35-345d-a9b2-267c028fbf1b");
     }
   }
 }
