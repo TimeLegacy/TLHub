@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.util.Vector;
@@ -41,7 +42,7 @@ public class PlayerEvents implements Listener {
 
   public static TLHub plugin = TLHub.getPlugin();
 
-  private Polyhedron creativePortal = new Polyhedron(new AABB3D(new Vector(0.5, 119.5, 33.5), new Vector(3, 5, 1)));
+  private Polyhedron creativePortal = new Polyhedron(0.5, 119.5, 33.5,3, 5, 1);
 
 
   @EventHandler
@@ -130,11 +131,6 @@ public class PlayerEvents implements Listener {
     }
 
     DiscoveriesHandler.discoveryMagic(event.getPlayer()); // Discovery system logic
-
-    if (Polyhedron.isInside(creativePortal, AABB3D.getPlayersAABB(event.getPlayer()))) {
-      BungeeUtils.sendPlayer(event.getPlayer(), "b9596d57-ad35-345d-a9b2-267c028fbf1b");
-      //event.getPlayer().performCommand("/connect creative");
-    }
 
   }
 
@@ -227,5 +223,11 @@ public class PlayerEvents implements Listener {
   @EventHandler
   public void onItemHandSwitch(PlayerSwapHandItemsEvent event) {
     event.setCancelled(true);
+  }
+  @EventHandler
+  public void onPortalEvent(PlayerPortalEvent event) {
+    if (Polyhedron.isInside(creativePortal, AABB3D.getPlayersAABB(event.getPlayer()))) {
+      BungeeUtils.sendPlayer(event.getPlayer(), "b9596d57-ad35-345d-a9b2-267c028fbf1b");
+    }
   }
 }
