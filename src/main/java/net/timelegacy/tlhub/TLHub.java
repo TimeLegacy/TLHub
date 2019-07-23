@@ -14,6 +14,7 @@ import net.timelegacy.tlhub.event.InteractEvents;
 import net.timelegacy.tlhub.event.PlayerEvents;
 import net.timelegacy.tlhub.handler.DiscoveriesHandler;
 import net.timelegacy.tlhub.listeners.GadgetListener;
+import net.timelegacy.tlhub.listeners.KrunkersDrugsListener;
 import net.timelegacy.tlhub.listeners.PlayerVisibilityListener;
 import net.timelegacy.tlhub.menus.MainMenu;
 import org.bukkit.Bukkit;
@@ -126,6 +127,7 @@ public class TLHub extends JavaPlugin {
 
     pm.registerEvents(new GadgetListener(this), this);
     pm.registerEvents(new ChecksListener(), this);
+    pm.registerEvents(new KrunkersDrugsListener(), this);
   }
 
   public CosmeticHandler getCosmeticHandler() {
