@@ -28,7 +28,7 @@ public class DiscoveriesHandler {
   private static HashMap<UUID, String> playersCurrentArea = new HashMap<>();
   private static HashMap<UUID, ArrayList<String>> playersDiscoveries = new HashMap<>();
   private static HashMap<UUID, Double> playersBossBarStatus = new HashMap<>();
-  private static Zone[] discoveries;
+  public static Zone[] discoveries;
   private static Zone spawnArea =
       new Zone(
           "spawn",
@@ -230,5 +230,9 @@ public class DiscoveriesHandler {
         }
       }
     }.runTaskTimerAsynchronously(TLHub.getPlugin(), 0, 1);
+  }
+
+  public static Zone[] getDiscoveries() {
+    return discoveries;
   }
 }
