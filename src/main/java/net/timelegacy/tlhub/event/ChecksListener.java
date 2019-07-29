@@ -184,16 +184,6 @@ public class ChecksListener implements Listener {
   }
 
   @EventHandler
-  public void onPlayerJoin(PlayerJoinEvent e) {
-    e.setJoinMessage(null);
-  }
-
-  @EventHandler
-  public void onPlayerQuit(PlayerQuitEvent e) {
-    e.setQuitMessage(null);
-  }
-
-  @EventHandler
   public void onBlockBreak(BlockBreakEvent e) {
     if (!e.getPlayer().isOp()) {
       e.setCancelled(true);
